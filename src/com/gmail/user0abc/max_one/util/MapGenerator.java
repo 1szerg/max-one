@@ -63,7 +63,7 @@ public class MapGenerator {
                     startY = random.nextInt(maxY);
                     break;
             }
-            map[startX][startY].unit = makeWorker(players.get(i));
+            UnitsFactory.createUnitAtLocation(map[startX][startY],players.get(i),UnitType.WORKER);
         }
     }
 
@@ -76,12 +76,6 @@ public class MapGenerator {
         player2.ai = true;
         players.add(player2);
         return players;
-    }
-
-    private static Unit makeWorker(Player player) {
-        Unit unit = new Worker();
-        unit.owner = player;
-        return unit;
     }
 
     private static MapTile generateTile(int x, int y) {

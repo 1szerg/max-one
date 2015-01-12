@@ -1,10 +1,15 @@
-package com.gmail.user0abc.max_one.model.actions;
+package com.gmail.user0abc.max_one.model.actions.units;
 
 import com.gmail.user0abc.max_one.exceptions.IllegalMove;
 import com.gmail.user0abc.max_one.model.GameContainer;
+import com.gmail.user0abc.max_one.model.buildings.BuildingType;
+import com.gmail.user0abc.max_one.model.buildings.BuildingsFactory;
 import com.gmail.user0abc.max_one.model.buildings.Farm;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
+import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 import com.gmail.user0abc.max_one.model.units.Unit;
+
+import java.util.Arrays;
 
 /**
  * Created by Sergey
@@ -12,16 +17,13 @@ import com.gmail.user0abc.max_one.model.units.Unit;
  */
 public class BuildFarmAction extends UnitAction {
 
-    @Override
-    public AbilityType getActionType() {
-        return null;  //TODO implement method
-    }
-
-    @Override
-    public boolean isAvailable(GameContainer game, MapTile selectedTile, Unit selectedUnit) {
-        return false;  //TODO implement method
-    }
-
+    /**
+     * Creates a new Farm on selectedTile made by selectedUnit (defines an owner of new Farm)
+     * @param game
+     * @param selectedTile
+     * @param selectedUnit
+     * @throws IllegalMove
+     */
     @Override
     public void execute(GameContainer game, MapTile selectedTile, Unit selectedUnit) throws IllegalMove {
         if(selectedTile.building != null){
@@ -30,15 +32,14 @@ public class BuildFarmAction extends UnitAction {
         if(game.currentPlayer == null){
             throw new IllegalMove("Player not selected");
         }
-        if(game.currentPlayer.gold < 1){
-            throw new IllegalMove("Not enough gold");
-        }
         if(selectedUnit.getActionPoints() < 1){
             throw new IllegalMove("No actions point to build");
         }
-        Farm farm = new Farm();
-        farm.setOwner(game.currentPlayer);
-        selectedTile.building =  farm;
+        TerrainType[] applicableTerrainTypes = {TerrainType.GRASS};
+        if(!Arrays.asList(applicableTerrainTypes).contains(selectedTile.terrainType)){
+            throw new IllegalMove("Farm could not be build on " + selectedTile.terrainType.name());
+        }
+        BuildingsFactory.createBuildingAtLocation(selectedTile, game.currentPlayer, BuildingType.FARM);
     }
 
 }

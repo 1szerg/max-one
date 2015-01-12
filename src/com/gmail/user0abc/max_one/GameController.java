@@ -4,15 +4,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import com.gmail.user0abc.max_one.exceptions.IllegalMove;
+import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.Player;
-import com.gmail.user0abc.max_one.model.actions.AbilityType;
-import com.gmail.user0abc.max_one.model.actions.UnitAction;
+import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.units.UnitAction;
 import com.gmail.user0abc.max_one.model.buildings.Building;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.units.Unit;
 import com.gmail.user0abc.max_one.util.GameMessages;
 import com.gmail.user0abc.max_one.util.GameStorage;
+import com.gmail.user0abc.max_one.util.Logger;
 import com.gmail.user0abc.max_one.view.GameField;
 
 import java.util.List;
@@ -49,9 +51,9 @@ public class GameController extends Activity {
     private void calculateMap() {
         int applesBalance = 0;
         int goldBalance = 0;
-        for(int x = 0; x < getMap().length; x++){
-            for(int y = 0; y < getMap()[0].length; y++){
-                if(getMap()[x][y].unit != null && getMap()[x][y].unit.owner.equals(currentPlayer)){
+        for (int x = 0; x < getMap().length; x++) {
+            for (int y = 0; y < getMap()[0].length; y++) {
+                if (getMap()[x][y].unit != null && getMap()[x][y].unit.getOwner().equals(currentPlayer)) {
                     try {
                         resetUnitActionPoints(getMap()[x][y].unit, getMap()[x][y]);
                     } catch (IllegalMove illegalMove) {
@@ -62,13 +64,13 @@ public class GameController extends Activity {
                 }
             }
         }
+        Logger.log("INFO: Balance Apples " + applesBalance + " Gold " + goldBalance);
     }
-
 
     private void resetUnitActionPoints(Unit unit, MapTile mapTile) throws IllegalMove {
         unit.setActionPoints(unit.getMaxActionPoints());
-        if(unit.currentAction != null){
-            unit.currentAction.execute(game, mapTile, unit);
+        if (unit.getCurrentAction() != null) {
+            unit.getCurrentAction().execute(game, mapTile, unit);
         }
     }
 
@@ -90,8 +92,8 @@ public class GameController extends Activity {
             if (tile.unit != null) { // tile has unit
                 selectedUnit = tile.unit;
                 selectedBuilding = null;
-            }else{
-                if(tile.building != null){// there is a building
+            } else {
+                if (tile.building != null) {// there is a building
                     selectedBuilding = tile.building;
                 }
             }
@@ -100,13 +102,13 @@ public class GameController extends Activity {
                 if (tile.building != null) { // try building
                     selectedUnit = null;
                     selectedBuilding = tile.building;
-                }else{ // no building - deselect
+                } else { // no building - deselect
                     selectedUnit = null;
                 }
             } else { // not the same unit
-                if(tile.unit == null){ // no new unit to select
+                if (tile.unit == null) { // no new unit to select
                     selectedUnit = null;
-                }else{ // another unit
+                } else { // another unit
                     selectedUnit = tile.unit;
                 }
             }
@@ -116,37 +118,37 @@ public class GameController extends Activity {
 
     public void endTurn() {
         int nextPlayerIndex = game.players.indexOf(currentPlayer) + 1;
-        if(nextPlayerIndex < game.players.size()){
+        if (nextPlayerIndex < game.players.size()) {
             currentPlayer = game.players.get(nextPlayerIndex);
-        }else{
+        } else {
             game.players.get(0);
             game.turnsCount++;
         }
     }
 
 
-    public List<AbilityType> getAvailableActions() {
-        if(selectedUnit != null){
+    public List<AbilityType> getAvailableActions() throws NotImplementedException {
+        if (selectedUnit != null) {
             return selectedUnit.allActions();
         }
-        if(selectedBuilding != null){
+        if (selectedBuilding != null) {
             return selectedBuilding.allActions();
         }
         return null;
     }
 
-    public boolean isActionAvailable(AbilityType abilityType, MapTile tile) {
-        if(selectedUnit != null){
+    public boolean isActionAvailable(AbilityType abilityType, MapTile tile) throws NotImplementedException {
+        if (selectedUnit != null) {
             return selectedUnit.isActionAvailable(abilityType, tile);
         }
-        if(selectedBuilding != null){
-            return selectedBuilding.isActionAvailable(abilityType, tile);
+        if (selectedBuilding != null) {
+            return Building.isActionAvailable(abilityType, tile);
         }
         return false;
     }
 
-    public void onActionButtonSelect(AbilityType abilityType) {
-        if(selectedUnit != null){
+    public void onActionButtonSelect(AbilityType abilityType){
+        if (selectedUnit != null) {
             UnitAction action = selectedUnit.getAction(abilityType);
             try {
                 action.execute(game, selectedTile, selectedUnit);
@@ -154,8 +156,8 @@ public class GameController extends Activity {
                 GameMessages.add(selectedTile, illegalMove.getLocalizedMessage());
             }
         }
-        if(selectedBuilding != null){
-            selectedBuilding.execute(abilityType);
+        if (selectedBuilding != null) {
+            selectedBuilding.execute(abilityType, selectedBuilding, game);
         }
         //TODO - implement method
     }

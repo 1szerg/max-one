@@ -6,6 +6,6 @@ package com.gmail.user0abc.max_one.model.buildings;
 public enum BuildingType {
     TOWN,
     FARM,
-    SHOP,
+    TRADE_POST,
     CAMP
 }

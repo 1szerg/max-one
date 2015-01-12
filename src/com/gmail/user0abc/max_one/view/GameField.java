@@ -8,7 +8,8 @@ import android.view.SurfaceView;
 import com.gmail.user0abc.max_one.GameController;
 import com.gmail.user0abc.max_one.R;
 import com.gmail.user0abc.max_one.events.GameEvent;
-import com.gmail.user0abc.max_one.model.actions.AbilityType;
+import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
+import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
 import com.gmail.user0abc.max_one.model.terrain.TileFeatureType;
 import com.gmail.user0abc.max_one.events.GameEventBus;
 import com.gmail.user0abc.max_one.util.Logger;
@@ -182,7 +183,12 @@ public class GameField extends SurfaceView {
     }
 
     private void drawUnitInfo(Canvas canvas) {
-        List<AbilityType> availableActions = gameController.getAvailableActions();
+        List<AbilityType> availableActions = null;
+        try {
+            availableActions = gameController.getAvailableActions();
+        } catch (NotImplementedException e) {
+            return;
+        }
         if (availableActions == null) return;
         for (int i = 0; i < availableActions.size(); i++) {
             float x = (float) 4 + i * actionPlate.getWidth();
@@ -195,14 +201,20 @@ public class GameField extends SurfaceView {
                     x, y,
                     availableActions.get(i)
             );
-            button.setEnabled(gameController.isActionAvailable(availableActions.get(i), gameController.getMap()[selectedTileX][selectedTileY]));
+            try {
+                button.setEnabled(
+                        gameController.isActionAvailable(availableActions.get(i),
+                                gameController.getMap()[selectedTileX][selectedTileY])
+                );
+            } catch (NotImplementedException e) {
+                return;
+            }
             actionButtons.add(button);
             button.display(canvas);
         }
     }
 
     private Bitmap getActionImage(AbilityType availableAction) {
-        Bitmap actionImage = null;
         switch (availableAction) {
             case MOVE_ACTION:
                 return actionMove;
@@ -255,8 +267,6 @@ public class GameField extends SurfaceView {
     }
 
     private void drawMap(Canvas canvas) {
-        Paint playerStyle = new Paint();
-        playerStyle.setShadowLayer(3f, 0, 0, Color.BLUE);
         canvas.drawColor(Color.BLACK);
         for (int posX = 0; posX < gameController.getMap().length; posX++) {
             for (int posY = 0; posY < gameController.getMap()[posX].length; posY++) {
@@ -279,16 +289,16 @@ public class GameField extends SurfaceView {
                 if(gameController.getMap()[posX][posY].building != null){
                     switch (gameController.getMap()[posX][posY].building.getBuildingType()){
                         case TOWN:
-                            canvas.drawBitmap(actionTown, x, y, playerStyle);
+                            canvas.drawBitmap(actionTown, x, y, null);
                             break;
                         case FARM:
-                            canvas.drawBitmap(actionFarm, x, y, playerStyle);
+                            canvas.drawBitmap(actionFarm, x, y, null);
                             break;
                         case CAMP:
-                            canvas.drawBitmap(camp, x, y, playerStyle);
+                            canvas.drawBitmap(camp, x, y, null);
                             break;
-                        case SHOP:
-                            canvas.drawBitmap(actionTrade, x, y, playerStyle);
+                        case TRADE_POST:
+                            canvas.drawBitmap(actionTrade, x, y, null);
                             break;
 
                     }
@@ -297,7 +307,7 @@ public class GameField extends SurfaceView {
                 if (gameController.getMap()[posX][posY].unit != null) {
                     switch (gameController.getMap()[posX][posY].unit.getUnitType()) {
                         case WORKER:
-                            canvas.drawBitmap(worker, x, y, playerStyle);
+                            canvas.drawBitmap(worker, x, y, null);
                             break;
                         default:
                             break;

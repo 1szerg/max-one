@@ -1,10 +1,11 @@
 package com.gmail.user0abc.max_one.model.units;
 
 import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
-import com.gmail.user0abc.max_one.model.actions.*;
+import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
+import com.gmail.user0abc.max_one.model.actions.units.UnitAction;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
-import com.gmail.user0abc.max_one.util.GameMessage;
 import com.gmail.user0abc.max_one.util.GameMessages;
 
 import java.util.ArrayList;
@@ -58,11 +59,7 @@ public class Worker extends Unit {
     @Override
     public UnitAction getAction(AbilityType abilityType) {
         if(currentAction == null){
-            try {
-                currentAction = ActionFactory.createAction(abilityType);
-            } catch (NotImplementedException e) {
-                GameMessages.error(e);
-            }
+            currentAction = ActionFactory.createAction(abilityType);
         }
         return currentAction;
     }

@@ -1,8 +1,8 @@
 package com.gmail.user0abc.max_one.model.units;
 
 import com.gmail.user0abc.max_one.model.Player;
-import com.gmail.user0abc.max_one.model.actions.AbilityType;
-import com.gmail.user0abc.max_one.model.actions.UnitAction;
+import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.units.UnitAction;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 
 import java.io.Serializable;
@@ -12,8 +12,9 @@ import java.util.List;
  * Created by sergii.ivanov on 10/24/2014.
  */
 public abstract class Unit implements Serializable {
-    public Player owner;
-    public UnitAction currentAction;
+    protected Player owner;
+    protected MapTile currentTile;
+    protected UnitAction currentAction;
     protected int actionPoints;
     protected int maxActionPoints;
     protected int applesCost;
@@ -49,5 +50,29 @@ public abstract class Unit implements Serializable {
 
     public int getGoldCost() {
         return goldCost;
+    }
+
+    public MapTile getCurrentTile() {
+        return currentTile;
+    }
+
+    public void setCurrentTile(MapTile currentTile) {
+        this.currentTile = currentTile;
+    }
+
+    public UnitAction getCurrentAction() {
+        return currentAction;
+    }
+
+    public void setCurrentAction(UnitAction currentAction) {
+        this.currentAction = currentAction;
+    }
+
+    public Player getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Player owner) {
+        this.owner = owner;
     }
 }

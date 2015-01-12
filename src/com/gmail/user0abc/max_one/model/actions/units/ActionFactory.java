@@ -1,6 +1,7 @@
-package com.gmail.user0abc.max_one.model.actions;
+package com.gmail.user0abc.max_one.model.actions.units;
 
 import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
+import com.gmail.user0abc.max_one.util.Logger;
 
 /**
  * Created by Sergey
@@ -8,7 +9,7 @@ import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
  */
 public class ActionFactory {
 
-    public static UnitAction createAction(AbilityType abilityType) throws NotImplementedException {
+    public static UnitAction createAction(AbilityType abilityType){
         switch (abilityType){
             case REMOVE_BUILDING:
                 return new RemoveBuildingAction();
@@ -17,7 +18,7 @@ public class ActionFactory {
             case CLEAN_TERRAIN:
                 return new CleanTerrainAction();
             case BUILD_TOWN:
-                return new BuildTown();
+                return new BuildTownAction();
             case ATTACK_TILE:
                 return new AttackAction();
             case BUILD_FARM:
@@ -29,7 +30,8 @@ public class ActionFactory {
             case WAIT_ACTION:
                 return new WaitAction();
             default:
-                throw new NotImplementedException("action "+abilityType+" not implemented");
+                Logger.log("TODO : action " + abilityType + " not implemented");
+                return null;
         }
     }
 

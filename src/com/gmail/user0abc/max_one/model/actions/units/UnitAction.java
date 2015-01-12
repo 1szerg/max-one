@@ -1,4 +1,4 @@
-package com.gmail.user0abc.max_one.model.actions;
+package com.gmail.user0abc.max_one.model.actions.units;
 
 import com.gmail.user0abc.max_one.exceptions.IllegalMove;
 import com.gmail.user0abc.max_one.model.GameContainer;
@@ -13,9 +13,9 @@ import java.io.Serializable;
  */
 public abstract class UnitAction implements Serializable {
 
-    public abstract AbilityType getActionType();
-
-    public abstract boolean isAvailable(GameContainer game, MapTile selectedTile, Unit selectedUnit);
+    public static boolean isAvailable(GameContainer game, MapTile selectedTile, Unit selectedUnit){
+        return false;
+    }
 
     public abstract void execute(GameContainer game, MapTile selectedTile, Unit selectedUnit) throws IllegalMove;
 }

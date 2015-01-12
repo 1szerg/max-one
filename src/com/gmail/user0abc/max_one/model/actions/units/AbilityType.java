@@ -1,4 +1,4 @@
-package com.gmail.user0abc.max_one.model.actions;
+package com.gmail.user0abc.max_one.model.actions.units;
 
 import com.gmail.user0abc.max_one.R;
 

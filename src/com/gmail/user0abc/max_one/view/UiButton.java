@@ -1,10 +1,8 @@
 package com.gmail.user0abc.max_one.view;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import com.gmail.user0abc.max_one.R;
-import com.gmail.user0abc.max_one.model.actions.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
 
 /**
  * Created by Sergey

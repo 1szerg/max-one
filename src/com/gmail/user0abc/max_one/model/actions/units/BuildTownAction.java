@@ -1,26 +1,21 @@
-package com.gmail.user0abc.max_one.model.actions;
+package com.gmail.user0abc.max_one.model.actions.units;
 
 import com.gmail.user0abc.max_one.exceptions.IllegalMove;
 import com.gmail.user0abc.max_one.model.GameContainer;
+import com.gmail.user0abc.max_one.model.buildings.BuildingType;
+import com.gmail.user0abc.max_one.model.buildings.BuildingsFactory;
 import com.gmail.user0abc.max_one.model.buildings.Town;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
+import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 import com.gmail.user0abc.max_one.model.units.Unit;
+
+import java.util.Arrays;
 
 /**
  * Created by Sergey
  * at 11/4/14 11:12 PM
  */
-public class BuildTown extends UnitAction {
-
-    @Override
-    public AbilityType getActionType() {
-        return AbilityType.BUILD_TOWN;
-    }
-
-    @Override
-    public boolean isAvailable(GameContainer game, MapTile selectedTile, Unit selectedUnit) {
-        return selectedTile.building == null;
-    }
+public class BuildTownAction extends UnitAction {
 
     @Override
     public void execute(GameContainer game, MapTile selectedTile, Unit selectedUnit) throws IllegalMove {
@@ -33,9 +28,11 @@ public class BuildTown extends UnitAction {
         if(selectedUnit.getActionPoints() < 1){
             throw new IllegalMove("No action points");
         }
-        Town town = new Town();
-        town.setOwner(game.currentPlayer);
-        selectedTile.building = town;
+        TerrainType[] applicableTerrainTypes = {TerrainType.GRASS};
+        if(!Arrays.asList(applicableTerrainTypes).contains(selectedTile.terrainType)){
+            throw new IllegalMove("Town could not be build on " + selectedTile.terrainType.name());
+        }
+        BuildingsFactory.createBuildingAtLocation(selectedTile, game.currentPlayer, BuildingType.TOWN);
     }
 
 }

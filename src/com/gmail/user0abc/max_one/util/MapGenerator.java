@@ -63,7 +63,9 @@ public class MapGenerator {
                     startY = random.nextInt(maxY);
                     break;
             }
+            Logger.log("Player " + i + " start location (" + startX + ", " + startY + ")");
             UnitsFactory.createUnitAtLocation(map[startX][startY],players.get(i),UnitType.WORKER);
+            UnitsFactory.createUnitAtLocation(map[startX][startY+1],players.get(i),UnitType.WARRIOR);
         }
     }
 

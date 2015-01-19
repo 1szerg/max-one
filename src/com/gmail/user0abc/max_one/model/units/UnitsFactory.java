@@ -23,7 +23,10 @@ public class UnitsFactory {
                 worker.setActionPoints(worker.getMaxActionPoints());
                 return worker;
             case WARRIOR:
-                break;
+                Warrior warrior = new Warrior();
+                warrior.setOwner(owner);
+                warrior.setActionPoints(warrior.getMaxActionPoints());
+                return warrior;
             case BARBARIAN:
                 break;
             case SHIP:

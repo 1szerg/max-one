@@ -24,7 +24,7 @@ import java.util.List;
 public class GameField extends SurfaceView {
     private List<MotionEvent> recordedEvents = new ArrayList<>();
     private final SurfaceHolder holder;
-    private Bitmap grass, water, worker, selection, tree, coin, apple, tint, camp;
+    private Bitmap grass, water, worker, selection, tree, coin, apple, tint, camp, warrior, barbarian, ship;
     private Bitmap endTurn, actionPlate, actionMove, actionWait, actionRemove, actionClean, actionAttack,
             actionDelete, actionTown, actionFarm, actionTrade;
     float mapOffsetX = 0, mapOffsetY = 0;
@@ -61,6 +61,9 @@ public class GameField extends SurfaceView {
         grass = BitmapFactory.decodeResource(getResources(), R.drawable.grass);
         water = BitmapFactory.decodeResource(getResources(), R.drawable.water);
         worker = BitmapFactory.decodeResource(getResources(), R.drawable.worker);
+        warrior = BitmapFactory.decodeResource(getResources(), R.drawable.warrior);
+        barbarian = BitmapFactory.decodeResource(getResources(), R.drawable.barbarian);
+        ship = BitmapFactory.decodeResource(getResources(), R.drawable.ship);
         selection = BitmapFactory.decodeResource(getResources(), R.drawable.selected);
         tree = BitmapFactory.decodeResource(getResources(), R.drawable.tree);
         coin = BitmapFactory.decodeResource(getResources(), R.drawable.coin);
@@ -286,33 +289,9 @@ public class GameField extends SurfaceView {
                         break;
                 }
                 // draw buildings
-                if(gameController.getMap()[posX][posY].building != null){
-                    switch (gameController.getMap()[posX][posY].building.getBuildingType()){
-                        case TOWN:
-                            canvas.drawBitmap(actionTown, x, y, null);
-                            break;
-                        case FARM:
-                            canvas.drawBitmap(actionFarm, x, y, null);
-                            break;
-                        case CAMP:
-                            canvas.drawBitmap(camp, x, y, null);
-                            break;
-                        case TRADE_POST:
-                            canvas.drawBitmap(actionTrade, x, y, null);
-                            break;
-
-                    }
-                }
+                drawBuildings(canvas, posX, posY, x, y);
                 // draw units
-                if (gameController.getMap()[posX][posY].unit != null) {
-                    switch (gameController.getMap()[posX][posY].unit.getUnitType()) {
-                        case WORKER:
-                            canvas.drawBitmap(worker, x, y, null);
-                            break;
-                        default:
-                            break;
-                    }
-                }
+                drawUnits(canvas, posX, posY, x, y);
 
                 // draw features
                 if(gameController.getMap()[posX][posY].tileFeature != null){
@@ -324,6 +303,44 @@ public class GameField extends SurfaceView {
             float x = selectedTileX * grass.getWidth();
             float y = selectedTileY * grass.getHeight();
             canvas.drawBitmap(selection, x, y, null);
+        }
+    }
+
+    private void drawUnits(Canvas canvas, int posX, int posY, float x, float y) {
+        if (gameController.getMap()[posX][posY].unit == null) return;
+        switch (gameController.getMap()[posX][posY].unit.getUnitType()) {
+            case WORKER:
+                canvas.drawBitmap(worker, x, y, null);
+                break;
+            case WARRIOR:
+                canvas.drawBitmap(warrior, x, y, null);
+                break;
+            case BARBARIAN:
+                canvas.drawBitmap(barbarian, x, y, null);
+                break;
+            case SHIP:
+                canvas.drawBitmap(ship, x, y, null);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void drawBuildings(Canvas canvas, int posX, int posY, float x, float y) {
+        if(gameController.getMap()[posX][posY].building == null)return;
+        switch (gameController.getMap()[posX][posY].building.getBuildingType()){
+            case TOWN:
+                canvas.drawBitmap(actionTown, x, y, null);
+                break;
+            case FARM:
+                canvas.drawBitmap(actionFarm, x, y, null);
+                break;
+            case CAMP:
+                canvas.drawBitmap(camp, x, y, null);
+                break;
+            case TRADE_POST:
+                canvas.drawBitmap(actionTrade, x, y, null);
+                break;
         }
     }
 

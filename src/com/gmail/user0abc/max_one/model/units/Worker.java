@@ -58,9 +58,6 @@ public class Worker extends Unit {
 
     @Override
     public UnitAction getAction(AbilityType abilityType) {
-        if(currentAction == null){
-            currentAction = ActionFactory.createAction(abilityType);
-        }
-        return currentAction;
+        return ActionFactory.createAction(abilityType);
     }
 }

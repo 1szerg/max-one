@@ -60,14 +60,6 @@ public abstract class Unit implements Serializable {
         this.currentTile = currentTile;
     }
 
-    public UnitAction getCurrentAction() {
-        return currentAction;
-    }
-
-    public void setCurrentAction(UnitAction currentAction) {
-        this.currentAction = currentAction;
-    }
-
     public Player getOwner() {
         return owner;
     }

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import com.gmail.user0abc.max_one.exceptions.IllegalMove;
 import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
+import com.gmail.user0abc.max_one.handlers.TileSelectHandler;
+import com.gmail.user0abc.max_one.handlers.TileSelectReceiver;
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
@@ -25,16 +27,23 @@ import java.util.List;
  */
 public class GameController extends Activity {
 
+    private static GameController currentInstance = null;
     private GameContainer game;
     private GameField gameField;
     private Player currentPlayer;
     private Unit selectedUnit;
     private Building selectedBuilding;
     private MapTile selectedTile;
+    TileSelectHandler tileSelectHandler;
+
+    public static GameController getCurrentInstance(){
+        return currentInstance;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GameController.currentInstance = this;
         Intent intent = getIntent();
         game = GameStorage.getStorage().getGameContainer();
         gameField = new GameField(this);
@@ -69,9 +78,6 @@ public class GameController extends Activity {
 
     private void resetUnitActionPoints(Unit unit, MapTile mapTile) throws IllegalMove {
         unit.setActionPoints(unit.getMaxActionPoints());
-        if (unit.getCurrentAction() != null) {
-            unit.getCurrentAction().execute(game, mapTile, unit);
-        }
     }
 
     public MapTile[][] getMap() {
@@ -87,6 +93,10 @@ public class GameController extends Activity {
     }
 
     public void onTileSelect(MapTile tile) {
+        if(tileSelectHandler != null){
+            tileSelectHandler.onTileSelect(tile);
+            tileSelectHandler = null;
+        }
         selectedTile = tile;
         if (selectedUnit == null) { // no unit selected
             if (tile.unit != null) { // tile has unit
@@ -160,5 +170,14 @@ public class GameController extends Activity {
             selectedBuilding.execute(abilityType, selectedBuilding, game);
         }
         //TODO - implement method
+    }
+
+
+    public void selectAnotherTile(TileSelectReceiver receiver) {
+        tileSelectHandler = new TileSelectHandler(receiver);
+    }
+
+    public void refreshMap() {
+        gameField.redraw();
     }
 }

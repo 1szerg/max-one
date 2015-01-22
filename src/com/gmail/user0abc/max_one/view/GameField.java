@@ -9,19 +9,20 @@ import com.gmail.user0abc.max_one.GameController;
 import com.gmail.user0abc.max_one.R;
 import com.gmail.user0abc.max_one.events.GameEvent;
 import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
+import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
 import com.gmail.user0abc.max_one.model.terrain.TileFeatureType;
 import com.gmail.user0abc.max_one.events.GameEventBus;
 import com.gmail.user0abc.max_one.util.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Sergey
  * at 10/31/14 8:06 PM
  */
 public class GameField extends SurfaceView {
+    private static final int REPLACE_COLOR = -1459683108;
     private List<MotionEvent> recordedEvents = new ArrayList<>();
     private final SurfaceHolder holder;
     private Bitmap grass, water, worker, selection, tree, coin, apple, tint, camp, warrior, barbarian, ship;
@@ -324,6 +325,56 @@ public class GameField extends SurfaceView {
             default:
                 break;
         }
+        if(gameController.getMap()[posX][posY].unit.getOwner() != null){
+            canvas.drawBitmap(getPlayerBanner(gameController.getMap()[posX][posY].unit.getOwner()), x, y, null);
+        }
+    }
+
+    private Bitmap getPlayerBanner(Player owner) {
+        switch (owner.banner){
+            case 1: return BitmapFactory.decodeResource(getResources(), R.drawable.banner_1);
+            case 2: return BitmapFactory.decodeResource(getResources(), R.drawable.banner_2);
+            case 3: return BitmapFactory.decodeResource(getResources(), R.drawable.banner_3);
+            case 4: return BitmapFactory.decodeResource(getResources(), R.drawable.banner_4);
+            case 5: return BitmapFactory.decodeResource(getResources(), R.drawable.banner_5);
+            case 6: return BitmapFactory.decodeResource(getResources(), R.drawable.banner_6);
+            default:return BitmapFactory.decodeResource(getResources(), R.drawable.banner_clean);
+        }
+    }
+
+    private Bitmap getPlayerFlag(Player owner) {
+        switch (owner.banner){
+            case 1: return BitmapFactory.decodeResource(getResources(), R.drawable.flag_1);
+            case 2: return BitmapFactory.decodeResource(getResources(), R.drawable.flag_2);
+            case 3: return BitmapFactory.decodeResource(getResources(), R.drawable.flag_3);
+            case 4: return BitmapFactory.decodeResource(getResources(), R.drawable.flag_4);
+            case 5: return BitmapFactory.decodeResource(getResources(), R.drawable.flag_5);
+            case 6: return BitmapFactory.decodeResource(getResources(), R.drawable.flag_6);
+            default:return BitmapFactory.decodeResource(getResources(), R.drawable.flag_clean);
+        }
+    }
+
+    @Deprecated
+    private Bitmap getPlayerColoredBitmap(Bitmap bitmap, Player player) {
+        if(player == null) return bitmap;
+        Bitmap copy = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
+        int[] pixels = new int[bitmap.getWidth() * bitmap.getHeight()];
+        bitmap.getPixels(pixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+        for(int i = 0; i < pixels.length; i++){
+            if(pixels[i] == REPLACE_COLOR){
+                pixels[i] = player.banner;
+            }
+        }
+//        for(int xPixel = 0; xPixel < bitmap.getWidth(); xPixel++){
+//            for(int yPixel = 0; yPixel < bitmap.getHeight(); yPixel++){
+//                if(bitmap.getPixel(xPixel,yPixel) == REPLACE_COLOR){
+//                    copy.setPixel(xPixel, yPixel, player.banner);
+//                }else{
+//                    copy.setPixel(xPixel, yPixel, bitmap.getPixel(xPixel,yPixel));
+//                }
+//            }
+//        }
+        return copy;
     }
 
     private void drawBuildings(Canvas canvas, int posX, int posY, float x, float y) {
@@ -341,6 +392,9 @@ public class GameField extends SurfaceView {
             case TRADE_POST:
                 canvas.drawBitmap(actionTrade, x, y, null);
                 break;
+        }
+        if(gameController.getMap()[posX][posY].building.getOwner()!= null){
+            canvas.drawBitmap(getPlayerFlag(gameController.getMap()[posX][posY].building.getOwner()), x, y, null);
         }
     }
 

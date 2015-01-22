@@ -1,12 +1,11 @@
 package com.gmail.user0abc.max_one.util;
 
+import android.graphics.Color;
 import com.gmail.user0abc.max_one.model.*;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 import com.gmail.user0abc.max_one.model.units.*;
-import com.gmail.user0abc.max_one.model.units.Unit;
 import com.gmail.user0abc.max_one.model.units.UnitType;
-import com.gmail.user0abc.max_one.model.units.Worker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,11 +72,19 @@ public class MapGenerator {
         List<Player> players = new ArrayList<Player>();
         Player player1 = new Player();
         player1.ai = false;
+        player1.banner = 1;
         players.add(player1);
         Player player2 = new Player();
         player2.ai = true;
+        player2.banner = 2;
         players.add(player2);
         return players;
+    }
+
+    private static int getPlayerColor(int i) {
+        int[] colors = {Color.rgb(255, 255, 128), Color.rgb(128, 255, 255), Color.rgb(255, 128, 255),
+                Color.rgb(128, 255, 128), Color.rgb(128, 255, 128), Color.rgb(255, 128, 128)};
+        return colors[i];
     }
 
     private static MapTile generateTile(int x, int y) {

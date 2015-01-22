@@ -1,5 +1,7 @@
 package com.gmail.user0abc.max_one.model;
 
+import android.graphics.Color;
+
 import java.io.Serializable;
 
 /**
@@ -10,4 +12,6 @@ public class Player implements Serializable {
     public String name;
     public int apples;
     public int gold;
+    public int banner;
+
 }

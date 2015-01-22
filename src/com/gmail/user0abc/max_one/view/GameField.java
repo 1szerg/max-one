@@ -1,21 +1,25 @@
 package com.gmail.user0abc.max_one.view;
 
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import com.gmail.user0abc.max_one.GameController;
 import com.gmail.user0abc.max_one.R;
 import com.gmail.user0abc.max_one.events.GameEvent;
+import com.gmail.user0abc.max_one.events.GameEventBus;
 import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
 import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
 import com.gmail.user0abc.max_one.model.terrain.TileFeatureType;
-import com.gmail.user0abc.max_one.events.GameEventBus;
 import com.gmail.user0abc.max_one.util.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Sergey
@@ -70,7 +74,7 @@ public class GameField extends SurfaceView {
         coin = BitmapFactory.decodeResource(getResources(), R.drawable.coin);
         apple = BitmapFactory.decodeResource(getResources(), R.drawable.apple);
         tint = BitmapFactory.decodeResource(getResources(), R.drawable.tint);
-        camp =BitmapFactory.decodeResource(getResources(), R.drawable.camp);
+        camp = BitmapFactory.decodeResource(getResources(), R.drawable.camp);
         actionPlate = BitmapFactory.decodeResource(getResources(), R.drawable.action_plate);
         endTurn = BitmapFactory.decodeResource(getResources(), R.drawable.end_turn);
         actionMove = BitmapFactory.decodeResource(getResources(), R.drawable.walk);
@@ -123,16 +127,16 @@ public class GameField extends SurfaceView {
         }
         if (recordedEvents.size() == 2) {
             UiButton button = getPressedButton(event.getX(), event.getY());
-            if (button != null){
+            if (button != null) {
                 button.setPressed(true);
                 gameController.onActionButtonSelect(button.getAbilityType());
                 redraw();
-            }else{
+            } else {
                 // then select the tile
                 int newSelectedTileX = (int) ((event.getX() - mapOffsetX) / grass.getWidth());
                 int newSelectedTileY = (int) ((event.getY() - mapOffsetY) / grass.getHeight());
-                if(newSelectedTileX > -1 && newSelectedTileX < gameController.getMap().length
-                        && newSelectedTileY > -1 && newSelectedTileY < gameController.getMap()[0].length){
+                if (newSelectedTileX > -1 && newSelectedTileX < gameController.getMap().length
+                        && newSelectedTileY > -1 && newSelectedTileY < gameController.getMap()[0].length) {
                     selectedTileY = newSelectedTileY;
                     selectedTileX = newSelectedTileX;
                     gameController.onTileSelect(gameController.getMap()[selectedTileX][selectedTileY]);
@@ -143,8 +147,8 @@ public class GameField extends SurfaceView {
     }
 
     private UiButton getPressedButton(float x, float y) {
-        for(UiButton button:actionButtons){
-            if(button.isHit(x, y))return button;
+        for (UiButton button : actionButtons) {
+            if (button.isHit(x, y)) return button;
         }
         return null;
     }
@@ -295,8 +299,8 @@ public class GameField extends SurfaceView {
                 drawUnits(canvas, posX, posY, x, y);
 
                 // draw features
-                if(gameController.getMap()[posX][posY].tileFeature != null){
-                    canvas.drawBitmap(getFeatureImage(gameController.getMap()[posX][posY].tileFeature.featureType),x,y,null);
+                if (gameController.getMap()[posX][posY].tileFeature != null) {
+                    canvas.drawBitmap(getFeatureImage(gameController.getMap()[posX][posY].tileFeature.featureType), x, y, null);
                 }
             }
         }
@@ -325,61 +329,52 @@ public class GameField extends SurfaceView {
             default:
                 break;
         }
-        if(gameController.getMap()[posX][posY].unit.getOwner() != null){
+        if (gameController.getMap()[posX][posY].unit.getOwner() != null) {
             canvas.drawBitmap(getPlayerBanner(gameController.getMap()[posX][posY].unit.getOwner()), x, y, null);
         }
     }
 
     private Bitmap getPlayerBanner(Player owner) {
-        switch (owner.banner){
-            case 1: return BitmapFactory.decodeResource(getResources(), R.drawable.banner_1);
-            case 2: return BitmapFactory.decodeResource(getResources(), R.drawable.banner_2);
-            case 3: return BitmapFactory.decodeResource(getResources(), R.drawable.banner_3);
-            case 4: return BitmapFactory.decodeResource(getResources(), R.drawable.banner_4);
-            case 5: return BitmapFactory.decodeResource(getResources(), R.drawable.banner_5);
-            case 6: return BitmapFactory.decodeResource(getResources(), R.drawable.banner_6);
-            default:return BitmapFactory.decodeResource(getResources(), R.drawable.banner_clean);
+        switch (owner.banner) {
+            case 1:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.banner_1);
+            case 2:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.banner_2);
+            case 3:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.banner_3);
+            case 4:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.banner_4);
+            case 5:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.banner_5);
+            case 6:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.banner_6);
+            default:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.banner_clean);
         }
     }
 
     private Bitmap getPlayerFlag(Player owner) {
-        switch (owner.banner){
-            case 1: return BitmapFactory.decodeResource(getResources(), R.drawable.flag_1);
-            case 2: return BitmapFactory.decodeResource(getResources(), R.drawable.flag_2);
-            case 3: return BitmapFactory.decodeResource(getResources(), R.drawable.flag_3);
-            case 4: return BitmapFactory.decodeResource(getResources(), R.drawable.flag_4);
-            case 5: return BitmapFactory.decodeResource(getResources(), R.drawable.flag_5);
-            case 6: return BitmapFactory.decodeResource(getResources(), R.drawable.flag_6);
-            default:return BitmapFactory.decodeResource(getResources(), R.drawable.flag_clean);
+        switch (owner.banner) {
+            case 1:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.flag_1);
+            case 2:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.flag_2);
+            case 3:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.flag_3);
+            case 4:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.flag_4);
+            case 5:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.flag_5);
+            case 6:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.flag_6);
+            default:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.flag_clean);
         }
-    }
-
-    @Deprecated
-    private Bitmap getPlayerColoredBitmap(Bitmap bitmap, Player player) {
-        if(player == null) return bitmap;
-        Bitmap copy = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
-        int[] pixels = new int[bitmap.getWidth() * bitmap.getHeight()];
-        bitmap.getPixels(pixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
-        for(int i = 0; i < pixels.length; i++){
-            if(pixels[i] == REPLACE_COLOR){
-                pixels[i] = player.banner;
-            }
-        }
-//        for(int xPixel = 0; xPixel < bitmap.getWidth(); xPixel++){
-//            for(int yPixel = 0; yPixel < bitmap.getHeight(); yPixel++){
-//                if(bitmap.getPixel(xPixel,yPixel) == REPLACE_COLOR){
-//                    copy.setPixel(xPixel, yPixel, player.banner);
-//                }else{
-//                    copy.setPixel(xPixel, yPixel, bitmap.getPixel(xPixel,yPixel));
-//                }
-//            }
-//        }
-        return copy;
     }
 
     private void drawBuildings(Canvas canvas, int posX, int posY, float x, float y) {
-        if(gameController.getMap()[posX][posY].building == null)return;
-        switch (gameController.getMap()[posX][posY].building.getBuildingType()){
+        if (gameController.getMap()[posX][posY].building == null) return;
+        switch (gameController.getMap()[posX][posY].building.getBuildingType()) {
             case TOWN:
                 canvas.drawBitmap(actionTown, x, y, null);
                 break;
@@ -393,13 +388,13 @@ public class GameField extends SurfaceView {
                 canvas.drawBitmap(actionTrade, x, y, null);
                 break;
         }
-        if(gameController.getMap()[posX][posY].building.getOwner()!= null){
+        if (gameController.getMap()[posX][posY].building.getOwner() != null) {
             canvas.drawBitmap(getPlayerFlag(gameController.getMap()[posX][posY].building.getOwner()), x, y, null);
         }
     }
 
     private Bitmap getFeatureImage(TileFeatureType featureType) {
-        switch (featureType){
+        switch (featureType) {
             case FEATURE_POSSIBLE_MOVE:
                 return actionMove;
             case FEATURE_POSSIBLE_ATTACK:

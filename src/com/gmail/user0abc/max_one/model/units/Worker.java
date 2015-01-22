@@ -1,12 +1,10 @@
 package com.gmail.user0abc.max_one.model.units;
 
-import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
 import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
 import com.gmail.user0abc.max_one.model.actions.units.UnitAction;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
-import com.gmail.user0abc.max_one.util.GameMessages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,14 +42,21 @@ public class Worker extends Unit {
 
     @Override
     public boolean isActionAvailable(AbilityType abilityType, MapTile tile) {
-        switch (abilityType){
-            case WAIT_ACTION: return true;
-            case MOVE_ACTION: return actionPoints > 0;
-            case BUILD_FARM: return tile.building == null && actionPoints > 0 && tile.terrainType.equals(TerrainType.GRASS);
-            case BUILD_POST: return tile.building == null && actionPoints > 0 && tile.terrainType.equals(TerrainType.GRASS);
-            case CLEAN_TERRAIN: return tile.terrainType.equals(TerrainType.TREE) && actionPoints > 0;
-            case REMOVE_BUILDING: return tile.building != null && tile.building.getOwner().equals(this.owner) && actionPoints > 0;
-            case DELETE_UNIT: return true;
+        switch (abilityType) {
+            case WAIT_ACTION:
+                return true;
+            case MOVE_ACTION:
+                return actionPoints > 0;
+            case BUILD_FARM:
+                return tile.building == null && actionPoints > 0 && tile.terrainType.equals(TerrainType.GRASS);
+            case BUILD_POST:
+                return tile.building == null && actionPoints > 0 && tile.terrainType.equals(TerrainType.GRASS);
+            case CLEAN_TERRAIN:
+                return tile.terrainType.equals(TerrainType.TREE) && actionPoints > 0;
+            case REMOVE_BUILDING:
+                return tile.building != null && tile.building.getOwner().equals(this.owner) && actionPoints > 0;
+            case DELETE_UNIT:
+                return true;
         }
         return false;
     }

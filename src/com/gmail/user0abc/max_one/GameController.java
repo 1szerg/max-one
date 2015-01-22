@@ -36,7 +36,7 @@ public class GameController extends Activity {
     private MapTile selectedTile;
     TileSelectHandler tileSelectHandler;
 
-    public static GameController getCurrentInstance(){
+    public static GameController getCurrentInstance() {
         return currentInstance;
     }
 
@@ -93,7 +93,7 @@ public class GameController extends Activity {
     }
 
     public void onTileSelect(MapTile tile) {
-        if(tileSelectHandler != null){
+        if (tileSelectHandler != null) {
             tileSelectHandler.onTileSelect(tile);
             tileSelectHandler = null;
         }
@@ -157,7 +157,7 @@ public class GameController extends Activity {
         return false;
     }
 
-    public void onActionButtonSelect(AbilityType abilityType){
+    public void onActionButtonSelect(AbilityType abilityType) {
         if (selectedUnit != null) {
             UnitAction action = selectedUnit.getAction(abilityType);
             try {

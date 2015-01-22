@@ -1,11 +1,11 @@
 package com.gmail.user0abc.max_one.util;
 
 import android.graphics.Color;
-import com.gmail.user0abc.max_one.model.*;
+import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
-import com.gmail.user0abc.max_one.model.units.*;
 import com.gmail.user0abc.max_one.model.units.UnitType;
+import com.gmail.user0abc.max_one.model.units.UnitsFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,44 +18,44 @@ public class MapGenerator {
     public static Random random = new Random();
     public static int seed = 0;
 
-    public static void setSeed(int s){
+    public static void setSeed(int s) {
         seed = s;
         random = new Random(seed);
     }
 
-    public static MapTile[][] generateTerrain(int xSize, int ySize){
+    public static MapTile[][] generateTerrain(int xSize, int ySize) {
         MapTile[][] map = new MapTile[xSize][ySize];
-        for(int x = 0; x < xSize; x++){
-            for(int y = 0; y < ySize; y++){
+        for (int x = 0; x < xSize; x++) {
+            for (int y = 0; y < ySize; y++) {
                 map[x][y] = generateTile(x, y);
             }
         }
         return map;
     }
 
-    public static void placeStartPositions(List<Player> players, int seed, MapTile[][] map){
+    public static void placeStartPositions(List<Player> players, int seed, MapTile[][] map) {
         Random random = new Random(seed);
         int maxX = map.length;
-        int maxY = maxX > 0 ? map[0].length: 0;
-        for(int i = 0; i < players.size(); i++){
+        int maxY = maxX > 0 ? map[0].length : 0;
+        for (int i = 0; i < players.size(); i++) {
             int startX;
             int startY;
-            switch (i){
+            switch (i) {
                 case 0:
                     startX = maxX / 8;
                     startY = maxY / 8;
                     break;
                 case 1:
-                    startX = maxX *7 / 8;
-                    startY = maxY *7 / 8;
+                    startX = maxX * 7 / 8;
+                    startY = maxY * 7 / 8;
                     break;
                 case 2:
-                    startX = maxX *7 / 8;
+                    startX = maxX * 7 / 8;
                     startY = maxY / 8;
                     break;
                 case 3:
                     startX = maxX / 8;
-                    startY = maxY *7 / 8;
+                    startY = maxY * 7 / 8;
                     break;
                 default:
                     startX = random.nextInt(maxX);
@@ -63,12 +63,12 @@ public class MapGenerator {
                     break;
             }
             Logger.log("Player " + i + " start location (" + startX + ", " + startY + ")");
-            UnitsFactory.createUnitAtLocation(map[startX][startY],players.get(i),UnitType.WORKER);
-            UnitsFactory.createUnitAtLocation(map[startX][startY+1],players.get(i),UnitType.WARRIOR);
+            UnitsFactory.createUnitAtLocation(map[startX][startY], players.get(i), UnitType.WORKER);
+            UnitsFactory.createUnitAtLocation(map[startX][startY + 1], players.get(i), UnitType.WARRIOR);
         }
     }
 
-    public static List<Player> getSinglePlayer(){
+    public static List<Player> getSinglePlayer() {
         List<Player> players = new ArrayList<Player>();
         Player player1 = new Player();
         player1.ai = false;
@@ -93,11 +93,11 @@ public class MapGenerator {
         tile.building = null;
         tile.x = x;
         tile.y = y;
-        tile.terrainType = (x * y * random.nextInt(100))%3 == 1 ? TerrainType.WATER : TerrainType.GRASS;
-        if(tile.terrainType.equals(TerrainType.GRASS)){
-            if(random.nextInt(100) < 10){
+        tile.terrainType = (x * y * random.nextInt(100)) % 3 == 1 ? TerrainType.WATER : TerrainType.GRASS;
+        if (tile.terrainType.equals(TerrainType.GRASS)) {
+            if (random.nextInt(100) < 10) {
                 tile.terrainType = TerrainType.TREE;
-            }else{
+            } else {
 
             }
         }

@@ -4,7 +4,6 @@ import com.gmail.user0abc.max_one.exceptions.IllegalMove;
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.buildings.BuildingType;
 import com.gmail.user0abc.max_one.model.buildings.BuildingsFactory;
-import com.gmail.user0abc.max_one.model.buildings.Farm;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 import com.gmail.user0abc.max_one.model.units.Unit;
@@ -19,6 +18,7 @@ public class BuildFarmAction extends UnitAction {
 
     /**
      * Creates a new Farm on selectedTile made by selectedUnit (defines an owner of new Farm)
+     *
      * @param game
      * @param selectedTile
      * @param selectedUnit
@@ -26,17 +26,17 @@ public class BuildFarmAction extends UnitAction {
      */
     @Override
     public void execute(GameContainer game, MapTile selectedTile, Unit selectedUnit) throws IllegalMove {
-        if(selectedTile.building != null){
+        if (selectedTile.building != null) {
             throw new IllegalMove("Tile is already built up");
         }
-        if(game.currentPlayer == null){
+        if (game.currentPlayer == null) {
             throw new IllegalMove("Player not selected");
         }
-        if(selectedUnit.getActionPoints() < 1){
+        if (selectedUnit.getActionPoints() < 1) {
             throw new IllegalMove("No actions point to build");
         }
         TerrainType[] applicableTerrainTypes = {TerrainType.GRASS};
-        if(!Arrays.asList(applicableTerrainTypes).contains(selectedTile.terrainType)){
+        if (!Arrays.asList(applicableTerrainTypes).contains(selectedTile.terrainType)) {
             throw new IllegalMove("Farm could not be build on " + selectedTile.terrainType.name());
         }
         BuildingsFactory.createBuildingAtLocation(selectedTile, game.currentPlayer, BuildingType.FARM);

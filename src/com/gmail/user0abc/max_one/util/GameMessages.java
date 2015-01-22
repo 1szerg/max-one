@@ -4,7 +4,6 @@ import com.gmail.user0abc.max_one.model.terrain.MapTile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Sergey
@@ -23,7 +22,7 @@ public class GameMessages {
 
     public static void error(Exception e) {
         Logger.log("ERROR");
-        for(StackTraceElement el:e.getStackTrace()){
+        for (StackTraceElement el : e.getStackTrace()) {
             Logger.log(el.toString());
         }
     }

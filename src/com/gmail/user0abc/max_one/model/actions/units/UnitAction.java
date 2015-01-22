@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 public abstract class UnitAction implements Serializable {
 
-    public static boolean isAvailable(GameContainer game, MapTile selectedTile, Unit selectedUnit){
+    public static boolean isAvailable(GameContainer game, MapTile selectedTile, Unit selectedUnit) {
         return false;
     }
 

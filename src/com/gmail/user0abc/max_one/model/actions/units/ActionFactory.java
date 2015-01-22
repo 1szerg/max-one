@@ -1,6 +1,5 @@
 package com.gmail.user0abc.max_one.model.actions.units;
 
-import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
 import com.gmail.user0abc.max_one.util.Logger;
 
 /**
@@ -9,8 +8,8 @@ import com.gmail.user0abc.max_one.util.Logger;
  */
 public class ActionFactory {
 
-    public static UnitAction createAction(AbilityType abilityType){
-        switch (abilityType){
+    public static UnitAction createAction(AbilityType abilityType) {
+        switch (abilityType) {
             case REMOVE_BUILDING:
                 return new RemoveBuildingAction();
             case DELETE_UNIT:

@@ -8,7 +8,7 @@ import java.util.Map;
  * at 11/27/14 11:58 PM
  */
 public class GameUtils {
-    public static Map<String, Object> generateEventDetails(){
+    public static Map<String, Object> generateEventDetails() {
         return new HashMap<>();
     }
 }

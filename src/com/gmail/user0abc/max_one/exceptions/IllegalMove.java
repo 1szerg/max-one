@@ -6,7 +6,7 @@ package com.gmail.user0abc.max_one.exceptions;
  */
 public class IllegalMove extends Exception {
 
-    public IllegalMove(String message){
+    public IllegalMove(String message) {
         super(message);
     }
 

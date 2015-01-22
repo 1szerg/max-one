@@ -1,7 +1,5 @@
 package com.gmail.user0abc.max_one.events;
 
-import java.util.Map;
-
 /**
  * Created by Sergey
  * at 11/22/14 1:55 AM

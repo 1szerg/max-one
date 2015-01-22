@@ -12,7 +12,7 @@ public class TileSelectHandler {
         this.receiver = receiver;
     }
 
-    public void onTileSelect(MapTile tile){
+    public void onTileSelect(MapTile tile) {
         receiver.onTileSelect(tile);
     }
 }

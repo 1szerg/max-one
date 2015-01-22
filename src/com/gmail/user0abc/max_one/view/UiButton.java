@@ -25,20 +25,20 @@ public class UiButton {
         abilityType = type;
     }
 
-    public boolean isEnabled(){
+    public boolean isEnabled() {
         return enabled;
     }
 
-    public void display(Canvas c, float x, float y){
+    public void display(Canvas c, float x, float y) {
         setPosX(x);
         setPosY(y);
-        c.drawBitmap(actionPlate, posX, posY, null );
-        c.drawBitmap(getBitmap(), posX, posY, null );
+        c.drawBitmap(actionPlate, posX, posY, null);
+        c.drawBitmap(getBitmap(), posX, posY, null);
     }
 
-    public void display(Canvas c){
-        c.drawBitmap(actionPlate, posX, posY, null );
-        c.drawBitmap(getBitmap(), posX, posY, null );
+    public void display(Canvas c) {
+        c.drawBitmap(actionPlate, posX, posY, null);
+        c.drawBitmap(getBitmap(), posX, posY, null);
     }
 
     public AbilityType getAbilityType() {
@@ -49,35 +49,34 @@ public class UiButton {
         this.abilityType = abilityType;
     }
 
-    public void setEnabled(boolean newState){
+    public void setEnabled(boolean newState) {
         enabled = newState;
     }
 
-    public void setIcons(Bitmap display, Bitmap pressed, Bitmap disabled){
+    public void setIcons(Bitmap display, Bitmap pressed, Bitmap disabled) {
         iconDisplay = display;
         iconPressed = pressed;
         iconDisabled = disabled;
     }
 
     private Bitmap getBitmap() {
-        if(enabled){
-            if(pressed){
+        if (enabled) {
+            if (pressed) {
                 return iconPressed;
-            }else{
+            } else {
                 return iconDisplay;
             }
-        }else{
+        } else {
             return iconDisabled;
         }
     }
 
-    public boolean isHit(float x, float y){
-        boolean isHit = ( x >= posX
-                        && x <= (posX + actionPlate.getWidth())
-                        && y >= posY
-                        && y <= (posY+actionPlate.getHeight())
+    public boolean isHit(float x, float y) {
+        return (x >= posX
+                && x <= (posX + actionPlate.getWidth())
+                && y >= posY
+                && y <= (posY + actionPlate.getHeight())
         );
-        return isHit;
     }
 
     public void setPosX(float posX) {

@@ -7,9 +7,10 @@ import com.gmail.user0abc.max_one.model.terrain.MapTile;
  * at 11/26/14 12:52 AM
  */
 public class GameMessage {
-    public enum MessageType{
+    public enum MessageType {
         Misc
     }
+
     private String message;
     private MapTile tile;
     private MessageType type;

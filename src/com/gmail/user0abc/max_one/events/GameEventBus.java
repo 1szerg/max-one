@@ -1,6 +1,9 @@
 package com.gmail.user0abc.max_one.events;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Sergey
@@ -13,23 +16,24 @@ public class GameEventBus {
         TurnEnd,
         ScrollMap, TurnStart
     }
-    private static GameEventBus bus = new GameEventBus();
-    private Map<GameEventType,Set<GameEventsSubscriber>> subscribers = new HashMap<GameEventType,Set<GameEventsSubscriber>>();
 
-    public static GameEventBus getBus(){
+    private static GameEventBus bus = new GameEventBus();
+    private Map<GameEventType, Set<GameEventsSubscriber>> subscribers = new HashMap<GameEventType, Set<GameEventsSubscriber>>();
+
+    public static GameEventBus getBus() {
         return bus;
     }
 
-    public void fire(GameEvent event){
-        if(subscribers.containsKey(event.eventType)){
-            for(GameEventsSubscriber subscriber: subscribers.get(event.eventType)){
+    public void fire(GameEvent event) {
+        if (subscribers.containsKey(event.eventType)) {
+            for (GameEventsSubscriber subscriber : subscribers.get(event.eventType)) {
                 subscriber.onEvent(event);
             }
         }
     }
 
-    public void subscribe(GameEventType type, GameEventsSubscriber subscriber){
-        if(!subscribers.containsKey(type)){
+    public void subscribe(GameEventType type, GameEventsSubscriber subscriber) {
+        if (!subscribers.containsKey(type)) {
             subscribers.put(type, new HashSet<GameEventsSubscriber>());
         }
         subscribers.get(type).add(subscriber);

@@ -23,6 +23,7 @@ public abstract class Building implements Serializable {
 
     /**
      * Builds a list of actions that this Building could do
+     *
      * @return list of all possible actions
      * @throws NotImplementedException
      */
@@ -32,6 +33,7 @@ public abstract class Building implements Serializable {
 
     /**
      * Calculates if building could execute the action given at the moment
+     *
      * @param abilityType
      * @param tile
      * @return
@@ -42,10 +44,9 @@ public abstract class Building implements Serializable {
     }
 
     /**
-     *
      * @param abilityType
      */
-    public void execute(AbilityType abilityType, Building building, GameContainer gameContainer){
+    public void execute(AbilityType abilityType, Building building, GameContainer gameContainer) {
         Logger.log("TODO : Action is not implemented");
     }
 
@@ -61,7 +62,7 @@ public abstract class Building implements Serializable {
         this.owner = owner;
     }
 
-    public void setTile(MapTile mapTile){
+    public void setTile(MapTile mapTile) {
         tile = mapTile;
     }
 }

@@ -1,7 +1,5 @@
 package com.gmail.user0abc.max_one.model;
 
-import android.graphics.Color;
-
 import java.io.Serializable;
 
 /**

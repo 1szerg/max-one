@@ -10,13 +10,15 @@ public class GameStorage {
     private static GameStorage storage;
     private GameContainer gameContainer;
 
-    public static GameStorage getStorage(){
-        if(storage == null){
+    public static GameStorage getStorage() {
+        if (storage == null) {
             storage = new GameStorage();
         }
         return storage;
     }
-    private GameStorage(){}
+
+    private GameStorage() {
+    }
 
     public GameContainer getGameContainer() {
         return gameContainer;

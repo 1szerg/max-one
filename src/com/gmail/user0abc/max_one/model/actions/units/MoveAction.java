@@ -18,7 +18,7 @@ public class MoveAction extends UnitAction implements TileSelectReceiver {
 
     @Override
     public void execute(GameContainer game, MapTile selectedTile, Unit selectedUnit) throws IllegalMove {
-        if(selectedUnit == null){
+        if (selectedUnit == null) {
             return;
         }
         start = selectedTile;
@@ -29,7 +29,7 @@ public class MoveAction extends UnitAction implements TileSelectReceiver {
     @Override
     public void onTileSelect(MapTile tile) {
         destination = tile;
-        if(destination != null && start != null && walkingUnit != null){
+        if (destination != null && start != null && walkingUnit != null) {
             moveUnit(walkingUnit, start, destination);
         }
     }

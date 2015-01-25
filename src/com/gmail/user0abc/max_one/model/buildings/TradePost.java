@@ -8,5 +8,7 @@ public class TradePost extends Building {
     public TradePost() {
         super();
         buildingType = BuildingType.TRADE_POST;
+        defence = 10;
+        health = 10;
     }
 }

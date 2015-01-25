@@ -17,6 +17,7 @@ public abstract class Building implements Serializable {
     protected BuildingType buildingType;
     protected Player owner;
     protected MapTile tile;
+    protected double defence, health;
 
     public Building() {
     }
@@ -64,5 +65,11 @@ public abstract class Building implements Serializable {
 
     public void setTile(MapTile mapTile) {
         tile = mapTile;
+    }
+
+    public boolean acceptAttack(double attackStrength) {
+        health -= attackStrength / defence;
+        Logger.log("ATTACK: " + this + " Health left " + Double.toString(health));
+        return health > 0;
     }
 }

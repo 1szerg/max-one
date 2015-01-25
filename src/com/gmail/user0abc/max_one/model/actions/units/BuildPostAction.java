@@ -31,7 +31,7 @@ public class BuildPostAction extends UnitAction {
         if (!Arrays.asList(applicableTerrainTypes).contains(selectedTile.terrainType)) {
             throw new IllegalMove("Trade Post could not be build on " + selectedTile.terrainType.name());
         }
-        BuildingsFactory.createBuildingAtLocation(selectedTile, game.currentPlayer, BuildingType.TRADE_POST);
+        BuildingsFactory.createBuildingAtLocation(selectedTile, selectedUnit.getOwner(), BuildingType.TRADE_POST);
     }
 
 }

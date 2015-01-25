@@ -39,7 +39,7 @@ public class BuildFarmAction extends UnitAction {
         if (!Arrays.asList(applicableTerrainTypes).contains(selectedTile.terrainType)) {
             throw new IllegalMove("Farm could not be build on " + selectedTile.terrainType.name());
         }
-        BuildingsFactory.createBuildingAtLocation(selectedTile, game.currentPlayer, BuildingType.FARM);
+        BuildingsFactory.createBuildingAtLocation(selectedTile, selectedUnit.getOwner(), BuildingType.FARM);
     }
 
 }

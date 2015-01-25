@@ -8,5 +8,7 @@ public class Farm extends Building {
     public Farm() {
         super();
         buildingType = BuildingType.FARM;
+        defence = 10;
+        health = 10;
     }
 }

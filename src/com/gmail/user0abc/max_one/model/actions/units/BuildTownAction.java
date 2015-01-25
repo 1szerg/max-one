@@ -31,7 +31,7 @@ public class BuildTownAction extends UnitAction {
         if (!Arrays.asList(applicableTerrainTypes).contains(selectedTile.terrainType)) {
             throw new IllegalMove("Town could not be build on " + selectedTile.terrainType.name());
         }
-        BuildingsFactory.createBuildingAtLocation(selectedTile, game.currentPlayer, BuildingType.TOWN);
+        BuildingsFactory.createBuildingAtLocation(selectedTile, selectedUnit.getOwner(), BuildingType.TOWN);
     }
 
 }

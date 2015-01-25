@@ -12,7 +12,9 @@ public class RemoveBuildingAction extends UnitAction {
 
     @Override
     public void execute(GameContainer game, MapTile selectedTile, Unit selectedUnit) {
-        //TODO implement method
+        if(selectedTile.building != null && selectedTile.building.getOwner().equals(selectedUnit.getOwner())){
+            selectedTile.building = null;
+        }
     }
 
 }

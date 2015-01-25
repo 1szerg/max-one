@@ -4,14 +4,26 @@ import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
 import com.gmail.user0abc.max_one.model.actions.units.UnitAction;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
+import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by Sergey on 1/19/2015.
  */
 public class Warrior extends Unit {
+
+    public Warrior() {
+        maxActionPoints = 4;
+        goldCost = 2;
+        applesCost = 2;
+        attackStrength = 2;
+        defence = 2;
+        health = 10;
+    }
+
     @Override
     public List<AbilityType> allActions() {
         List<AbilityType> abilities = new ArrayList<AbilityType>();
@@ -33,7 +45,7 @@ public class Warrior extends Unit {
     }
 
     @Override
-    public UnitAction getAction(AbilityType abilityType) {
-        return ActionFactory.createAction(abilityType);
+    public List<TerrainType> getPassableTerrain() {
+        return Arrays.asList(TerrainType.GRASS, TerrainType.TREE);
     }
 }

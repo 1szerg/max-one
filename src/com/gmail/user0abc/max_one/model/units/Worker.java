@@ -7,6 +7,7 @@ import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -19,6 +20,9 @@ public class Worker extends Unit {
         maxActionPoints = 4;
         goldCost = 0;
         applesCost = 1;
+        attackStrength = 0;
+        defence = 1;
+        health = 5;
     }
 
     @Override
@@ -62,7 +66,9 @@ public class Worker extends Unit {
     }
 
     @Override
-    public UnitAction getAction(AbilityType abilityType) {
-        return ActionFactory.createAction(abilityType);
+    public List<TerrainType> getPassableTerrain() {
+        return Arrays.asList(TerrainType.GRASS, TerrainType.TREE);
     }
+
+
 }

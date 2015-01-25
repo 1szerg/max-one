@@ -1,13 +1,8 @@
 package com.gmail.user0abc.max_one.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.graphics.*;
+import android.view.*;
 import com.gmail.user0abc.max_one.GameController;
 import com.gmail.user0abc.max_one.R;
 import com.gmail.user0abc.max_one.events.GameEvent;
@@ -36,6 +31,7 @@ public class GameField extends SurfaceView {
     Integer selectedTileX, selectedTileY;
     private GameController gameController;
     private List<UiButton> actionButtons = new ArrayList<>();
+    private int screenX, screenY;
 
     public GameField(Context context) {
         super(context);
@@ -201,6 +197,7 @@ public class GameField extends SurfaceView {
             return;
         }
         if (availableActions == null) return;
+        actionButtons = new ArrayList<>();
         for (int i = 0; i < availableActions.size(); i++) {
             float x = (float) 4 + i * actionPlate.getWidth();
             float y = (float) canvas.getHeight() - 4 - actionPlate.getHeight();
@@ -279,38 +276,59 @@ public class GameField extends SurfaceView {
 
     private void drawMap(Canvas canvas) {
         canvas.drawColor(Color.BLACK);
+        readScreenSize();
+        int performanceCounter = 0;
+        int tileSize = grass.getWidth();
         for (int posX = 0; posX < gameController.getMap().length; posX++) {
             for (int posY = 0; posY < gameController.getMap()[posX].length; posY++) {
-                // draw tiles
                 float x = posX * grass.getWidth() + mapOffsetX;
                 float y = posY * grass.getHeight() + mapOffsetY;
-                switch (gameController.getMap()[posX][posY].terrainType) {
-                    case GRASS:
-                        canvas.drawBitmap(grass, x, y, null);
-                        break;
-                    case WATER:
-                        canvas.drawBitmap(water, x, y, null);
-                        break;
-                    case TREE:
-                        canvas.drawBitmap(grass, x, y, null);
-                        canvas.drawBitmap(tree, x, y, null);
-                        break;
-                }
-                // draw buildings
-                drawBuildings(canvas, posX, posY, x, y);
-                // draw units
-                drawUnits(canvas, posX, posY, x, y);
+                if(x > -tileSize && x < screenX + tileSize && y > -tileSize && y < screenY + tileSize){
+                    // draw tiles
+                    performanceCounter++;
+                    switch (gameController.getMap()[posX][posY].terrainType) {
+                        case GRASS:
+                            canvas.drawBitmap(grass, x, y, null);
+                            break;
+                        case WATER:
+                            canvas.drawBitmap(water, x, y, null);
+                            break;
+                        case TREE:
+                            canvas.drawBitmap(grass, x, y, null);
+                            canvas.drawBitmap(tree, x, y, null);
+                            break;
+                    }
+                    // draw buildings
+                    drawBuildings(canvas, posX, posY, x, y);
+                    // draw units
+                    drawUnits(canvas, posX, posY, x, y);
 
-                // draw features
-                if (gameController.getMap()[posX][posY].tileFeature != null) {
-                    canvas.drawBitmap(getFeatureImage(gameController.getMap()[posX][posY].tileFeature.featureType), x, y, null);
+                    // draw features
+                    if (gameController.getMap()[posX][posY].tileFeature != null) {
+                        canvas.drawBitmap(getFeatureImage(gameController.getMap()[posX][posY].tileFeature.featureType), x, y, null);
+                    }
                 }
             }
         }
+        Logger.log("PERFORMANCE: redrawn " + performanceCounter + " tiles");
         if (selectedTileY != null && selectedTileX != null) {
             float x = selectedTileX * grass.getWidth() + mapOffsetX;
             float y = selectedTileY * grass.getHeight() + mapOffsetY;
             canvas.drawBitmap(selection, x, y, null);
+        }
+    }
+
+    private void readScreenSize() {
+        WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        try{
+            Point size = new Point();
+            display.getSize(size);
+            screenX = size.x;
+            screenY = size.y;
+        }catch (Exception e){
+            screenX = display.getWidth();
+            screenY = display.getHeight();
         }
     }
 

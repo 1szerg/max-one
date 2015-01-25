@@ -9,5 +9,7 @@ public class Town extends Building {
     public Town() {
         super();
         buildingType = BuildingType.TOWN;
+        defence = 10.0;
+        health = 100;
     }
 }

@@ -15,9 +15,9 @@ public class Warrior extends Unit {
     @Override
     public List<AbilityType> allActions() {
         List<AbilityType> abilities = new ArrayList<AbilityType>();
-        abilities.add(AbilityType.ATTACK_TILE);
         abilities.add(AbilityType.MOVE_ACTION);
         abilities.add(AbilityType.WAIT_ACTION);
+        abilities.add(AbilityType.ATTACK_TILE);
         abilities.add(AbilityType.DELETE_UNIT);
         return abilities;
     }

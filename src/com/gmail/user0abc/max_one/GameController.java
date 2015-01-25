@@ -98,32 +98,8 @@ public class GameController extends Activity {
             tileSelectHandler = null;
         }
         selectedTile = tile;
-        if (selectedUnit == null) { // no unit selected
-            if (tile.unit != null) { // tile has unit
-                selectedUnit = tile.unit;
-                selectedBuilding = null;
-            } else {
-                if (tile.building != null) {// there is a building
-                    selectedBuilding = tile.building;
-                }
-            }
-        } else { // unit selected
-            if (selectedUnit.equals(tile.unit)) { // same unit second click
-                if (tile.building != null) { // try building
-                    selectedUnit = null;
-                    selectedBuilding = tile.building;
-                } else { // no building - deselect
-                    selectedUnit = null;
-                }
-            } else { // not the same unit
-                if (tile.unit == null) { // no new unit to select
-                    selectedUnit = null;
-                } else { // another unit
-                    selectedUnit = tile.unit;
-                }
-            }
-        }
-
+        selectedUnit = tile.unit;
+        selectedBuilding = tile.building;
     }
 
     public void endTurn() {

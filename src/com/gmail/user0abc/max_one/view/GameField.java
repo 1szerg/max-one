@@ -26,7 +26,7 @@ import java.util.List;
  * at 10/31/14 8:06 PM
  */
 public class GameField extends SurfaceView {
-    private static final int REPLACE_COLOR = -1459683108;
+    private static int MINIMAL_MOVE_THRESHOLD = 2;
     private List<MotionEvent> recordedEvents = new ArrayList<>();
     private final SurfaceHolder holder;
     private Bitmap grass, water, worker, selection, tree, coin, apple, tint, camp, warrior, barbarian, ship;
@@ -81,7 +81,7 @@ public class GameField extends SurfaceView {
         actionWait = BitmapFactory.decodeResource(getResources(), R.drawable.wait);
         actionRemove = BitmapFactory.decodeResource(getResources(), R.drawable.remove_building);
         actionClean = BitmapFactory.decodeResource(getResources(), R.drawable.clean_terrain);
-        actionAttack = BitmapFactory.decodeResource(getResources(), R.drawable.attack);
+        actionAttack = BitmapFactory.decodeResource(getResources(), R.drawable.action_attack);
         actionDelete = BitmapFactory.decodeResource(getResources(), R.drawable.delete_unit);
         actionTown = BitmapFactory.decodeResource(getResources(), R.drawable.town);
         actionFarm = BitmapFactory.decodeResource(getResources(), R.drawable.farm);
@@ -125,23 +125,22 @@ public class GameField extends SurfaceView {
         for (int i = 0; i < recordedEvents.size(); i++) {
             Logger.log("recorded events[" + i + "]=" + recordedEvents.get(i).getAction() + " " + recordedEvents.get(i).getX() + ", " + recordedEvents.get(i).getY());
         }
-        if (recordedEvents.size() == 2) {
-            UiButton button = getPressedButton(event.getX(), event.getY());
-            if (button != null) {
-                button.setPressed(true);
-                gameController.onActionButtonSelect(button.getAbilityType());
+        if(recordedEvents.size() > 3)return;
+        UiButton button = getPressedButton(event.getX(), event.getY());
+        if (button != null) {
+            button.setPressed(true);
+            gameController.onActionButtonSelect(button.getAbilityType());
+            redraw();
+        } else {
+            // then select the tile
+            int newSelectedTileX = (int) ((event.getX() - mapOffsetX) / grass.getWidth());
+            int newSelectedTileY = (int) ((event.getY() - mapOffsetY) / grass.getHeight());
+            if (newSelectedTileX > -1 && newSelectedTileX < gameController.getMap().length
+                    && newSelectedTileY > -1 && newSelectedTileY < gameController.getMap()[0].length) {
+                selectedTileY = newSelectedTileY;
+                selectedTileX = newSelectedTileX;
+                gameController.onTileSelect(gameController.getMap()[selectedTileX][selectedTileY]);
                 redraw();
-            } else {
-                // then select the tile
-                int newSelectedTileX = (int) ((event.getX() - mapOffsetX) / grass.getWidth());
-                int newSelectedTileY = (int) ((event.getY() - mapOffsetY) / grass.getHeight());
-                if (newSelectedTileX > -1 && newSelectedTileX < gameController.getMap().length
-                        && newSelectedTileY > -1 && newSelectedTileY < gameController.getMap()[0].length) {
-                    selectedTileY = newSelectedTileY;
-                    selectedTileX = newSelectedTileX;
-                    gameController.onTileSelect(gameController.getMap()[selectedTileX][selectedTileY]);
-                    redraw();
-                }
             }
         }
     }
@@ -159,6 +158,9 @@ public class GameField extends SurfaceView {
             float endY = event.getY();
             float startX = event.getHistoricalX(0);
             float startY = event.getHistoricalY(0);
+            if((Math.abs(endX - startX)+Math.abs(endY - startY)) < MINIMAL_MOVE_THRESHOLD){
+                recognizeSelect(event);
+            }
             GameEventBus.getBus().fire(
                     new GameEvent(
                             GameEventBus.GameEventType.ScrollMap,
@@ -175,13 +177,14 @@ public class GameField extends SurfaceView {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.translate(mapOffsetX, mapOffsetY);
+        //canvas.translate(mapOffsetX, mapOffsetY);
         drawMap(canvas);
-        canvas.restore();
         drawInfo(canvas);
         drawUnitInfo(canvas);
         drawEndTurn(canvas);
         fixOffset();
+        //canvas.save();
+        //canvas.restore();
     }
 
     private void drawEndTurn(Canvas canvas) {
@@ -200,7 +203,7 @@ public class GameField extends SurfaceView {
         if (availableActions == null) return;
         for (int i = 0; i < availableActions.size(); i++) {
             float x = (float) 4 + i * actionPlate.getWidth();
-            float y = (float) canvas.getHeight() - 4 - coin.getHeight();
+            float y = (float) canvas.getHeight() - 4 - actionPlate.getHeight();
             UiButton button = new UiButton(
                     getActionImage(availableActions.get(i)),
                     getActionImage(availableActions.get(i)),
@@ -279,8 +282,8 @@ public class GameField extends SurfaceView {
         for (int posX = 0; posX < gameController.getMap().length; posX++) {
             for (int posY = 0; posY < gameController.getMap()[posX].length; posY++) {
                 // draw tiles
-                float x = posX * grass.getWidth();
-                float y = posY * grass.getHeight();
+                float x = posX * grass.getWidth() + mapOffsetX;
+                float y = posY * grass.getHeight() + mapOffsetY;
                 switch (gameController.getMap()[posX][posY].terrainType) {
                     case GRASS:
                         canvas.drawBitmap(grass, x, y, null);
@@ -305,8 +308,8 @@ public class GameField extends SurfaceView {
             }
         }
         if (selectedTileY != null && selectedTileX != null) {
-            float x = selectedTileX * grass.getWidth();
-            float y = selectedTileY * grass.getHeight();
+            float x = selectedTileX * grass.getWidth() + mapOffsetX;
+            float y = selectedTileY * grass.getHeight() + mapOffsetY;
             canvas.drawBitmap(selection, x, y, null);
         }
     }

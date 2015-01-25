@@ -13,10 +13,6 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:layout_weight="0.77">
-        <FrameLayout
-                android:layout_width="656dp"
-                android:layout_height="fill_parent" android:id="@+id/save_preview">
-        </FrameLayout>
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"

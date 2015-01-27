@@ -3,7 +3,6 @@ package com.gmail.user0abc.max_one.model.buildings;
 import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /*Created by Sergey on 1/12/2015.*/

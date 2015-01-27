@@ -1,7 +1,6 @@
 package com.gmail.user0abc.max_one.model.actions.units;
 
 import com.gmail.user0abc.max_one.GameController;
-import com.gmail.user0abc.max_one.exceptions.IllegalMove;
 import com.gmail.user0abc.max_one.handlers.TileSelectReceiver;
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.buildings.BuildingType;
@@ -19,7 +18,7 @@ public class MoveAction extends Ability implements TileSelectReceiver {
 
     @Override
     public void execute(GameContainer game, MapTile selectedTile) {
-        if(selectedTile != null && selectedTile.unit != null){
+        if (selectedTile != null && selectedTile.unit != null) {
             start = selectedTile;
             walkingUnit = selectedTile.unit;
             GameController.getCurrentInstance().selectAnotherTile(this);
@@ -33,7 +32,7 @@ public class MoveAction extends Ability implements TileSelectReceiver {
                 && (walkingUnit != null && walkingUnit.getPassableTerrain().contains(destination.terrainType));
         boolean isTileEmpty = destination != null && (destination.unit == null);
         boolean canEnterBuilding = destination != null
-                &&(destination.building == null
+                && (destination.building == null
                 || (destination.building.getBuildingType().equals(BuildingType.TOWN) && destination.building.getOwner().equals(walkingUnit.getOwner()))
                 || (!destination.building.getBuildingType().equals(BuildingType.TOWN)));
         if (canPassTerrain && canEnterBuilding && isTileEmpty) {

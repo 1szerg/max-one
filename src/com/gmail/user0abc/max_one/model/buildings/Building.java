@@ -3,14 +3,12 @@ package com.gmail.user0abc.max_one.model.buildings;
 import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.Player;
-import com.gmail.user0abc.max_one.model.UnitType;
 import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.util.Logger;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,8 +23,6 @@ public abstract class Building implements Serializable {
     public Building() {
     }
 
-    public abstract List<AbilityType> getAvailableActions();
-
     /**
      * Calculates if building could execute the action given at the moment
      *
@@ -38,6 +34,8 @@ public abstract class Building implements Serializable {
     public static boolean isActionAvailable(AbilityType abilityType, MapTile tile) throws NotImplementedException {
         throw new NotImplementedException("Method is not implemented");
     }
+
+    public abstract List<AbilityType> getAvailableActions();
 
     /**
      * @param abilityType

@@ -29,6 +29,10 @@ public class UiButton {
         return enabled;
     }
 
+    public void setEnabled(boolean newState) {
+        enabled = newState;
+    }
+
     public void display(Canvas c, float x, float y) {
         setPosX(x);
         setPosY(y);
@@ -47,10 +51,6 @@ public class UiButton {
 
     public void setAbilityType(AbilityType abilityType) {
         this.abilityType = abilityType;
-    }
-
-    public void setEnabled(boolean newState) {
-        enabled = newState;
     }
 
     public void setIcons(Bitmap display, Bitmap pressed, Bitmap disabled) {

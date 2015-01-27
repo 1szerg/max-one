@@ -23,13 +23,13 @@ import java.util.List;
  */
 public class GameField extends SurfaceView {
     private static int MINIMAL_MOVE_THRESHOLD = 2;
-    private List<MotionEvent> recordedEvents = new ArrayList<>();
     private final SurfaceHolder holder;
+    float mapOffsetX = 0, mapOffsetY = 0;
+    Integer selectedTileX, selectedTileY;
+    private List<MotionEvent> recordedEvents = new ArrayList<>();
     private Bitmap grass, water, worker, selection, tree, coin, apple, tint, camp, warrior, barbarian, ship;
     private Bitmap endTurn, actionPlate, actionMove, actionWait, actionRemove, actionClean, actionAttack,
             actionDelete, actionTown, actionFarm, actionTrade;
-    float mapOffsetX = 0, mapOffsetY = 0;
-    Integer selectedTileX, selectedTileY;
     private GameController gameController;
     private List<UiButton> actionButtons = new ArrayList<>();
     private int screenX, screenY;
@@ -123,7 +123,7 @@ public class GameField extends SurfaceView {
         for (int i = 0; i < recordedEvents.size(); i++) {
             Logger.log("recorded events[" + i + "]=" + recordedEvents.get(i).getAction() + " " + recordedEvents.get(i).getX() + ", " + recordedEvents.get(i).getY());
         }
-        if(recordedEvents.size() > 3)return;
+        if (recordedEvents.size() > 3) return;
         UiButton button = getPressedButton(event.getX(), event.getY());
         if (button != null) {
             button.setPressed(true);
@@ -156,7 +156,7 @@ public class GameField extends SurfaceView {
             float endY = event.getY();
             float startX = event.getHistoricalX(0);
             float startY = event.getHistoricalY(0);
-            if((Math.abs(endX - startX)+Math.abs(endY - startY)) < MINIMAL_MOVE_THRESHOLD){
+            if ((Math.abs(endX - startX) + Math.abs(endY - startY)) < MINIMAL_MOVE_THRESHOLD) {
                 recognizeSelect(event);
             }
             GameEventBus.getBus().fire(
@@ -217,10 +217,10 @@ public class GameField extends SurfaceView {
                 actionButtons.add(button);
                 button.display(canvas);
             }
-        }else if(gameController.getBuildingActions() != null){
+        } else if (gameController.getBuildingActions() != null) {
             List<AbilityType> buildingActionTypes = gameController.getBuildingActions();
             actionButtons = new ArrayList<>();
-            for(int i = 0; i < buildingActionTypes.size(); i++){
+            for (int i = 0; i < buildingActionTypes.size(); i++) {
                 float x = (float) 4 + i * actionPlate.getWidth();
                 float y = (float) canvas.getHeight() - 4 - actionPlate.getHeight();
                 UiButton button = new UiButton(
@@ -303,7 +303,7 @@ public class GameField extends SurfaceView {
             for (int posY = 0; posY < gameController.getMap()[posX].length; posY++) {
                 float x = posX * grass.getWidth() + mapOffsetX;
                 float y = posY * grass.getHeight() + mapOffsetY;
-                if(x > -tileSize && x < screenX + tileSize && y > -tileSize && y < screenY + tileSize){
+                if (x > -tileSize && x < screenX + tileSize && y > -tileSize && y < screenY + tileSize) {
                     // draw tiles
                     performanceCounter++;
                     switch (gameController.getMap()[posX][posY].terrainType) {
@@ -342,12 +342,12 @@ public class GameField extends SurfaceView {
     private void readScreenSize() {
         WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
-        try{
+        try {
             Point size = new Point();
             display.getSize(size);
             screenX = size.x;
             screenY = size.y;
-        }catch (Exception e){
+        } catch (Exception e) {
             screenX = display.getWidth();
             screenY = display.getHeight();
         }

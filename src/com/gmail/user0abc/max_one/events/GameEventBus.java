@@ -10,13 +10,6 @@ import java.util.Set;
  * at 11/22/14 1:52 AM
  */
 public class GameEventBus {
-    public static enum GameEventType {
-        TileClick,
-        CommandSelect,
-        TurnEnd,
-        ScrollMap, TurnStart
-    }
-
     private static GameEventBus bus = new GameEventBus();
     private Map<GameEventType, Set<GameEventsSubscriber>> subscribers = new HashMap<GameEventType, Set<GameEventsSubscriber>>();
 
@@ -37,5 +30,12 @@ public class GameEventBus {
             subscribers.put(type, new HashSet<GameEventsSubscriber>());
         }
         subscribers.get(type).add(subscriber);
+    }
+
+    public static enum GameEventType {
+        TileClick,
+        CommandSelect,
+        TurnEnd,
+        ScrollMap, TurnStart
     }
 }

@@ -9,8 +9,8 @@ import com.gmail.user0abc.max_one.handlers.TileSelectHandler;
 import com.gmail.user0abc.max_one.handlers.TileSelectReceiver;
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.Player;
-import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.units.Ability;
+import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
 import com.gmail.user0abc.max_one.model.buildings.Building;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.units.Unit;
@@ -28,13 +28,13 @@ import java.util.List;
 public class GameController extends Activity {
 
     private static GameController currentInstance = null;
+    TileSelectHandler tileSelectHandler;
     private GameContainer game;
     private GameField gameField;
     private Player currentPlayer;
     private Unit selectedUnit;
     private Building selectedBuilding;
     private MapTile selectedTile;
-    TileSelectHandler tileSelectHandler;
 
     public static GameController getCurrentInstance() {
         return currentInstance;

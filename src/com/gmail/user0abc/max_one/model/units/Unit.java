@@ -1,9 +1,9 @@
 package com.gmail.user0abc.max_one.model.units;
 
 import com.gmail.user0abc.max_one.model.Player;
+import com.gmail.user0abc.max_one.model.actions.units.Ability;
 import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
-import com.gmail.user0abc.max_one.model.actions.units.Ability;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 import com.gmail.user0abc.max_one.util.Logger;
@@ -80,7 +80,7 @@ public abstract class Unit implements Serializable {
         return attackStrength;
     }
 
-    public boolean acceptAttack(double receivedAttackStrength){
+    public boolean acceptAttack(double receivedAttackStrength) {
         health -= receivedAttackStrength / defence;
         Logger.log("ATTACK: " + this + " Health left " + Double.toString(health));
         return health > 0;

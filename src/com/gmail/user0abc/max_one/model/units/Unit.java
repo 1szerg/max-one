@@ -1,9 +1,12 @@
 package com.gmail.user0abc.max_one.model.units;
 
 import com.gmail.user0abc.max_one.model.Player;
+import com.gmail.user0abc.max_one.model.actions.units.Ability;
 import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
-import com.gmail.user0abc.max_one.model.actions.units.UnitAction;
+import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
+import com.gmail.user0abc.max_one.model.terrain.TerrainType;
+import com.gmail.user0abc.max_one.util.Logger;
 
 import java.io.Serializable;
 import java.util.List;
@@ -14,11 +17,12 @@ import java.util.List;
 public abstract class Unit implements Serializable {
     protected Player owner;
     protected MapTile currentTile;
-    protected UnitAction currentAction;
+    protected Ability currentAction;
     protected int actionPoints;
     protected int maxActionPoints;
     protected int applesCost;
     protected int goldCost;
+    protected double attackStrength, defence, health;
 
     public abstract List<AbilityType> allActions();
 
@@ -42,7 +46,9 @@ public abstract class Unit implements Serializable {
 
     public abstract boolean isActionAvailable(AbilityType abilityType, MapTile tile);
 
-    public abstract UnitAction getAction(AbilityType abilityType);
+    public Ability getAction(AbilityType abilityType) {
+        return ActionFactory.createAction(abilityType);
+    }
 
     public int getApplesCost() {
         return applesCost;
@@ -60,19 +66,23 @@ public abstract class Unit implements Serializable {
         this.currentTile = currentTile;
     }
 
-    public UnitAction getCurrentAction() {
-        return currentAction;
-    }
-
-    public void setCurrentAction(UnitAction currentAction) {
-        this.currentAction = currentAction;
-    }
-
     public Player getOwner() {
         return owner;
     }
 
     public void setOwner(Player owner) {
         this.owner = owner;
+    }
+
+    public abstract List<TerrainType> getPassableTerrain();
+
+    public double getAttackStrength() {
+        return attackStrength;
+    }
+
+    public boolean acceptAttack(double receivedAttackStrength) {
+        health -= receivedAttackStrength / defence;
+        Logger.log("ATTACK: " + this + " Health left " + Double.toString(health));
+        return health > 0;
     }
 }

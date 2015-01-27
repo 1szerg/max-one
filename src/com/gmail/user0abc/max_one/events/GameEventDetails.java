@@ -4,8 +4,6 @@ import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.units.Unit;
 
-import java.util.Map;
-
 /**
  * Created by Sergey
  * at 11/28/14 12:04 AM

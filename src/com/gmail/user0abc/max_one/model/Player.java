@@ -10,4 +10,6 @@ public class Player implements Serializable {
     public String name;
     public int apples;
     public int gold;
+    public int banner;
+
 }

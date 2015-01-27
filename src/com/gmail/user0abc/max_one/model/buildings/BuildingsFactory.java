@@ -9,7 +9,7 @@ import com.gmail.user0abc.max_one.util.Logger;
  */
 public class BuildingsFactory {
 
-    public static Building createBuildingAtLocation(MapTile tile, Player owner, BuildingType type){
+    public static Building createBuildingAtLocation(MapTile tile, Player owner, BuildingType type) {
         tile.building = createBuilding(type);
         tile.building.setOwner(owner);
         tile.building.setTile(tile);
@@ -17,7 +17,7 @@ public class BuildingsFactory {
     }
 
     private static Building createBuilding(BuildingType type) {
-        switch (type){
+        switch (type) {
             case TOWN:
                 return new Town();
             case FARM:

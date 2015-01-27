@@ -21,16 +21,16 @@ public class MaxOne extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        Log.d("d","MaxOne started");
+        Log.d("d", "MaxOne started");
     }
 
-    public void newGame(View view){
+    public void newGame(View view) {
         int seed = new Random().nextInt(100);
-        Log.d("d","Creating game with seed "+seed);
+        Log.d("d", "Creating game with seed " + seed);
         GameContainer game = new GameContainer();
         game.seed = seed;
         MapGenerator.setSeed(seed);
-        game.map = MapGenerator.generateTerrain(41, 41);
+        game.map = MapGenerator.generateTerrain(11, 11);
         game.players = MapGenerator.getSinglePlayer();
         MapGenerator.placeStartPositions(game.players, game.seed, game.map);
         GameStorage.getStorage().setGameContainer(game);

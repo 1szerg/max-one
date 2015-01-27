@@ -1,14 +1,11 @@
 package com.gmail.user0abc.max_one.model.units;
 
-import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
 import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
-import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
-import com.gmail.user0abc.max_one.model.actions.units.UnitAction;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
-import com.gmail.user0abc.max_one.util.GameMessages;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -21,6 +18,9 @@ public class Worker extends Unit {
         maxActionPoints = 4;
         goldCost = 0;
         applesCost = 1;
+        attackStrength = 0;
+        defence = 1;
+        health = 5;
     }
 
     @Override
@@ -44,23 +44,29 @@ public class Worker extends Unit {
 
     @Override
     public boolean isActionAvailable(AbilityType abilityType, MapTile tile) {
-        switch (abilityType){
-            case WAIT_ACTION: return true;
-            case MOVE_ACTION: return actionPoints > 0;
-            case BUILD_FARM: return tile.building == null && actionPoints > 0 && tile.terrainType.equals(TerrainType.GRASS);
-            case BUILD_POST: return tile.building == null && actionPoints > 0 && tile.terrainType.equals(TerrainType.GRASS);
-            case CLEAN_TERRAIN: return tile.terrainType.equals(TerrainType.TREE) && actionPoints > 0;
-            case REMOVE_BUILDING: return tile.building != null && tile.building.getOwner().equals(this.owner) && actionPoints > 0;
-            case DELETE_UNIT: return true;
+        switch (abilityType) {
+            case WAIT_ACTION:
+                return true;
+            case MOVE_ACTION:
+                return actionPoints > 0;
+            case BUILD_FARM:
+                return tile.building == null && actionPoints > 0 && tile.terrainType.equals(TerrainType.GRASS);
+            case BUILD_POST:
+                return tile.building == null && actionPoints > 0 && tile.terrainType.equals(TerrainType.GRASS);
+            case CLEAN_TERRAIN:
+                return tile.terrainType.equals(TerrainType.TREE) && actionPoints > 0;
+            case REMOVE_BUILDING:
+                return tile.building != null && tile.building.getOwner().equals(this.owner) && actionPoints > 0;
+            case DELETE_UNIT:
+                return true;
         }
         return false;
     }
 
     @Override
-    public UnitAction getAction(AbilityType abilityType) {
-        if(currentAction == null){
-            currentAction = ActionFactory.createAction(abilityType);
-        }
-        return currentAction;
+    public List<TerrainType> getPassableTerrain() {
+        return Arrays.asList(TerrainType.GRASS, TerrainType.TREE);
     }
+
+
 }

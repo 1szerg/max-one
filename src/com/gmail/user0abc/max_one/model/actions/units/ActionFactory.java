@@ -1,6 +1,7 @@
 package com.gmail.user0abc.max_one.model.actions.units;
 
-import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
+import com.gmail.user0abc.max_one.model.actions.buildings.MakeWarrior;
+import com.gmail.user0abc.max_one.model.actions.buildings.MakeWorker;
 import com.gmail.user0abc.max_one.util.Logger;
 
 /**
@@ -9,28 +10,32 @@ import com.gmail.user0abc.max_one.util.Logger;
  */
 public class ActionFactory {
 
-    public static UnitAction createAction(AbilityType abilityType){
-        switch (abilityType){
+    public static Ability createAction(AbilityType abilityType) {
+        switch (abilityType) {
             case REMOVE_BUILDING:
-                return new RemoveBuildingAction();
+                return new RemoveBuilding();
             case DELETE_UNIT:
-                return new DeleteUnitAction();
+                return new DeleteUnit();
             case CLEAN_TERRAIN:
-                return new CleanTerrainAction();
+                return new CleanTerrain();
             case BUILD_TOWN:
-                return new BuildTownAction();
+                return new BuildTown();
             case ATTACK_TILE:
-                return new AttackAction();
+                return new Attack();
             case BUILD_FARM:
-                return new BuildFarmAction();
+                return new BuildFarm();
             case BUILD_POST:
-                return new BuildPostAction();
+                return new BuildPost();
             case MOVE_ACTION:
                 return new MoveAction();
             case WAIT_ACTION:
-                return new WaitAction();
+                return new SkipTurn();
+            case MAKE_WORKER:
+                return new MakeWorker();
+            case MAKE_WARRIOR:
+                return new MakeWarrior();
             default:
-                Logger.log("TODO : action " + abilityType + " not implemented");
+                Logger.log("TODO : action " + abilityType + " not implemented in ActionFactory");
                 return null;
         }
     }

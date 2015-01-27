@@ -1,17 +1,17 @@
 package com.gmail.user0abc.max_one.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.*;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.*;
 import com.gmail.user0abc.max_one.GameController;
 import com.gmail.user0abc.max_one.R;
 import com.gmail.user0abc.max_one.events.GameEvent;
+import com.gmail.user0abc.max_one.events.GameEventBus;
 import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
+import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
 import com.gmail.user0abc.max_one.model.terrain.TileFeatureType;
-import com.gmail.user0abc.max_one.events.GameEventBus;
 import com.gmail.user0abc.max_one.util.Logger;
 
 import java.util.ArrayList;
@@ -22,15 +22,17 @@ import java.util.List;
  * at 10/31/14 8:06 PM
  */
 public class GameField extends SurfaceView {
-    private List<MotionEvent> recordedEvents = new ArrayList<>();
+    private static int MINIMAL_MOVE_THRESHOLD = 2;
     private final SurfaceHolder holder;
-    private Bitmap grass, water, worker, selection, tree, coin, apple, tint, camp;
-    private Bitmap endTurn, actionPlate, actionMove, actionWait, actionRemove, actionClean, actionAttack,
-            actionDelete, actionTown, actionFarm, actionTrade;
     float mapOffsetX = 0, mapOffsetY = 0;
     Integer selectedTileX, selectedTileY;
+    private List<MotionEvent> recordedEvents = new ArrayList<>();
+    private Bitmap grass, water, worker, selection, tree, coin, apple, tint, camp, warrior, barbarian, ship;
+    private Bitmap endTurn, actionPlate, actionMove, actionWait, actionRemove, actionClean, actionAttack,
+            actionDelete, actionTown, actionFarm, actionTrade;
     private GameController gameController;
     private List<UiButton> actionButtons = new ArrayList<>();
+    private int screenX, screenY;
 
     public GameField(Context context) {
         super(context);
@@ -61,23 +63,27 @@ public class GameField extends SurfaceView {
         grass = BitmapFactory.decodeResource(getResources(), R.drawable.grass);
         water = BitmapFactory.decodeResource(getResources(), R.drawable.water);
         worker = BitmapFactory.decodeResource(getResources(), R.drawable.worker);
+        warrior = BitmapFactory.decodeResource(getResources(), R.drawable.warrior);
+        barbarian = BitmapFactory.decodeResource(getResources(), R.drawable.barbarian);
+        ship = BitmapFactory.decodeResource(getResources(), R.drawable.ship);
         selection = BitmapFactory.decodeResource(getResources(), R.drawable.selected);
         tree = BitmapFactory.decodeResource(getResources(), R.drawable.tree);
         coin = BitmapFactory.decodeResource(getResources(), R.drawable.coin);
         apple = BitmapFactory.decodeResource(getResources(), R.drawable.apple);
         tint = BitmapFactory.decodeResource(getResources(), R.drawable.tint);
-        camp =BitmapFactory.decodeResource(getResources(), R.drawable.camp);
+        camp = BitmapFactory.decodeResource(getResources(), R.drawable.camp);
         actionPlate = BitmapFactory.decodeResource(getResources(), R.drawable.action_plate);
         endTurn = BitmapFactory.decodeResource(getResources(), R.drawable.end_turn);
         actionMove = BitmapFactory.decodeResource(getResources(), R.drawable.walk);
         actionWait = BitmapFactory.decodeResource(getResources(), R.drawable.wait);
         actionRemove = BitmapFactory.decodeResource(getResources(), R.drawable.remove_building);
         actionClean = BitmapFactory.decodeResource(getResources(), R.drawable.clean_terrain);
-        actionAttack = BitmapFactory.decodeResource(getResources(), R.drawable.attack);
+        actionAttack = BitmapFactory.decodeResource(getResources(), R.drawable.action_attack);
         actionDelete = BitmapFactory.decodeResource(getResources(), R.drawable.delete_unit);
         actionTown = BitmapFactory.decodeResource(getResources(), R.drawable.town);
         actionFarm = BitmapFactory.decodeResource(getResources(), R.drawable.farm);
         actionTrade = BitmapFactory.decodeResource(getResources(), R.drawable.trade);
+
     }
 
     public void redraw() {
@@ -117,30 +123,29 @@ public class GameField extends SurfaceView {
         for (int i = 0; i < recordedEvents.size(); i++) {
             Logger.log("recorded events[" + i + "]=" + recordedEvents.get(i).getAction() + " " + recordedEvents.get(i).getX() + ", " + recordedEvents.get(i).getY());
         }
-        if (recordedEvents.size() == 2) {
-            UiButton button = getPressedButton(event.getX(), event.getY());
-            if (button != null){
-                button.setPressed(true);
-                gameController.onActionButtonSelect(button.getAbilityType());
+        if (recordedEvents.size() > 3) return;
+        UiButton button = getPressedButton(event.getX(), event.getY());
+        if (button != null) {
+            button.setPressed(true);
+            gameController.onActionButtonSelect(button.getAbilityType());
+            redraw();
+        } else {
+            // then select the tile
+            int newSelectedTileX = (int) ((event.getX() - mapOffsetX) / grass.getWidth());
+            int newSelectedTileY = (int) ((event.getY() - mapOffsetY) / grass.getHeight());
+            if (newSelectedTileX > -1 && newSelectedTileX < gameController.getMap().length
+                    && newSelectedTileY > -1 && newSelectedTileY < gameController.getMap()[0].length) {
+                selectedTileY = newSelectedTileY;
+                selectedTileX = newSelectedTileX;
+                gameController.onTileSelect(gameController.getMap()[selectedTileX][selectedTileY]);
                 redraw();
-            }else{
-                // then select the tile
-                int newSelectedTileX = (int) ((event.getX() - mapOffsetX) / grass.getWidth());
-                int newSelectedTileY = (int) ((event.getY() - mapOffsetY) / grass.getHeight());
-                if(newSelectedTileX > -1 && newSelectedTileX < gameController.getMap().length
-                        && newSelectedTileY > -1 && newSelectedTileY < gameController.getMap()[0].length){
-                    selectedTileY = newSelectedTileY;
-                    selectedTileX = newSelectedTileX;
-                    gameController.onTileSelect(gameController.getMap()[selectedTileX][selectedTileY]);
-                    redraw();
-                }
             }
         }
     }
 
     private UiButton getPressedButton(float x, float y) {
-        for(UiButton button:actionButtons){
-            if(button.isHit(x, y))return button;
+        for (UiButton button : actionButtons) {
+            if (button.isHit(x, y)) return button;
         }
         return null;
     }
@@ -151,6 +156,9 @@ public class GameField extends SurfaceView {
             float endY = event.getY();
             float startX = event.getHistoricalX(0);
             float startY = event.getHistoricalY(0);
+            if ((Math.abs(endX - startX) + Math.abs(endY - startY)) < MINIMAL_MOVE_THRESHOLD) {
+                recognizeSelect(event);
+            }
             GameEventBus.getBus().fire(
                     new GameEvent(
                             GameEventBus.GameEventType.ScrollMap,
@@ -167,13 +175,14 @@ public class GameField extends SurfaceView {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.translate(mapOffsetX, mapOffsetY);
+        //canvas.translate(mapOffsetX, mapOffsetY);
         drawMap(canvas);
-        canvas.restore();
         drawInfo(canvas);
         drawUnitInfo(canvas);
         drawEndTurn(canvas);
         fixOffset();
+        //canvas.save();
+        //canvas.restore();
     }
 
     private void drawEndTurn(Canvas canvas) {
@@ -183,35 +192,50 @@ public class GameField extends SurfaceView {
     }
 
     private void drawUnitInfo(Canvas canvas) {
-        List<AbilityType> availableActions = null;
-        try {
-            availableActions = gameController.getAvailableActions();
-        } catch (NotImplementedException e) {
-            return;
-        }
-        if (availableActions == null) return;
-        for (int i = 0; i < availableActions.size(); i++) {
-            float x = (float) 4 + i * actionPlate.getWidth();
-            float y = (float) canvas.getHeight() - 4 - coin.getHeight();
-            UiButton button = new UiButton(
-                    getActionImage(availableActions.get(i)),
-                    getActionImage(availableActions.get(i)),
-                    getActionImage(availableActions.get(i)),
-                    actionPlate,
-                    x, y,
-                    availableActions.get(i)
-            );
-            try {
-                button.setEnabled(
-                        gameController.isActionAvailable(availableActions.get(i),
-                                gameController.getMap()[selectedTileX][selectedTileY])
+        if (gameController.getUnitActions() != null) {
+            List<AbilityType> availableActions = gameController.getUnitActions();
+            actionButtons = new ArrayList<>();
+            for (int i = 0; i < availableActions.size(); i++) {
+                float x = (float) 4 + i * actionPlate.getWidth();
+                float y = (float) canvas.getHeight() - 4 - actionPlate.getHeight();
+                UiButton button = new UiButton(
+                        getActionImage(availableActions.get(i)),
+                        getActionImage(availableActions.get(i)),
+                        getActionImage(availableActions.get(i)),
+                        actionPlate,
+                        x, y,
+                        availableActions.get(i)
                 );
-            } catch (NotImplementedException e) {
-                return;
+                try {
+                    button.setEnabled(
+                            gameController.isActionAvailable(availableActions.get(i),
+                                    gameController.getMap()[selectedTileX][selectedTileY])
+                    );
+                } catch (NotImplementedException e) {
+                    return;
+                }
+                actionButtons.add(button);
+                button.display(canvas);
             }
-            actionButtons.add(button);
-            button.display(canvas);
+        } else if (gameController.getBuildingActions() != null) {
+            List<AbilityType> buildingActionTypes = gameController.getBuildingActions();
+            actionButtons = new ArrayList<>();
+            for (int i = 0; i < buildingActionTypes.size(); i++) {
+                float x = (float) 4 + i * actionPlate.getWidth();
+                float y = (float) canvas.getHeight() - 4 - actionPlate.getHeight();
+                UiButton button = new UiButton(
+                        getActionImage(buildingActionTypes.get(i)),
+                        getActionImage(buildingActionTypes.get(i)),
+                        getActionImage(buildingActionTypes.get(i)),
+                        actionPlate,
+                        x, y,
+                        buildingActionTypes.get(i)
+                );
+                actionButtons.add(button);
+                button.display(canvas);
+            }
         }
+
     }
 
     private Bitmap getActionImage(AbilityType availableAction) {
@@ -234,6 +258,10 @@ public class GameField extends SurfaceView {
                 return actionDelete;
             case REMOVE_BUILDING:
                 return actionRemove;
+            case MAKE_WORKER:
+                return worker;
+            case MAKE_WARRIOR:
+                return warrior;
             default:
                 return null;
         }
@@ -268,67 +296,147 @@ public class GameField extends SurfaceView {
 
     private void drawMap(Canvas canvas) {
         canvas.drawColor(Color.BLACK);
+        readScreenSize();
+        int performanceCounter = 0;
+        int tileSize = grass.getWidth();
         for (int posX = 0; posX < gameController.getMap().length; posX++) {
             for (int posY = 0; posY < gameController.getMap()[posX].length; posY++) {
-                // draw tiles
-                float x = posX * grass.getWidth();
-                float y = posY * grass.getHeight();
-                switch (gameController.getMap()[posX][posY].terrainType) {
-                    case GRASS:
-                        canvas.drawBitmap(grass, x, y, null);
-                        break;
-                    case WATER:
-                        canvas.drawBitmap(water, x, y, null);
-                        break;
-                    case TREE:
-                        canvas.drawBitmap(grass, x, y, null);
-                        canvas.drawBitmap(tree, x, y, null);
-                        break;
-                }
-                // draw buildings
-                if(gameController.getMap()[posX][posY].building != null){
-                    switch (gameController.getMap()[posX][posY].building.getBuildingType()){
-                        case TOWN:
-                            canvas.drawBitmap(actionTown, x, y, null);
+                float x = posX * grass.getWidth() + mapOffsetX;
+                float y = posY * grass.getHeight() + mapOffsetY;
+                if (x > -tileSize && x < screenX + tileSize && y > -tileSize && y < screenY + tileSize) {
+                    // draw tiles
+                    performanceCounter++;
+                    switch (gameController.getMap()[posX][posY].terrainType) {
+                        case GRASS:
+                            canvas.drawBitmap(grass, x, y, null);
                             break;
-                        case FARM:
-                            canvas.drawBitmap(actionFarm, x, y, null);
+                        case WATER:
+                            canvas.drawBitmap(water, x, y, null);
                             break;
-                        case CAMP:
-                            canvas.drawBitmap(camp, x, y, null);
-                            break;
-                        case TRADE_POST:
-                            canvas.drawBitmap(actionTrade, x, y, null);
-                            break;
-
-                    }
-                }
-                // draw units
-                if (gameController.getMap()[posX][posY].unit != null) {
-                    switch (gameController.getMap()[posX][posY].unit.getUnitType()) {
-                        case WORKER:
-                            canvas.drawBitmap(worker, x, y, null);
-                            break;
-                        default:
+                        case TREE:
+                            canvas.drawBitmap(grass, x, y, null);
+                            canvas.drawBitmap(tree, x, y, null);
                             break;
                     }
-                }
+                    // draw buildings
+                    drawBuildings(canvas, posX, posY, x, y);
+                    // draw units
+                    drawUnits(canvas, posX, posY, x, y);
 
-                // draw features
-                if(gameController.getMap()[posX][posY].tileFeature != null){
-                    canvas.drawBitmap(getFeatureImage(gameController.getMap()[posX][posY].tileFeature.featureType),x,y,null);
+                    // draw features
+                    if (gameController.getMap()[posX][posY].tileFeature != null) {
+                        canvas.drawBitmap(getFeatureImage(gameController.getMap()[posX][posY].tileFeature.featureType), x, y, null);
+                    }
                 }
             }
         }
+        Logger.log("PERFORMANCE: redrawn " + performanceCounter + " tiles");
         if (selectedTileY != null && selectedTileX != null) {
-            float x = selectedTileX * grass.getWidth();
-            float y = selectedTileY * grass.getHeight();
+            float x = selectedTileX * grass.getWidth() + mapOffsetX;
+            float y = selectedTileY * grass.getHeight() + mapOffsetY;
             canvas.drawBitmap(selection, x, y, null);
         }
     }
 
+    @SuppressLint("NewApi")
+    private void readScreenSize() {
+        WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        try {
+            Point size = new Point();
+            display.getSize(size);
+            screenX = size.x;
+            screenY = size.y;
+        } catch (Exception e) {
+            screenX = display.getWidth();
+            screenY = display.getHeight();
+        }
+    }
+
+    private void drawUnits(Canvas canvas, int posX, int posY, float x, float y) {
+        if (gameController.getMap()[posX][posY].unit == null) return;
+        switch (gameController.getMap()[posX][posY].unit.getUnitType()) {
+            case WORKER:
+                canvas.drawBitmap(worker, x, y, null);
+                break;
+            case WARRIOR:
+                canvas.drawBitmap(warrior, x, y, null);
+                break;
+            case BARBARIAN:
+                canvas.drawBitmap(barbarian, x, y, null);
+                break;
+            case SHIP:
+                canvas.drawBitmap(ship, x, y, null);
+                break;
+            default:
+                break;
+        }
+        if (gameController.getMap()[posX][posY].unit.getOwner() != null) {
+            canvas.drawBitmap(getPlayerBanner(gameController.getMap()[posX][posY].unit.getOwner()), x, y, null);
+        }
+    }
+
+    private Bitmap getPlayerBanner(Player owner) {
+        switch (owner.banner) {
+            case 1:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.banner_1);
+            case 2:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.banner_2);
+            case 3:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.banner_3);
+            case 4:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.banner_4);
+            case 5:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.banner_5);
+            case 6:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.banner_6);
+            default:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.banner_clean);
+        }
+    }
+
+    private Bitmap getPlayerFlag(Player owner) {
+        switch (owner.banner) {
+            case 1:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.flag_1);
+            case 2:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.flag_2);
+            case 3:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.flag_3);
+            case 4:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.flag_4);
+            case 5:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.flag_5);
+            case 6:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.flag_6);
+            default:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.flag_clean);
+        }
+    }
+
+    private void drawBuildings(Canvas canvas, int posX, int posY, float x, float y) {
+        if (gameController.getMap()[posX][posY].building == null) return;
+        switch (gameController.getMap()[posX][posY].building.getBuildingType()) {
+            case TOWN:
+                canvas.drawBitmap(actionTown, x, y, null);
+                break;
+            case FARM:
+                canvas.drawBitmap(actionFarm, x, y, null);
+                break;
+            case CAMP:
+                canvas.drawBitmap(camp, x, y, null);
+                break;
+            case TRADE_POST:
+                canvas.drawBitmap(actionTrade, x, y, null);
+                break;
+        }
+        if (gameController.getMap()[posX][posY].building.getOwner() != null) {
+            canvas.drawBitmap(getPlayerFlag(gameController.getMap()[posX][posY].building.getOwner()), x, y, null);
+        }
+    }
+
     private Bitmap getFeatureImage(TileFeatureType featureType) {
-        switch (featureType){
+        switch (featureType) {
             case FEATURE_POSSIBLE_MOVE:
                 return actionMove;
             case FEATURE_POSSIBLE_ATTACK:

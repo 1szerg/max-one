@@ -9,21 +9,24 @@ import com.gmail.user0abc.max_one.util.Logger;
  */
 public class UnitsFactory {
 
-    public static Unit createUnitAtLocation(MapTile tile, Player owner, UnitType type){
+    public static Unit createUnitAtLocation(MapTile tile, Player owner, UnitType type) {
         tile.unit = createUnit(owner, type);
         tile.unit.setCurrentTile(tile);
         return tile.unit;
     }
 
-    public static Unit createUnit(Player owner, UnitType type){
-        switch (type){
+    public static Unit createUnit(Player owner, UnitType type) {
+        switch (type) {
             case WORKER:
                 Worker worker = new Worker();
                 worker.setOwner(owner);
                 worker.setActionPoints(worker.getMaxActionPoints());
                 return worker;
             case WARRIOR:
-                break;
+                Warrior warrior = new Warrior();
+                warrior.setOwner(owner);
+                warrior.setActionPoints(warrior.getMaxActionPoints());
+                return warrior;
             case BARBARIAN:
                 break;
             case SHIP:

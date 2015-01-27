@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import com.gmail.user0abc.max_one.exceptions.IllegalMove;
 import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
+import com.gmail.user0abc.max_one.handlers.TileSelectHandler;
+import com.gmail.user0abc.max_one.handlers.TileSelectReceiver;
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.Player;
+import com.gmail.user0abc.max_one.model.actions.units.Ability;
 import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
-import com.gmail.user0abc.max_one.model.actions.units.UnitAction;
 import com.gmail.user0abc.max_one.model.buildings.Building;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.units.Unit;
@@ -25,6 +27,8 @@ import java.util.List;
  */
 public class GameController extends Activity {
 
+    private static GameController currentInstance = null;
+    TileSelectHandler tileSelectHandler;
     private GameContainer game;
     private GameField gameField;
     private Player currentPlayer;
@@ -32,9 +36,14 @@ public class GameController extends Activity {
     private Building selectedBuilding;
     private MapTile selectedTile;
 
+    public static GameController getCurrentInstance() {
+        return currentInstance;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GameController.currentInstance = this;
         Intent intent = getIntent();
         game = GameStorage.getStorage().getGameContainer();
         gameField = new GameField(this);
@@ -69,9 +78,6 @@ public class GameController extends Activity {
 
     private void resetUnitActionPoints(Unit unit, MapTile mapTile) throws IllegalMove {
         unit.setActionPoints(unit.getMaxActionPoints());
-        if (unit.getCurrentAction() != null) {
-            unit.getCurrentAction().execute(game, mapTile, unit);
-        }
     }
 
     public MapTile[][] getMap() {
@@ -87,33 +93,13 @@ public class GameController extends Activity {
     }
 
     public void onTileSelect(MapTile tile) {
-        selectedTile = tile;
-        if (selectedUnit == null) { // no unit selected
-            if (tile.unit != null) { // tile has unit
-                selectedUnit = tile.unit;
-                selectedBuilding = null;
-            } else {
-                if (tile.building != null) {// there is a building
-                    selectedBuilding = tile.building;
-                }
-            }
-        } else { // unit selected
-            if (selectedUnit.equals(tile.unit)) { // same unit second click
-                if (tile.building != null) { // try building
-                    selectedUnit = null;
-                    selectedBuilding = tile.building;
-                } else { // no building - deselect
-                    selectedUnit = null;
-                }
-            } else { // not the same unit
-                if (tile.unit == null) { // no new unit to select
-                    selectedUnit = null;
-                } else { // another unit
-                    selectedUnit = tile.unit;
-                }
-            }
+        if (tileSelectHandler != null) {
+            tileSelectHandler.onTileSelect(tile);
+            tileSelectHandler = null;
         }
-
+        selectedTile = tile;
+        selectedUnit = tile.unit;
+        selectedBuilding = tile.building;
     }
 
     public void endTurn() {
@@ -127,12 +113,16 @@ public class GameController extends Activity {
     }
 
 
-    public List<AbilityType> getAvailableActions() throws NotImplementedException {
+    public List<AbilityType> getUnitActions() {
         if (selectedUnit != null) {
             return selectedUnit.allActions();
         }
-        if (selectedBuilding != null) {
-            return selectedBuilding.allActions();
+        return null;
+    }
+
+    public List<AbilityType> getBuildingActions() {
+        if (selectedUnit == null && selectedBuilding != null) {
+            return selectedBuilding.getAvailableActions();
         }
         return null;
     }
@@ -147,18 +137,22 @@ public class GameController extends Activity {
         return false;
     }
 
-    public void onActionButtonSelect(AbilityType abilityType){
+    public void onActionButtonSelect(AbilityType abilityType) {
         if (selectedUnit != null) {
-            UnitAction action = selectedUnit.getAction(abilityType);
-            try {
-                action.execute(game, selectedTile, selectedUnit);
-            } catch (IllegalMove illegalMove) {
-                GameMessages.add(selectedTile, illegalMove.getLocalizedMessage());
-            }
+            Ability action = selectedUnit.getAction(abilityType);
+            action.execute(game, selectedTile);
         }
         if (selectedBuilding != null) {
-            selectedBuilding.execute(abilityType, selectedBuilding, game);
+            selectedBuilding.execute(abilityType, selectedTile, game);
         }
-        //TODO - implement method
+    }
+
+
+    public void selectAnotherTile(TileSelectReceiver receiver) {
+        tileSelectHandler = new TileSelectHandler(receiver);
+    }
+
+    public void refreshMap() {
+        gameField.redraw();
     }
 }

@@ -1,7 +1,5 @@
 package com.gmail.user0abc.max_one.model.actions.units;
 
-import com.gmail.user0abc.max_one.R;
-
 /**
  * Created by Sergey
  * at 11/6/14 12:50 AM
@@ -15,5 +13,7 @@ public enum AbilityType {
     DELETE_UNIT,
     BUILD_TOWN,
     BUILD_FARM,
-    BUILD_POST
+    BUILD_POST,
+    MAKE_WORKER,
+    MAKE_WARRIOR
 }

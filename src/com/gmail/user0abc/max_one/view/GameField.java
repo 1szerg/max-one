@@ -1,5 +1,6 @@
 package com.gmail.user0abc.max_one.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.*;
 import android.view.*;
@@ -82,6 +83,7 @@ public class GameField extends SurfaceView {
         actionTown = BitmapFactory.decodeResource(getResources(), R.drawable.town);
         actionFarm = BitmapFactory.decodeResource(getResources(), R.drawable.farm);
         actionTrade = BitmapFactory.decodeResource(getResources(), R.drawable.trade);
+
     }
 
     public void redraw() {
@@ -190,36 +192,50 @@ public class GameField extends SurfaceView {
     }
 
     private void drawUnitInfo(Canvas canvas) {
-        List<AbilityType> availableActions = null;
-        try {
-            availableActions = gameController.getAvailableActions();
-        } catch (NotImplementedException e) {
-            return;
-        }
-        if (availableActions == null) return;
-        actionButtons = new ArrayList<>();
-        for (int i = 0; i < availableActions.size(); i++) {
-            float x = (float) 4 + i * actionPlate.getWidth();
-            float y = (float) canvas.getHeight() - 4 - actionPlate.getHeight();
-            UiButton button = new UiButton(
-                    getActionImage(availableActions.get(i)),
-                    getActionImage(availableActions.get(i)),
-                    getActionImage(availableActions.get(i)),
-                    actionPlate,
-                    x, y,
-                    availableActions.get(i)
-            );
-            try {
-                button.setEnabled(
-                        gameController.isActionAvailable(availableActions.get(i),
-                                gameController.getMap()[selectedTileX][selectedTileY])
+        if (gameController.getUnitActions() != null) {
+            List<AbilityType> availableActions = gameController.getUnitActions();
+            actionButtons = new ArrayList<>();
+            for (int i = 0; i < availableActions.size(); i++) {
+                float x = (float) 4 + i * actionPlate.getWidth();
+                float y = (float) canvas.getHeight() - 4 - actionPlate.getHeight();
+                UiButton button = new UiButton(
+                        getActionImage(availableActions.get(i)),
+                        getActionImage(availableActions.get(i)),
+                        getActionImage(availableActions.get(i)),
+                        actionPlate,
+                        x, y,
+                        availableActions.get(i)
                 );
-            } catch (NotImplementedException e) {
-                return;
+                try {
+                    button.setEnabled(
+                            gameController.isActionAvailable(availableActions.get(i),
+                                    gameController.getMap()[selectedTileX][selectedTileY])
+                    );
+                } catch (NotImplementedException e) {
+                    return;
+                }
+                actionButtons.add(button);
+                button.display(canvas);
             }
-            actionButtons.add(button);
-            button.display(canvas);
+        }else if(gameController.getBuildingActions() != null){
+            List<AbilityType> buildingActionTypes = gameController.getBuildingActions();
+            actionButtons = new ArrayList<>();
+            for(int i = 0; i < buildingActionTypes.size(); i++){
+                float x = (float) 4 + i * actionPlate.getWidth();
+                float y = (float) canvas.getHeight() - 4 - actionPlate.getHeight();
+                UiButton button = new UiButton(
+                        getActionImage(buildingActionTypes.get(i)),
+                        getActionImage(buildingActionTypes.get(i)),
+                        getActionImage(buildingActionTypes.get(i)),
+                        actionPlate,
+                        x, y,
+                        buildingActionTypes.get(i)
+                );
+                actionButtons.add(button);
+                button.display(canvas);
+            }
         }
+
     }
 
     private Bitmap getActionImage(AbilityType availableAction) {
@@ -242,6 +258,10 @@ public class GameField extends SurfaceView {
                 return actionDelete;
             case REMOVE_BUILDING:
                 return actionRemove;
+            case MAKE_WORKER:
+                return worker;
+            case MAKE_WARRIOR:
+                return warrior;
             default:
                 return null;
         }
@@ -318,6 +338,7 @@ public class GameField extends SurfaceView {
         }
     }
 
+    @SuppressLint("NewApi")
     private void readScreenSize() {
         WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();

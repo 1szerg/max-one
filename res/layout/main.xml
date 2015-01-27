@@ -7,12 +7,12 @@
     <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Hello World, MaxOne"
+            android:text="@string/hello_string"
             />
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:layout_weight="0.77">
+            android:layout_height="0dp" android:layout_weight="0.77">
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
@@ -20,7 +20,7 @@
             <Button
                     android:layout_width="240dp"
                     android:layout_height="wrap_content"
-                    android:text="+ New Game"
+                    android:text="@string/start_game_lbl"
                     android:id="@+id/button" android:layout_gravity="left|center_vertical" android:enabled="true"
                     android:onClick="newGame"/>
             <LinearLayout

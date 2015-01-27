@@ -3,7 +3,7 @@ package com.gmail.user0abc.max_one.model.units;
 import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
-import com.gmail.user0abc.max_one.model.actions.units.UnitAction;
+import com.gmail.user0abc.max_one.model.actions.units.Ability;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 import com.gmail.user0abc.max_one.util.Logger;
@@ -17,7 +17,7 @@ import java.util.List;
 public abstract class Unit implements Serializable {
     protected Player owner;
     protected MapTile currentTile;
-    protected UnitAction currentAction;
+    protected Ability currentAction;
     protected int actionPoints;
     protected int maxActionPoints;
     protected int applesCost;
@@ -46,7 +46,7 @@ public abstract class Unit implements Serializable {
 
     public abstract boolean isActionAvailable(AbilityType abilityType, MapTile tile);
 
-    public UnitAction getAction(AbilityType abilityType) {
+    public Ability getAction(AbilityType abilityType) {
         return ActionFactory.createAction(abilityType);
     }
 

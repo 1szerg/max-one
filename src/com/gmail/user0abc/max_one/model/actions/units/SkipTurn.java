@@ -8,10 +8,10 @@ import com.gmail.user0abc.max_one.model.units.Unit;
  * Created by Sergey
  * at 11/5/14 9:29 PM
  */
-public class WaitAction extends UnitAction {
+public class SkipTurn extends Ability {
 
     @Override
-    public void execute(GameContainer game, MapTile selectedTile, Unit selectedUnit) {
+    public void execute(GameContainer game, MapTile selectedTile) {
         //TODO implement method
     }
 

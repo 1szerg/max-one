@@ -10,17 +10,16 @@ import com.gmail.user0abc.max_one.model.units.Unit;
  * Created by Sergey
  * at 11/12/14 10:16 PM
  */
-public class AttackAction extends UnitAction implements TileSelectReceiver {
+public class Attack extends Ability implements TileSelectReceiver {
 
     private Unit attacker;
 
     @Override
-    public void execute(GameContainer game, MapTile selectedTile, Unit selectedUnit) {
-        if (selectedUnit == null) {
-            return;
+    public void execute(GameContainer game, MapTile selectedTile) {
+        if (selectedTile != null && selectedTile.unit != null) {
+            attacker = selectedTile.unit;
+            GameController.getCurrentInstance().selectAnotherTile(this);
         }
-        attacker = selectedUnit;
-        GameController.getCurrentInstance().selectAnotherTile(this);
     }
 
     @Override

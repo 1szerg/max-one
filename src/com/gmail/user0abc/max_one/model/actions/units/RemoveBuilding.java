@@ -8,11 +8,12 @@ import com.gmail.user0abc.max_one.model.units.Unit;
  * Created by Sergey
  * at 11/12/14 10:14 PM
  */
-public class RemoveBuildingAction extends UnitAction {
+public class RemoveBuilding extends Ability {
 
     @Override
-    public void execute(GameContainer game, MapTile selectedTile, Unit selectedUnit) {
-        if(selectedTile.building != null && selectedTile.building.getOwner().equals(selectedUnit.getOwner())){
+    public void execute(GameContainer game, MapTile selectedTile) {
+        if(selectedTile!= null && selectedTile.unit != null && selectedTile.building != null
+                && selectedTile.building.getOwner().equals(selectedTile.unit.getOwner())){
             selectedTile.building = null;
         }
     }

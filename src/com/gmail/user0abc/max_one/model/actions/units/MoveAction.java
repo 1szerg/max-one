@@ -6,26 +6,24 @@ import com.gmail.user0abc.max_one.handlers.TileSelectReceiver;
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.buildings.BuildingType;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
-import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 import com.gmail.user0abc.max_one.model.units.Unit;
 
 /**
  * Created by Sergey
  * at 11/12/14 10:18 PM
  */
-public class MoveAction extends UnitAction implements TileSelectReceiver {
+public class MoveAction extends Ability implements TileSelectReceiver {
 
     private Unit walkingUnit;
     private MapTile start, destination;
 
     @Override
-    public void execute(GameContainer game, MapTile selectedTile, Unit selectedUnit) throws IllegalMove {
-        if (selectedUnit == null) {
-            return;
+    public void execute(GameContainer game, MapTile selectedTile) {
+        if(selectedTile != null && selectedTile.unit != null){
+            start = selectedTile;
+            walkingUnit = selectedTile.unit;
+            GameController.getCurrentInstance().selectAnotherTile(this);
         }
-        start = selectedTile;
-        walkingUnit = selectedUnit;
-        GameController.getCurrentInstance().selectAnotherTile(this);
     }
 
     @Override

@@ -13,5 +13,7 @@ public enum AbilityType {
     DELETE_UNIT,
     BUILD_TOWN,
     BUILD_FARM,
-    BUILD_POST
+    BUILD_POST,
+    MAKE_WORKER,
+    MAKE_WARRIOR
 }

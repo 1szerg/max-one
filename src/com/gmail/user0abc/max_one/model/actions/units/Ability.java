@@ -11,11 +11,11 @@ import java.io.Serializable;
  * Created by Sergey
  * at 11/4/14 11:06 PM
  */
-public abstract class UnitAction implements Serializable {
+public abstract class Ability implements Serializable {
 
-    public static boolean isAvailable(GameContainer game, MapTile selectedTile, Unit selectedUnit) {
-        return false;
+    public static boolean isAvailable(GameContainer game, MapTile selectedTile) {
+        return true;
     }
 
-    public abstract void execute(GameContainer game, MapTile selectedTile, Unit selectedUnit) throws IllegalMove;
+    public abstract void execute(GameContainer game, MapTile selectedTile);
 }

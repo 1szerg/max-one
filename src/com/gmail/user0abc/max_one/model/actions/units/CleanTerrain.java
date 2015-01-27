@@ -9,11 +9,11 @@ import com.gmail.user0abc.max_one.model.units.Unit;
  * Created by Sergey
  * at 11/12/14 10:15 PM
  */
-public class CleanTerrainAction extends UnitAction {
+public class CleanTerrain extends Ability {
 
     @Override
-    public void execute(GameContainer game, MapTile selectedTile, Unit selectedUnit) {
-        if(selectedTile.terrainType.equals(TerrainType.TREE)){
+    public void execute(GameContainer game, MapTile selectedTile) {
+        if(selectedTile != null && selectedTile.unit != null && selectedTile.terrainType.equals(TerrainType.TREE)){
             selectedTile.terrainType = TerrainType.GRASS;
         }
     }

@@ -10,7 +10,7 @@ import com.gmail.user0abc.max_one.handlers.TileSelectReceiver;
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
-import com.gmail.user0abc.max_one.model.actions.units.UnitAction;
+import com.gmail.user0abc.max_one.model.actions.units.Ability;
 import com.gmail.user0abc.max_one.model.buildings.Building;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.units.Unit;
@@ -113,12 +113,16 @@ public class GameController extends Activity {
     }
 
 
-    public List<AbilityType> getAvailableActions() throws NotImplementedException {
+    public List<AbilityType> getUnitActions() {
         if (selectedUnit != null) {
             return selectedUnit.allActions();
         }
-        if (selectedBuilding != null) {
-            return selectedBuilding.allActions();
+        return null;
+    }
+
+    public List<AbilityType> getBuildingActions() {
+        if (selectedUnit == null && selectedBuilding != null) {
+            return selectedBuilding.getAvailableActions();
         }
         return null;
     }
@@ -135,17 +139,12 @@ public class GameController extends Activity {
 
     public void onActionButtonSelect(AbilityType abilityType) {
         if (selectedUnit != null) {
-            UnitAction action = selectedUnit.getAction(abilityType);
-            try {
-                action.execute(game, selectedTile, selectedUnit);
-            } catch (IllegalMove illegalMove) {
-                GameMessages.add(selectedTile, illegalMove.getLocalizedMessage());
-            }
+            Ability action = selectedUnit.getAction(abilityType);
+            action.execute(game, selectedTile);
         }
         if (selectedBuilding != null) {
-            selectedBuilding.execute(abilityType, selectedBuilding, game);
+            selectedBuilding.execute(abilityType, selectedTile, game);
         }
-        //TODO - implement method
     }
 
 

@@ -7,14 +7,16 @@ import com.gmail.user0abc.max_one.exceptions.IllegalMove;
 import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
 import com.gmail.user0abc.max_one.handlers.TileSelectHandler;
 import com.gmail.user0abc.max_one.handlers.TileSelectReceiver;
+import com.gmail.user0abc.max_one.model.Calculations;
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.Player;
-import com.gmail.user0abc.max_one.model.actions.units.Ability;
-import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.Ability;
+import com.gmail.user0abc.max_one.model.actions.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.EndTurn;
+import com.gmail.user0abc.max_one.model.ai.AiTurn;
 import com.gmail.user0abc.max_one.model.buildings.Building;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.units.Unit;
-import com.gmail.user0abc.max_one.util.GameMessages;
 import com.gmail.user0abc.max_one.util.GameStorage;
 import com.gmail.user0abc.max_one.util.Logger;
 import com.gmail.user0abc.max_one.view.GameField;
@@ -58,22 +60,9 @@ public class GameController extends Activity {
     }
 
     private void calculateMap() {
-        int applesBalance = 0;
-        int goldBalance = 0;
-        for (int x = 0; x < getMap().length; x++) {
-            for (int y = 0; y < getMap()[0].length; y++) {
-                if (getMap()[x][y].unit != null && getMap()[x][y].unit.getOwner().equals(currentPlayer)) {
-                    try {
-                        resetUnitActionPoints(getMap()[x][y].unit, getMap()[x][y]);
-                    } catch (IllegalMove illegalMove) {
-                        GameMessages.add(getMap()[x][y], illegalMove.getLocalizedMessage());
-                    }
-                    applesBalance -= getMap()[x][y].unit.getApplesCost();
-                    goldBalance -= getMap()[x][y].unit.getGoldCost();
-                }
-            }
-        }
-        Logger.log("INFO: Balance Apples " + applesBalance + " Gold " + goldBalance);
+        currentPlayer.setApples(Calculations.calculatePlayerFood(game, currentPlayer));
+        currentPlayer.setGold(Calculations.calculatePlayerGold(game, currentPlayer));
+        Logger.log("INFO: Balance Apples " + currentPlayer.getApples() + " Gold " + currentPlayer.getGold());
     }
 
     private void resetUnitActionPoints(Unit unit, MapTile mapTile) throws IllegalMove {
@@ -85,11 +74,11 @@ public class GameController extends Activity {
     }
 
     public int getApples() {
-        return 5;
+        return currentPlayer.getApples();
     }
 
     public int getGold() {
-        return 5;
+        return currentPlayer.getGold();
     }
 
     public void onTileSelect(MapTile tile) {
@@ -101,17 +90,6 @@ public class GameController extends Activity {
         selectedUnit = tile.unit;
         selectedBuilding = tile.building;
     }
-
-    public void endTurn() {
-        int nextPlayerIndex = game.players.indexOf(currentPlayer) + 1;
-        if (nextPlayerIndex < game.players.size()) {
-            currentPlayer = game.players.get(nextPlayerIndex);
-        } else {
-            game.players.get(0);
-            game.turnsCount++;
-        }
-    }
-
 
     public List<AbilityType> getUnitActions() {
         if (selectedUnit != null) {
@@ -138,13 +116,21 @@ public class GameController extends Activity {
     }
 
     public void onActionButtonSelect(AbilityType abilityType) {
-        if (selectedUnit != null) {
+        if(abilityType.equals(AbilityType.END_TURN)){
+            new EndTurn().execute(game, null);
+            while(game.currentPlayer.ai){
+                AiTurn.executeAiTurn(game, game.currentPlayer);
+                new EndTurn().execute(game,null);
+            }
+        }else if (selectedUnit != null) {
             Ability action = selectedUnit.getAction(abilityType);
             action.execute(game, selectedTile);
+
         }
         if (selectedBuilding != null) {
             selectedBuilding.execute(abilityType, selectedTile, game);
         }
+        calculateMap();
     }
 
 

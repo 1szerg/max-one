@@ -1,4 +1,4 @@
-package com.gmail.user0abc.max_one.model.actions.units;
+package com.gmail.user0abc.max_one.model.actions;
 
 /**
  * Created by Sergey
@@ -15,5 +15,6 @@ public enum AbilityType {
     BUILD_FARM,
     BUILD_POST,
     MAKE_WORKER,
-    MAKE_WARRIOR
+    MAKE_WARRIOR,
+    END_TURN
 }

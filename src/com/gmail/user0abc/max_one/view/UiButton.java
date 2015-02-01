@@ -2,7 +2,7 @@ package com.gmail.user0abc.max_one.view;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.AbilityType;
 
 /**
  * Created by Sergey

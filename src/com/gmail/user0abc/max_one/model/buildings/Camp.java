@@ -1,6 +1,6 @@
 package com.gmail.user0abc.max_one.model.buildings;
 
-import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.AbilityType;
 
 import java.util.ArrayList;
 import java.util.List;

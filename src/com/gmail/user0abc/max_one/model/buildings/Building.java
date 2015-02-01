@@ -3,7 +3,7 @@ package com.gmail.user0abc.max_one.model.buildings;
 import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.Player;
-import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.util.Logger;
@@ -64,5 +64,13 @@ public abstract class Building implements Serializable {
         health -= attackStrength / defence;
         Logger.log("ATTACK: " + this + " Health left " + Double.toString(health));
         return health > 0;
+    }
+
+    public int getApplesProduction(){
+        return 0;
+    };
+
+    public int getGoldProduction() {
+        return 0;
     }
 }

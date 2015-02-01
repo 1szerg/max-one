@@ -1,6 +1,6 @@
 package com.gmail.user0abc.max_one.model.buildings;
 
-import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.AbilityType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,5 +20,10 @@ public class Farm extends Building {
     @Override
     public List<AbilityType> getAvailableActions() {
         return new ArrayList<>();
+    }
+
+    @Override
+    public int getApplesProduction() {
+        return 1;
     }
 }

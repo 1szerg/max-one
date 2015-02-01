@@ -1,7 +1,7 @@
 package com.gmail.user0abc.max_one.model.actions.buildings;
 
 import com.gmail.user0abc.max_one.model.GameContainer;
-import com.gmail.user0abc.max_one.model.actions.units.Ability;
+import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.buildings.BuildingType;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.units.UnitType;
@@ -13,7 +13,8 @@ public class MakeWorker extends Ability {
     @Override
     public void execute(GameContainer game, MapTile selectedTile) {
         if (selectedTile != null && selectedTile.building != null && selectedTile.unit == null
-                && selectedTile.building.getBuildingType().equals(BuildingType.TOWN)) {
+                && selectedTile.building.getBuildingType().equals(BuildingType.TOWN)
+                && selectedTile.building.getOwner().getApples() >= 1) {
             selectedTile.unit = UnitsFactory.createUnitAtLocation(selectedTile, selectedTile.building.getOwner(), UnitType.WORKER);
         }
     }

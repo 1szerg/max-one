@@ -1,6 +1,6 @@
 package com.gmail.user0abc.max_one.model.buildings;
 
-import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.AbilityType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,5 +21,15 @@ public class Town extends Building {
     @Override
     public List<AbilityType> getAvailableActions() {
         return Arrays.asList(AbilityType.MAKE_WORKER, AbilityType.MAKE_WARRIOR);
+    }
+
+    @Override
+    public int getApplesProduction() {
+        return 1;
+    }
+
+    @Override
+    public int getGoldProduction() {
+        return 1;
     }
 }

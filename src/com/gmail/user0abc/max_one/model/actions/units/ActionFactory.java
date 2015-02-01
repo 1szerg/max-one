@@ -1,5 +1,7 @@
 package com.gmail.user0abc.max_one.model.actions.units;
 
+import com.gmail.user0abc.max_one.model.actions.Ability;
+import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.buildings.MakeWarrior;
 import com.gmail.user0abc.max_one.model.actions.buildings.MakeWorker;
 import com.gmail.user0abc.max_one.util.Logger;

@@ -1,4 +1,4 @@
-package com.gmail.user0abc.max_one.model.actions.units;
+package com.gmail.user0abc.max_one.model.actions;
 
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;

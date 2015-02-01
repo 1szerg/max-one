@@ -11,9 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by sergii.ivanov on 10/24/2014.
- */
+/*Created by sergii.ivanov on 10/24/2014.*/
 public class MapGenerator {
     public static Random random = new Random();
     public static int seed = 0;
@@ -70,13 +68,9 @@ public class MapGenerator {
 
     public static List<Player> getSinglePlayer() {
         List<Player> players = new ArrayList<Player>();
-        Player player1 = new Player();
-        player1.ai = false;
-        player1.banner = 1;
+        Player player1 = new Player(false, 1);
         players.add(player1);
-        Player player2 = new Player();
-        player2.ai = true;
-        player2.banner = 2;
+        Player player2 = new Player(true, 2);
         players.add(player2);
         return players;
     }

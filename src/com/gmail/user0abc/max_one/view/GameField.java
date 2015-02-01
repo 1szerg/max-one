@@ -10,11 +10,12 @@ import com.gmail.user0abc.max_one.events.GameEvent;
 import com.gmail.user0abc.max_one.events.GameEventBus;
 import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
 import com.gmail.user0abc.max_one.model.Player;
-import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.terrain.TileFeatureType;
 import com.gmail.user0abc.max_one.util.Logger;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -175,6 +176,7 @@ public class GameField extends SurfaceView {
 
     @Override
     public void draw(Canvas canvas) {
+        long pTimer = new Date().getTime();
         //canvas.translate(mapOffsetX, mapOffsetY);
         drawMap(canvas);
         drawInfo(canvas);
@@ -183,11 +185,14 @@ public class GameField extends SurfaceView {
         fixOffset();
         //canvas.save();
         //canvas.restore();
+        Logger.log("PERFORMANCE: Redraw time = " + (new Date().getTime() - pTimer));
     }
 
     private void drawEndTurn(Canvas canvas) {
         float x = canvas.getWidth() - 4 - endTurn.getWidth();
         float y = canvas.getHeight() - 4 - endTurn.getHeight();
+        UiButton endTurnButton = new UiButton(endTurn, endTurn, endTurn, endTurn, x, y, AbilityType.END_TURN);
+        actionButtons.add(endTurnButton);
         canvas.drawBitmap(endTurn, x, y, null);
     }
 

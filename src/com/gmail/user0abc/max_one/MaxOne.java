@@ -30,7 +30,7 @@ public class MaxOne extends Activity {
         GameContainer game = new GameContainer();
         game.seed = seed;
         MapGenerator.setSeed(seed);
-        game.map = MapGenerator.generateTerrain(40, 40);
+        game.map = MapGenerator.generateTerrain(10, 10);
         game.players = MapGenerator.getSinglePlayer();
         MapGenerator.placeStartPositions(game.players, game.seed, game.map);
         GameStorage.getStorage().setGameContainer(game);

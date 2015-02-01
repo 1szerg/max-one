@@ -1,5 +1,6 @@
 package com.gmail.user0abc.max_one.model.units;
 
+import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
@@ -30,6 +31,14 @@ public class Warrior extends Unit {
         abilities.add(AbilityType.ATTACK_TILE);
         abilities.add(AbilityType.DELETE_UNIT);
         return abilities;
+    }
+
+    @Override
+    public Ability getAction(AbilityType abilityType) {
+        if(owner.getGold() < 1){
+            return null;
+        }
+        return super.getAction(abilityType);
     }
 
     @Override

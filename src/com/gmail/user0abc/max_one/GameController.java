@@ -124,8 +124,9 @@ public class GameController extends Activity {
             }
         }else if (selectedUnit != null) {
             Ability action = selectedUnit.getAction(abilityType);
-            action.execute(game, selectedTile);
-
+            if(action != null) {
+                action.execute(game, selectedTile);
+            }
         }
         if (selectedBuilding != null) {
             selectedBuilding.execute(abilityType, selectedTile, game);

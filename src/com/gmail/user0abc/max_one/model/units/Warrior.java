@@ -35,7 +35,7 @@ public class Warrior extends Unit {
 
     @Override
     public Ability getAction(AbilityType abilityType) {
-        if(owner.getGold() < 1){
+        if (owner.getGold() < 1) {
             return null;
         }
         return super.getAction(abilityType);

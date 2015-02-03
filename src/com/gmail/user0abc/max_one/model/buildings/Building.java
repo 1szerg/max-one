@@ -66,9 +66,11 @@ public abstract class Building implements Serializable {
         return health > 0;
     }
 
-    public int getApplesProduction(){
+    public int getApplesProduction() {
         return 0;
-    };
+    }
+
+    ;
 
     public int getGoldProduction() {
         return 0;

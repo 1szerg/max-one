@@ -9,7 +9,8 @@ public class Player implements Serializable {
     private int gold;
     public int banner;
 
-    public Player(){}
+    public Player() {
+    }
 
     public Player(boolean isAiPlayer, int playersBanner) {
         ai = isAiPlayer;

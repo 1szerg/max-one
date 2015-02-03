@@ -6,7 +6,9 @@ import com.gmail.user0abc.max_one.model.Player;
 
 public class AiTurn {
 
-    public static void executeAiTurn(GameContainer game, Player player){
+    public static void executeAiTurn(GameContainer game, Player player) {
         //TODO
-    };
+    }
+
+    ;
 }

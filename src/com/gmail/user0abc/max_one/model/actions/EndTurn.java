@@ -8,7 +8,11 @@ public class EndTurn extends Ability {
     @Override
     public void execute(GameContainer game, MapTile selectedTile) {
         int nextPlayerIndex = game.players.indexOf(game.currentPlayer) + 1;
-        nextPlayerIndex = nextPlayerIndex >= game.players.size() ? 0 : nextPlayerIndex;
+        if(nextPlayerIndex >= game.players.size()){
+            nextPlayerIndex =  0;
+            game.turnsCount++;
+        }
+
         game.currentPlayer = game.players.get(nextPlayerIndex);
         game.currentPlayer.setGold(Calculations.calculatePlayerGold(game, game.currentPlayer));
         game.currentPlayer.setApples(Calculations.calculatePlayerFood(game, game.currentPlayer));

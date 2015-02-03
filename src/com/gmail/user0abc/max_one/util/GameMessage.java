@@ -10,6 +10,7 @@ public class GameMessage {
     private String message;
     private MapTile tile;
     private MessageType type;
+
     public GameMessage(MessageType messageType, MapTile tile, String message) {
         this.message = message;
         this.tile = tile;

@@ -51,10 +51,10 @@ public class GameController extends Activity {
         gameField = new GameField(this);
         setContentView(gameField);
         currentPlayer = game.players.get(0);
-        startTurn();
+        startGame();
     }
 
-    public void startTurn() {
+    public void startGame() {
         game.currentPlayer = currentPlayer;
         calculateMap();
     }
@@ -87,8 +87,16 @@ public class GameController extends Activity {
             tileSelectHandler = null;
         }
         selectedTile = tile;
-        selectedUnit = tile.unit;
-        selectedBuilding = tile.building;
+        if(tile.unit != null && tile.unit.getOwner().equals(currentPlayer)){
+            selectedUnit = tile.unit;
+        }else{
+            selectedUnit = null;
+        }
+        if(selectedTile.building != null && selectedTile.building.getOwner().equals(currentPlayer)){
+            selectedBuilding = tile.building;
+        }else{
+            selectedBuilding = null;
+        }
     }
 
     public List<AbilityType> getUnitActions() {
@@ -116,15 +124,15 @@ public class GameController extends Activity {
     }
 
     public void onActionButtonSelect(AbilityType abilityType) {
-        if(abilityType.equals(AbilityType.END_TURN)){
+        if (abilityType.equals(AbilityType.END_TURN)) {
             new EndTurn().execute(game, null);
-            while(game.currentPlayer.ai){
+            while (game.currentPlayer.ai) {
                 AiTurn.executeAiTurn(game, game.currentPlayer);
-                new EndTurn().execute(game,null);
+                new EndTurn().execute(game, null);
             }
-        }else if (selectedUnit != null) {
+        } else if (selectedUnit != null) {
             Ability action = selectedUnit.getAction(abilityType);
-            if(action != null) {
+            if (action != null) {
                 action.execute(game, selectedTile);
             }
         }
@@ -132,6 +140,7 @@ public class GameController extends Activity {
             selectedBuilding.execute(abilityType, selectedTile, game);
         }
         calculateMap();
+        refreshMap();
     }
 
 
@@ -140,6 +149,8 @@ public class GameController extends Activity {
     }
 
     public void refreshMap() {
+        setTitle("Max Game (Turn "+game.turnsCount+")");
+        Logger.log("Max Game (Turn "+game.turnsCount+")");
         gameField.redraw();
     }
 }

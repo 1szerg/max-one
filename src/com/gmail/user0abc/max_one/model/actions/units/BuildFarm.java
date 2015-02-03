@@ -18,10 +18,6 @@ public class BuildFarm extends Ability {
 
     /**
      * Creates a new Farm on selectedTile made by selectedUnit (defines an owner of new Farm)
-     *
-     * @param game
-     * @param selectedTile
-     * @throws IllegalMove
      */
     @Override
     public void execute(GameContainer game, MapTile selectedTile) {

@@ -25,11 +25,6 @@ public abstract class Building implements Serializable {
 
     /**
      * Calculates if building could execute the action given at the moment
-     *
-     * @param abilityType
-     * @param tile
-     * @return
-     * @throws NotImplementedException
      */
     public static boolean isActionAvailable(AbilityType abilityType, MapTile tile) throws NotImplementedException {
         throw new NotImplementedException("Method is not implemented");

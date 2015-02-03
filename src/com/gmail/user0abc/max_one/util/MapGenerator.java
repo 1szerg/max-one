@@ -67,7 +67,7 @@ public class MapGenerator {
     }
 
     public static List<Player> getSinglePlayer() {
-        List<Player> players = new ArrayList<Player>();
+        List<Player> players = new ArrayList<>();
         Player player1 = new Player(false, 1);
         players.add(player1);
         Player player2 = new Player(true, 2);
@@ -91,8 +91,6 @@ public class MapGenerator {
         if (tile.terrainType.equals(TerrainType.GRASS)) {
             if (random.nextInt(100) < 10) {
                 tile.terrainType = TerrainType.TREE;
-            } else {
-
             }
         }
         return tile;

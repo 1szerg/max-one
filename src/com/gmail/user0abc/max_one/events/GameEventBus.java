@@ -11,7 +11,7 @@ import java.util.Set;
  */
 public class GameEventBus {
     private static GameEventBus bus = new GameEventBus();
-    private Map<GameEventType, Set<GameEventsSubscriber>> subscribers = new HashMap<GameEventType, Set<GameEventsSubscriber>>();
+    private Map<GameEventType, Set<GameEventsSubscriber>> subscribers = new HashMap<>();
 
     public static GameEventBus getBus() {
         return bus;

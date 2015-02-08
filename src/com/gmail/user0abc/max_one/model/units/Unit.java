@@ -1,8 +1,10 @@
 package com.gmail.user0abc.max_one.model.units;
 
+import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.ActionStatus;
 import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
@@ -47,6 +49,9 @@ public abstract class Unit implements Serializable {
     public abstract boolean isActionAvailable(AbilityType abilityType, MapTile tile);
 
     public Ability getAction(AbilityType abilityType) {
+        if(currentAction != null && currentAction.getType().equals(abilityType)){
+            return currentAction;
+        }
         return ActionFactory.createAction(abilityType);
     }
 
@@ -84,5 +89,37 @@ public abstract class Unit implements Serializable {
         health -= receivedAttackStrength / defence;
         Logger.log("ATTACK: " + this + " Health left " + Double.toString(health));
         return health > 0;
+    }
+
+    public void takeActionPoints(int workDone) {
+        actionPoints = Math.max(actionPoints - workDone, 0);
+    }
+
+    public Ability getCurrentAction() {
+        return currentAction;
+    }
+
+    public void setCurrentAction(Ability currentAction) {
+        this.currentAction = currentAction;
+    }
+
+    public void onTurnStart(){
+        if(currentAction != null){
+            if(currentAction.execute()){
+                currentAction = null;
+            }
+        }
+    };
+
+    public abstract void executeAction(AbilityType abilityType, GameContainer game, MapTile tile);
+
+    public ActionStatus getActionStatus(AbilityType abilityType) {
+        if(currentAction == null && ActionFactory.isActionAvailable(abilityType)){
+            return ActionStatus.AVAILABLE;
+        }
+        if(currentAction != null && currentAction.getType().equals(abilityType)){
+            return ActionStatus.ACTIVE;
+        }
+        return ActionStatus.DISABLED;
     }
 }

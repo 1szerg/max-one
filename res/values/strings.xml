@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MaxOne</string>
+    <string name="app_name" translatable="false">MaxOne</string>
     <string name="title_activity_game_controller">GameController</string>
     <string name="start_game_lbl">+ New Game</string>
     <string name="hello_string">Hello World, MaxOne</string>

@@ -11,9 +11,23 @@ import java.io.Serializable;
  */
 public abstract class Ability implements Serializable {
 
-    public static boolean isAvailable(GameContainer game, MapTile selectedTile) {
+    /**
+     * Starts/continues action
+     * @param game
+     * @param selectedTile
+     * @return true when action is finished and false when it is not
+     */
+    public abstract boolean execute(GameContainer game, MapTile selectedTile);
+
+    /**
+     * continues action
+     * @return true when action is finished and false when it is not
+     */
+    public boolean execute() {
         return true;
     }
 
-    public abstract void execute(GameContainer game, MapTile selectedTile);
+    public void cancel(){}
+
+    public abstract AbilityType getType();
 }

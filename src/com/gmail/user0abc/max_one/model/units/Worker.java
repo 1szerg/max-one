@@ -1,6 +1,9 @@
 package com.gmail.user0abc.max_one.model.units;
 
+import com.gmail.user0abc.max_one.model.GameContainer;
+import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 
@@ -66,6 +69,18 @@ public class Worker extends Unit {
     @Override
     public List<TerrainType> getPassableTerrain() {
         return Arrays.asList(TerrainType.GRASS, TerrainType.TREE);
+    }
+
+    @Override
+    public void executeAction(AbilityType abilityType, GameContainer game, MapTile tile) {
+        if(currentAction != null && currentAction.getType().equals(abilityType)){
+            currentAction.cancel();
+            // todo avoid action cancel when same action selected
+        }
+        currentAction = ActionFactory.createAction(abilityType);
+        if(currentAction != null){
+            currentAction.execute(game, tile);
+        }
     }
 
 

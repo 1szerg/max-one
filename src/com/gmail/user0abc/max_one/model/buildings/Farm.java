@@ -26,4 +26,5 @@ public class Farm extends Building {
     public int getApplesProduction() {
         return 1;
     }
+
 }

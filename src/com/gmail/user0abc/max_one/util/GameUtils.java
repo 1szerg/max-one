@@ -11,4 +11,12 @@ public class GameUtils {
     public static Map<String, Object> generateEventDetails() {
         return new HashMap<>();
     }
+
+    public static void sleep(long delayMs) {
+        try {
+            Thread.sleep(delayMs);
+        } catch (InterruptedException e) {
+            Logger.log("Interrupted with "+e.getLocalizedMessage());
+        }
+    }
 }

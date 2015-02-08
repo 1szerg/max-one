@@ -2,6 +2,7 @@ package com.gmail.user0abc.max_one.util;
 
 import android.graphics.Color;
 import com.gmail.user0abc.max_one.model.Player;
+import com.gmail.user0abc.max_one.model.ai.BasicAiProcessor;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 import com.gmail.user0abc.max_one.model.units.UnitType;
@@ -71,6 +72,7 @@ public class MapGenerator {
         Player player1 = new Player(false, 1);
         players.add(player1);
         Player player2 = new Player(true, 2);
+        player2.aiProcessor = new BasicAiProcessor();
         players.add(player2);
         return players;
     }

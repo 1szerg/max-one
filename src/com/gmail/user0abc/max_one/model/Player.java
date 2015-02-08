@@ -2,12 +2,13 @@ package com.gmail.user0abc.max_one.model;
 
 import java.io.Serializable;
 
-/*Created by sergii.ivanov on 10/24/2014.*/
+/*Created by Sergey on 10/24/2014.*/
 public class Player implements Serializable {
     public boolean ai;
     private int apples;
     private int gold;
     public int banner;
+    public AiProcessor aiProcessor;
 
     public Player() {
     }

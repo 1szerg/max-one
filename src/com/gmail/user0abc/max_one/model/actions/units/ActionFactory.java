@@ -31,7 +31,7 @@ public class ActionFactory {
             case MOVE_ACTION:
                 return new MoveAction();
             case WAIT_ACTION:
-                return new SkipTurn();
+                return new WaitAction();
             case MAKE_WORKER:
                 return new MakeWorker();
             case MAKE_WARRIOR:
@@ -40,6 +40,10 @@ public class ActionFactory {
                 Logger.log("TODO : action " + abilityType + " not implemented in ActionFactory");
                 return null;
         }
+    }
+
+    public static boolean isActionAvailable(AbilityType type){
+        return true;
     }
 
 }

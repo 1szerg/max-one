@@ -1,5 +1,6 @@
 package com.gmail.user0abc.max_one.model.units;
 
+import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
@@ -54,5 +55,10 @@ public class Warrior extends Unit {
     @Override
     public List<TerrainType> getPassableTerrain() {
         return Arrays.asList(TerrainType.GRASS, TerrainType.TREE);
+    }
+
+    @Override
+    public void executeAction(AbilityType abilityType, GameContainer game, MapTile tile) {
+
     }
 }

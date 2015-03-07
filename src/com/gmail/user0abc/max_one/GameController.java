@@ -2,12 +2,12 @@ package com.gmail.user0abc.max_one;
 
 import android.app.Activity;
 import android.os.Bundle;
-import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
 import com.gmail.user0abc.max_one.handlers.TileSelectHandler;
 import com.gmail.user0abc.max_one.handlers.TileSelectReceiver;
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.TurnProcessor;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.ActionButton;
 import com.gmail.user0abc.max_one.model.actions.ActionStatus;
 import com.gmail.user0abc.max_one.model.buildings.Building;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
@@ -16,6 +16,7 @@ import com.gmail.user0abc.max_one.util.GameStorage;
 import com.gmail.user0abc.max_one.util.Logger;
 import com.gmail.user0abc.max_one.view.GameField;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +33,8 @@ public class GameController extends Activity {
     private Building selectedBuilding;
     private MapTile selectedTile;
     private TurnProcessor turnProcessor;
+    private List<ActionButton> currentActionButtons = new ArrayList<>();
+    private boolean isEndTurnEnabled = false;
 
     public static GameController getCurrentInstance() {
         return currentInstance;
@@ -63,6 +66,7 @@ public class GameController extends Activity {
 
 
     private void onStartTurn(){
+        gameField.clearCommands();
         turnProcessor.onStart();
         if(game.currentPlayer.ai){
             Logger.log("Ai move processing for player "+game.players.indexOf(game.currentPlayer));
@@ -70,6 +74,7 @@ public class GameController extends Activity {
             turnProcessor.onFinish();
             onStartTurn();
         }
+        isEndTurnEnabled = true;
     }
 
     public void onTileSelect(MapTile tile) {
@@ -80,28 +85,41 @@ public class GameController extends Activity {
         selectedTile = tile;
         if(tile.unit != null && tile.unit.getOwner().equals(game.currentPlayer)){
             selectedUnit = tile.unit;
+            currentActionButtons = getActionButtons(selectedUnit);
+            selectedBuilding = null;
+        }else if(selectedTile.building != null && selectedTile.building.getOwner().equals(game.currentPlayer)){
+            selectedBuilding = tile.building;
+            currentActionButtons = getActionButtons(selectedBuilding);
+            selectedUnit = null;
         }else{
             selectedUnit = null;
-        }
-        if(selectedTile.building != null && selectedTile.building.getOwner().equals(game.currentPlayer)){
-            selectedBuilding = tile.building;
-        }else{
             selectedBuilding = null;
+            currentActionButtons.clear();
         }
     }
 
-    public List<AbilityType> getUnitActions() {
-        if (selectedUnit != null) {
-            return selectedUnit.allActions();
+    private List<ActionButton> getActionButtons(Building building) {
+        List<ActionButton> buttons = new ArrayList<>();
+        if(building != null){
+            for(AbilityType abilityType : building.getAvailableActions()){
+                buttons.add(new ActionButton(abilityType, building.isAbilityAvailable(abilityType), building.isActiveAction(abilityType)));
+            }
         }
-        return null;
+        return buttons;
     }
 
-    public List<AbilityType> getBuildingActions() {
-        if (selectedUnit == null && selectedBuilding != null) {
-            return selectedBuilding.getAvailableActions();
+    private List<ActionButton> getActionButtons(Unit unit) {
+        List<ActionButton> buttons = new ArrayList<>();
+        if(unit != null){
+            for(AbilityType abilityType : unit.getAvailableActions()){
+                buttons.add(new ActionButton(abilityType, unit.isAbilityAvailable(abilityType), unit.isActiveAction(abilityType)));
+            }
         }
-        return null;
+        return buttons;
+    }
+
+    public List<ActionButton> getCurrentActionButtons(){
+        return currentActionButtons;
     }
 
     public boolean isActionAvailable(AbilityType abilityType, MapTile tile) {
@@ -112,8 +130,9 @@ public class GameController extends Activity {
     }
 
     public void onActionButtonSelect(AbilityType abilityType) {
-        if (abilityType.equals(AbilityType.END_TURN)) {
+        if (abilityType.equals(AbilityType.END_TURN) && isEndTurnEnabled) {
             if(turnProcessor.onFinish()){
+                isEndTurnEnabled = false;
                 onStartTurn();
             }
         } else if (selectedUnit != null) {

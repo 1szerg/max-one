@@ -35,4 +35,11 @@ public class Player implements Serializable {
     public void setGold(int gold) {
         this.gold = Math.max(0, gold);
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Player");
+        sb.append(" ").append(banner);
+        return sb.toString();
+    }
 }

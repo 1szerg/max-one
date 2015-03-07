@@ -8,11 +8,9 @@ import com.gmail.user0abc.max_one.GameController;
 import com.gmail.user0abc.max_one.R;
 import com.gmail.user0abc.max_one.events.GameEvent;
 import com.gmail.user0abc.max_one.events.GameEventBus;
-import com.gmail.user0abc.max_one.exceptions.NotImplementedException;
 import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
-import com.gmail.user0abc.max_one.model.actions.ActionStatus;
-import com.gmail.user0abc.max_one.model.buildings.Building;
+import com.gmail.user0abc.max_one.model.actions.ActionButton;
 import com.gmail.user0abc.max_one.model.buildings.BuildingType;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TileFeatureType;
@@ -36,7 +34,7 @@ public class GameField extends SurfaceView {
     private Bitmap endTurn, actionPlate, actionMove, actionWait, actionRemove, actionClean, actionAttack,
             actionDelete, actionTown, actionFarm, actionTrade;
     private GameController gameController;
-    private List<UiButton> actionButtons = new ArrayList<>();
+    private List<UiButton> uiButtons = new ArrayList<>();
     private int screenX, screenY;
 
     public GameField(Context context) {
@@ -131,8 +129,8 @@ public class GameField extends SurfaceView {
         if (recordedEvents.size() > 3) return;
         UiButton button = getPressedButton(event.getX(), event.getY());
         if (button != null) {
-
             gameController.onActionButtonSelect(button.getAbilityType());
+            clearCommands();
             redraw();
         } else {
             // then select the tile
@@ -149,7 +147,7 @@ public class GameField extends SurfaceView {
     }
 
     private UiButton getPressedButton(float x, float y) {
-        for (UiButton button : actionButtons) {
+        for (UiButton button : uiButtons) {
             if (button.isHit(x, y)) return button;
         }
         return null;
@@ -196,47 +194,31 @@ public class GameField extends SurfaceView {
         float x = canvas.getWidth() - 4 - endTurn.getWidth();
         float y = canvas.getHeight() - 4 - endTurn.getHeight();
         UiButton endTurnButton = new UiButton(endTurn, endTurn, x, y, AbilityType.END_TURN);
-        actionButtons.add(endTurnButton);
+        uiButtons.add(endTurnButton);
         canvas.drawBitmap(endTurn, x, y, null);
     }
 
     private void drawUnitInfo(Canvas canvas) {
-        if (gameController.getUnitActions() != null) {
-            List<AbilityType> availableActions = gameController.getUnitActions();
-            actionButtons = new ArrayList<>();
-            for (int i = 0; i < availableActions.size(); i++) {
+        List<ActionButton> buttons = gameController.getCurrentActionButtons();
+        if(buttons != null && buttons.size() > 0){
+            uiButtons = new ArrayList<>(buttons.size());
+            for(int i = 0; i < buttons.size(); i++){
                 float x = (float) 4 + i * actionPlate.getWidth();
                 float y = (float) canvas.getHeight() - 4 - actionPlate.getHeight();
                 UiButton button = new UiButton(
-                        getActionImage(availableActions.get(i)),
-                        getActionPlate(gameController.getActionStatus(availableActions.get(i))),
-                        x, y,
-                        availableActions.get(i)
-                );
-                actionButtons.add(button);
-                button.display(canvas);
-            }
-        } else if (gameController.getBuildingActions() != null) {
-            List<AbilityType> buildingActionTypes = gameController.getBuildingActions();
-            actionButtons = new ArrayList<>();
-            for (int i = 0; i < buildingActionTypes.size(); i++) {
-                float x = (float) 4 + i * actionPlate.getWidth();
-                float y = (float) canvas.getHeight() - 4 - actionPlate.getHeight();
-                UiButton button = new UiButton(
-                        getActionImage(buildingActionTypes.get(i)),
-                        getActionPlate(gameController.getActionStatus(buildingActionTypes.get(i))),
-                        x, y,
-                        buildingActionTypes.get(i)
-                );
-                actionButtons.add(button);
+                        getActionImage(buttons.get(i)),
+                        getActionPlate(buttons.get(i)),
+                        x, y, buttons.get(i).getAbilityType());
+                uiButtons.add(button);
                 button.display(canvas);
             }
         }
-
     }
 
-    private Bitmap getActionImage(AbilityType availableAction) {
-        switch (availableAction) {
+
+
+    private Bitmap getActionImage(ActionButton actionButton) {
+        switch (actionButton.getAbilityType()) {
             case MOVE_ACTION:
                 return actionMove;
             case WAIT_ACTION:
@@ -460,12 +442,14 @@ public class GameField extends SurfaceView {
         }
     }
 
-    public Bitmap getActionPlate(ActionStatus actionStatus) {
-        switch (actionStatus){
-            case AVAILABLE: return BitmapFactory.decodeResource(getResources(), R.drawable.action_plate);
-            case DISABLED: return BitmapFactory.decodeResource(getResources(), R.drawable.action_plate_disabled);
-            case ACTIVE: return BitmapFactory.decodeResource(getResources(), R.drawable.action_plate_active);
-            default: return BitmapFactory.decodeResource(getResources(), R.drawable.action_plate);
-        }
+    public Bitmap getActionPlate(ActionButton actionButton) {
+        if(actionButton.isActiveAction()) return BitmapFactory.decodeResource(getResources(), R.drawable.action_plate_active);
+        if(actionButton.isAbilityAvailable()) return BitmapFactory.decodeResource(getResources(), R.drawable.action_plate);
+        return BitmapFactory.decodeResource(getResources(), R.drawable.action_plate_disabled);
+    }
+
+    public void clearCommands() {
+        recordedEvents.clear();
+        Logger.log(recordedEvents.toString());
     }
 }

@@ -73,15 +73,19 @@ public class Worker extends Unit {
 
     @Override
     public void executeAction(AbilityType abilityType, GameContainer game, MapTile tile) {
-        if(currentAction != null && currentAction.getType().equals(abilityType)){
+        if(currentAction != null && !currentAction.getType().equals(abilityType)){
             currentAction.cancel();
             // todo avoid action cancel when same action selected
+        }else{
+            currentAction = ActionFactory.createAction(abilityType);
         }
-        currentAction = ActionFactory.createAction(abilityType);
         if(currentAction != null){
             currentAction.execute(game, tile);
         }
     }
 
-
+    @Override
+    public List<AbilityType> getAvailableActions() {
+        return Arrays.asList(AbilityType.MOVE_ACTION,AbilityType.CLEAN_TERRAIN,AbilityType.BUILD_TOWN,AbilityType.BUILD_FARM,AbilityType.BUILD_POST,AbilityType.DELETE_UNIT);
+    }
 }

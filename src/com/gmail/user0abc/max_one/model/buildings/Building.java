@@ -77,4 +77,24 @@ public abstract class Building implements Serializable {
         if(getCurrentAction().getType().equals(abilityType)) return ActionStatus.ACTIVE;
         return ActionStatus.DISABLED;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Building{");
+        sb.append("buildingType=").append(buildingType);
+        sb.append(", owner=").append(owner);
+        sb.append(", health=").append(health);
+        sb.append(", currentProduction=").append(currentProduction);
+        sb.append(", defence=").append(defence);
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public boolean isAbilityAvailable(AbilityType abilityType){
+        return false;
+    };
+
+    public boolean isActiveAction(AbilityType abilityType) {
+        return currentProduction != null && currentProduction.getType().equals(abilityType);
+    }
 }

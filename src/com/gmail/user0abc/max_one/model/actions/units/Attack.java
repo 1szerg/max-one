@@ -53,4 +53,9 @@ public class Attack extends Ability implements TileSelectReceiver {
             tile.unit = null;
         }
     }
+
+    @Override
+    public boolean isAvailable(MapTile currentTile, Unit unit) {
+        return unit != null && unit.getAttackStrength() > 0 && unit.getActionPoints() > actionAPCost;
+    }
 }

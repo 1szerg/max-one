@@ -2,6 +2,7 @@ package com.gmail.user0abc.max_one.model.actions;
 
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
+import com.gmail.user0abc.max_one.model.units.Unit;
 
 import java.io.Serializable;
 
@@ -10,6 +11,8 @@ import java.io.Serializable;
  * at 11/4/14 11:06 PM
  */
 public abstract class Ability implements Serializable {
+
+    protected int actionAPCost = 1;
 
     /**
      * Starts/continues action
@@ -30,4 +33,8 @@ public abstract class Ability implements Serializable {
     public void cancel(){}
 
     public abstract AbilityType getType();
+
+    public boolean isAvailable(MapTile currentTile, Unit unit) {
+        return false;
+    }
 }

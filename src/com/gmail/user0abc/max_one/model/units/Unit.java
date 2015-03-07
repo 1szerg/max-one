@@ -11,16 +11,15 @@ import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 import com.gmail.user0abc.max_one.util.Logger;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by sergii.ivanov on 10/24/2014.
- */
+/*Created by sergii.ivanov on 10/24/2014.*/
 public abstract class Unit implements Serializable {
     protected Player owner;
     protected MapTile currentTile;
     protected Ability currentAction;
-    protected int actionPoints;
+    protected double actionPoints;
     protected int maxActionPoints;
     protected int applesCost;
     protected int goldCost;
@@ -30,11 +29,11 @@ public abstract class Unit implements Serializable {
 
     public abstract UnitType getUnitType();
 
-    public int getActionPoints() {
+    public double getActionPoints() {
         return actionPoints;
     }
 
-    public void setActionPoints(int actionPoints) {
+    public void setActionPoints(double actionPoints) {
         this.actionPoints = actionPoints;
     }
 
@@ -121,5 +120,30 @@ public abstract class Unit implements Serializable {
             return ActionStatus.ACTIVE;
         }
         return ActionStatus.DISABLED;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Unit{");
+        sb.append("owner=").append(owner);
+        sb.append(", currentTile=").append(currentTile.x).append(":").append(currentTile.y);
+        if(currentAction!=null)sb.append(", currentAction=").append(currentAction.getType());
+        else sb.append(", currentAction=null");
+        sb.append(", actionPoints=").append(actionPoints);
+        sb.append(", health=").append(health);
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public List<AbilityType> getAvailableActions() {
+        return new ArrayList<>();
+    }
+
+    public boolean isAbilityAvailable(AbilityType abilityType) {
+        return ActionFactory.createAction(abilityType).isAvailable(currentTile, this);
+    }
+
+    public boolean isActiveAction(AbilityType abilityType) {
+        return abilityType != null && currentAction != null && abilityType.equals(currentAction.getType());
     }
 }

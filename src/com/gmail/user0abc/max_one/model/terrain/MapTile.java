@@ -1,7 +1,7 @@
 package com.gmail.user0abc.max_one.model.terrain;
 
-import com.gmail.user0abc.max_one.model.buildings.Building;
-import com.gmail.user0abc.max_one.model.units.Unit;
+import com.gmail.user0abc.max_one.model.entities.buildings.Building;
+import com.gmail.user0abc.max_one.model.entities.units.Unit;
 
 import java.io.Serializable;
 
@@ -19,9 +19,10 @@ public class MapTile implements Serializable {
     public String toString() {
         final StringBuilder sb = new StringBuilder("MapTile{");
         sb.append("terrainType=").append(terrainType);
-        if(building != null)sb.append(", building=").append(building.getBuildingType()).append(" of ").append(building.getOwner());
+        if (building != null)
+            sb.append(", building=").append(building.getBuildingType()).append(" of ").append(building.getOwner());
         sb.append(", tileFeature=").append(tileFeature);
-        if(unit != null)sb.append(", unit=").append(unit.getUnitType()).append(" of ").append(unit.getOwner());
+        if (unit != null) sb.append(", unit=").append(unit.getUnitType()).append(" of ").append(unit.getOwner());
         sb.append(", x=").append(x);
         sb.append(", y=").append(y);
         sb.append('}');

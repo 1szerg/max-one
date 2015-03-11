@@ -3,10 +3,10 @@ package com.gmail.user0abc.max_one.util;
 import android.graphics.Color;
 import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.ai.BasicAiProcessor;
+import com.gmail.user0abc.max_one.model.entities.units.UnitType;
+import com.gmail.user0abc.max_one.model.entities.units.UnitsFactory;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
-import com.gmail.user0abc.max_one.model.units.UnitType;
-import com.gmail.user0abc.max_one.model.units.UnitsFactory;
 
 import java.util.ArrayList;
 import java.util.List;

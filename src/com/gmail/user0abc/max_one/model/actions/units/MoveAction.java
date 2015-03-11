@@ -5,9 +5,9 @@ import com.gmail.user0abc.max_one.handlers.TileSelectReceiver;
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
-import com.gmail.user0abc.max_one.model.buildings.BuildingType;
+import com.gmail.user0abc.max_one.model.entities.buildings.BuildingType;
+import com.gmail.user0abc.max_one.model.entities.units.Unit;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
-import com.gmail.user0abc.max_one.model.units.Unit;
 import com.gmail.user0abc.max_one.util.GameUtils;
 import com.gmail.user0abc.max_one.util.Logger;
 
@@ -25,7 +25,7 @@ public class MoveAction extends Ability implements TileSelectReceiver {
 
     @Override
     public boolean execute(GameContainer game, MapTile selectedTile) {
-        if(destination == null){
+        if (destination == null) {
             if (selectedTile != null && selectedTile.unit != null) {
                 start = selectedTile;
                 walkingUnit = selectedTile.unit;
@@ -34,7 +34,7 @@ public class MoveAction extends Ability implements TileSelectReceiver {
             return false;
         }
         walk();
-        if(location.equals(destination)){
+        if (location.equals(destination)) {
             walkingUnit.setCurrentAction(null);
             return true;
         }
@@ -54,17 +54,17 @@ public class MoveAction extends Ability implements TileSelectReceiver {
     }
 
     private void walk() {
-        while(makeStep()){
+        while (makeStep()) {
             Logger.log("Unit " + walkingUnit + " is walking ");
             GameUtils.sleep(250);
         }
     }
 
-    private boolean makeStep(){
+    private boolean makeStep() {
         MapTile nextTile = getNextTileInPath(destination, location);
         if (nextTile != null) {
             Double dist = dist(location, nextTile);
-            if(dist.compareTo(walkingUnit.getActionPoints()) <= 0){
+            if (dist.compareTo(walkingUnit.getActionPoints()) <= 0) {
                 moveUnit(walkingUnit, location, nextTile);
                 walkingUnit.setActionPoints(walkingUnit.getActionPoints() - dist);
                 return !nextTile.equals(destination);
@@ -76,32 +76,32 @@ public class MoveAction extends Ability implements TileSelectReceiver {
     private double dist(MapTile start, MapTile nextTile) {
         double dX = nextTile.x - start.x;
         double dY = nextTile.y - start.y;
-        return Math.sqrt(dX*dX + dY*dY);
+        return Math.sqrt(dX * dX + dY * dY);
     }
 
     private MapTile getNextTileInPath(MapTile destination, MapTile location) {
         double dX = destination.x - location.x;
         double dY = destination.y - location.y;
-        int sX = (int)Math.signum(dX);
-        int sY = (int)Math.signum(dY);
+        int sX = (int) Math.signum(dX);
+        int sY = (int) Math.signum(dY);
         List<MapTile> stepCandidates = new ArrayList<>();
         addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap()[location.x + sX][location.y + sY]);
-        if(Math.abs(dX) > Math.abs(dY)){
+        if (Math.abs(dX) > Math.abs(dY)) {
             addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap()[location.x + sX][location.y]);
             addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap()[location.x][location.y + sY]);
-        }else{
+        } else {
             addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap()[location.x][location.y + sY]);
             addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap()[location.x + sX][location.y]);
         }
-        if(stepCandidates.size() > 0) return stepCandidates.get(0);
+        if (stepCandidates.size() > 0) return stepCandidates.get(0);
         return null;
     }
 
     private void addTileIfPassable(List<MapTile> stepCandidates, MapTile tile) {
-        if(isTilePassable(tile))stepCandidates.add(tile);
+        if (isTilePassable(tile)) stepCandidates.add(tile);
     }
 
-    private boolean isTilePassable(MapTile tile){
+    private boolean isTilePassable(MapTile tile) {
         boolean canPassTerrain = destination != null && start != null
                 && (walkingUnit != null && walkingUnit.getPassableTerrain().contains(destination.terrainType));
         boolean isTileEmpty = destination != null && (destination.unit == null);

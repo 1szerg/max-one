@@ -11,7 +11,7 @@ import com.gmail.user0abc.max_one.events.GameEventBus;
 import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.ActionButton;
-import com.gmail.user0abc.max_one.model.buildings.BuildingType;
+import com.gmail.user0abc.max_one.model.entities.buildings.BuildingType;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TileFeatureType;
 import com.gmail.user0abc.max_one.util.Logger;
@@ -133,7 +133,7 @@ public class GameField extends SurfaceView {
             clearCommands();
             redraw();
         } else {
-            // then select the tile
+            // then select the currentTile
             int newSelectedTileX = (int) ((event.getX() - mapOffsetX) / grass.getWidth());
             int newSelectedTileY = (int) ((event.getY() - mapOffsetY) / grass.getHeight());
             if (newSelectedTileX > -1 && newSelectedTileX < gameController.getMap().length
@@ -200,9 +200,9 @@ public class GameField extends SurfaceView {
 
     private void drawUnitInfo(Canvas canvas) {
         List<ActionButton> buttons = gameController.getCurrentActionButtons();
-        if(buttons != null && buttons.size() > 0){
+        if (buttons != null && buttons.size() > 0) {
             uiButtons = new ArrayList<>(buttons.size());
-            for(int i = 0; i < buttons.size(); i++){
+            for (int i = 0; i < buttons.size(); i++) {
                 float x = (float) 4 + i * actionPlate.getWidth();
                 float y = (float) canvas.getHeight() - 4 - actionPlate.getHeight();
                 UiButton button = new UiButton(
@@ -214,7 +214,6 @@ public class GameField extends SurfaceView {
             }
         }
     }
-
 
 
     private Bitmap getActionImage(ActionButton actionButton) {
@@ -299,7 +298,7 @@ public class GameField extends SurfaceView {
                             break;
                     }
                     // draw buildings
-                    if(tile.building != null){
+                    if (tile.building != null) {
                         canvas.drawBitmap(getBuildingImage(tile.building.getBuildingType()), x, y, null);
                         if (tile.building.getOwner() != null) {
                             canvas.drawBitmap(getPlayerFlag(tile.building.getOwner()), x, y, null);
@@ -400,13 +399,18 @@ public class GameField extends SurfaceView {
         }
     }
 
-    private Bitmap getBuildingImage(BuildingType buildingType){
-        switch (buildingType){
-            case TOWN: return BitmapFactory.decodeResource(getResources(), R.drawable.town);
-            case CAMP: return BitmapFactory.decodeResource(getResources(), R.drawable.camp);
-            case FARM: return BitmapFactory.decodeResource(getResources(), R.drawable.farm);
-            case TRADE_POST: return BitmapFactory.decodeResource(getResources(), R.drawable.trade);
-            default: return null;
+    private Bitmap getBuildingImage(BuildingType buildingType) {
+        switch (buildingType) {
+            case TOWN:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.town);
+            case CAMP:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.camp);
+            case FARM:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.farm);
+            case TRADE_POST:
+                return BitmapFactory.decodeResource(getResources(), R.drawable.trade);
+            default:
+                return null;
         }
     }
 
@@ -443,8 +447,10 @@ public class GameField extends SurfaceView {
     }
 
     public Bitmap getActionPlate(ActionButton actionButton) {
-        if(actionButton.isActiveAction()) return BitmapFactory.decodeResource(getResources(), R.drawable.action_plate_active);
-        if(actionButton.isAbilityAvailable()) return BitmapFactory.decodeResource(getResources(), R.drawable.action_plate);
+        if (actionButton.isActiveAction())
+            return BitmapFactory.decodeResource(getResources(), R.drawable.action_plate_active);
+        if (actionButton.isAbilityAvailable())
+            return BitmapFactory.decodeResource(getResources(), R.drawable.action_plate);
         return BitmapFactory.decodeResource(getResources(), R.drawable.action_plate_disabled);
     }
 

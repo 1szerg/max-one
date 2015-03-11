@@ -8,10 +8,9 @@ import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.TurnProcessor;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.ActionButton;
-import com.gmail.user0abc.max_one.model.actions.ActionStatus;
-import com.gmail.user0abc.max_one.model.buildings.Building;
+import com.gmail.user0abc.max_one.model.entities.buildings.Building;
+import com.gmail.user0abc.max_one.model.entities.units.Unit;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
-import com.gmail.user0abc.max_one.model.units.Unit;
 import com.gmail.user0abc.max_one.util.GameStorage;
 import com.gmail.user0abc.max_one.util.Logger;
 import com.gmail.user0abc.max_one.view.GameField;
@@ -65,11 +64,11 @@ public class GameController extends Activity {
     }
 
 
-    private void onStartTurn(){
+    private void onStartTurn() {
         gameField.clearCommands();
         turnProcessor.onStart();
-        if(game.currentPlayer.ai){
-            Logger.log("Ai move processing for player "+game.players.indexOf(game.currentPlayer));
+        if (game.currentPlayer.ai) {
+            Logger.log("Ai move processing for player " + game.players.indexOf(game.currentPlayer));
             game.currentPlayer.aiProcessor.makeTurn(game);
             turnProcessor.onFinish();
             onStartTurn();
@@ -83,15 +82,15 @@ public class GameController extends Activity {
             tileSelectHandler = null;
         }
         selectedTile = tile;
-        if(tile.unit != null && tile.unit.getOwner().equals(game.currentPlayer)){
+        if (tile.unit != null && tile.unit.getOwner().equals(game.currentPlayer)) {
             selectedUnit = tile.unit;
             currentActionButtons = getActionButtons(selectedUnit);
             selectedBuilding = null;
-        }else if(selectedTile.building != null && selectedTile.building.getOwner().equals(game.currentPlayer)){
+        } else if (selectedTile.building != null && selectedTile.building.getOwner().equals(game.currentPlayer)) {
             selectedBuilding = tile.building;
             currentActionButtons = getActionButtons(selectedBuilding);
             selectedUnit = null;
-        }else{
+        } else {
             selectedUnit = null;
             selectedBuilding = null;
             currentActionButtons.clear();
@@ -100,8 +99,8 @@ public class GameController extends Activity {
 
     private List<ActionButton> getActionButtons(Building building) {
         List<ActionButton> buttons = new ArrayList<>();
-        if(building != null){
-            for(AbilityType abilityType : building.getAvailableActions()){
+        if (building != null) {
+            for (AbilityType abilityType : building.getAvailableActions()) {
                 buttons.add(new ActionButton(abilityType, building.isAbilityAvailable(abilityType), building.isActiveAction(abilityType)));
             }
         }
@@ -110,34 +109,27 @@ public class GameController extends Activity {
 
     private List<ActionButton> getActionButtons(Unit unit) {
         List<ActionButton> buttons = new ArrayList<>();
-        if(unit != null){
-            for(AbilityType abilityType : unit.getAvailableActions()){
+        if (unit != null) {
+            for (AbilityType abilityType : unit.getAvailableActions()) {
                 buttons.add(new ActionButton(abilityType, unit.isAbilityAvailable(abilityType), unit.isActiveAction(abilityType)));
             }
         }
         return buttons;
     }
 
-    public List<ActionButton> getCurrentActionButtons(){
+    public List<ActionButton> getCurrentActionButtons() {
         return currentActionButtons;
-    }
-
-    public boolean isActionAvailable(AbilityType abilityType, MapTile tile) {
-        if (selectedUnit != null) {
-            return selectedUnit.isActionAvailable(abilityType, tile);
-        }
-        return false;
     }
 
     public void onActionButtonSelect(AbilityType abilityType) {
         if (abilityType.equals(AbilityType.END_TURN) && isEndTurnEnabled) {
-            if(turnProcessor.onFinish()){
+            if (turnProcessor.onFinish()) {
                 isEndTurnEnabled = false;
                 onStartTurn();
             }
         } else if (selectedUnit != null) {
             selectedUnit.executeAction(abilityType, game, selectedTile);
-        }else if (selectedBuilding != null) {
+        } else if (selectedBuilding != null) {
             selectedBuilding.executeAction(abilityType, game, selectedTile);
         }
         turnProcessor.calculatePlayerBalances();
@@ -150,18 +142,9 @@ public class GameController extends Activity {
     }
 
     public void refreshMap() {
-        setTitle("Max Game (Turn "+game.turnsCount+")");
-        Logger.log("Max Game (Turn "+game.turnsCount+")");
+        setTitle("Max Game (Turn " + game.turnsCount + ")");
+        Logger.log("Max Game (Turn " + game.turnsCount + ")");
         gameField.redraw();
     }
 
-    public ActionStatus getActionStatus(AbilityType abilityType) {
-        if(selectedUnit != null){
-            return selectedUnit.getActionStatus(abilityType);
-        }
-        if(selectedBuilding != null){
-            return selectedBuilding.getActionStatus(abilityType);
-        }
-        return ActionStatus.DISABLED;
-    }
 }

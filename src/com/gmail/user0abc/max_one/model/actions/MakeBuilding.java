@@ -1,11 +1,11 @@
 package com.gmail.user0abc.max_one.model.actions;/*Created by Sergey on 2/4/2015.*/
 
 import com.gmail.user0abc.max_one.model.GameContainer;
-import com.gmail.user0abc.max_one.model.buildings.BuildingType;
-import com.gmail.user0abc.max_one.model.buildings.BuildingsFactory;
+import com.gmail.user0abc.max_one.model.entities.buildings.BuildingType;
+import com.gmail.user0abc.max_one.model.entities.buildings.BuildingsFactory;
+import com.gmail.user0abc.max_one.model.entities.units.Unit;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
-import com.gmail.user0abc.max_one.model.units.Unit;
 import com.gmail.user0abc.max_one.util.Logger;
 
 import java.util.List;

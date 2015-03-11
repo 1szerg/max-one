@@ -1,4 +1,4 @@
-package com.gmail.user0abc.max_one.model.buildings;
+package com.gmail.user0abc.max_one.model.entities.buildings;
 
 /**
  * Created by sergii.ivanov on 10/24/2014.

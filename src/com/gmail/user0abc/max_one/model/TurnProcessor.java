@@ -14,26 +14,26 @@ public class TurnProcessor {
         this.game = game;
     }
 
-    public void onStart(){
+    public void onStart() {
         turnStarted = new Date().getTime();
         calculatePlayerBalances();
         Logger.log("INFO: Balance Apples " + game.currentPlayer.getApples() + " Gold " + game.currentPlayer.getGold());
         scanMap();
     }
 
-    public boolean onFinish(){
-        Logger.log("End turn #"+game.turnsCount+" for player "+game.players.indexOf(game.currentPlayer)+" duration "+(new Date().getTime() - turnStarted)/1000+" sec");
-        Logger.log("Ending turn #"+game.turnsCount+" for player "+game.players.indexOf(game.currentPlayer));
+    public boolean onFinish() {
+        Logger.log("End turn #" + game.turnsCount + " for player " + game.players.indexOf(game.currentPlayer) + " duration " + (new Date().getTime() - turnStarted) / 1000 + " sec");
+        Logger.log("Ending turn #" + game.turnsCount + " for player " + game.players.indexOf(game.currentPlayer));
         int nextPlayerIndex = game.players.indexOf(game.currentPlayer) + 1;
-        if(nextPlayerIndex >= game.players.size()){
-            nextPlayerIndex =  0;
+        if (nextPlayerIndex >= game.players.size()) {
+            nextPlayerIndex = 0;
             game.turnsCount++;
         }
         game.currentPlayer = game.players.get(nextPlayerIndex);
         return true;
     }
 
-    public void calculatePlayerBalances(){
+    public void calculatePlayerBalances() {
         int foodBalance = 1;
         int goldBalance = 1;
         for (int x = 0; x < game.map.length; x++) {
@@ -68,7 +68,7 @@ public class TurnProcessor {
         return res;
     }
 
-    private void scanMap(){
+    private void scanMap() {
         for (int x = 0; x < game.map.length; x++) {
             for (int y = 0; y < game.map[x].length; y++) {
                 processTileOnStartTurn(game.map[x][y], game.currentPlayer);
@@ -76,19 +76,19 @@ public class TurnProcessor {
         }
     }
 
-    public void processTileOnStartTurn(MapTile tile, Player player){
+    public void processTileOnStartTurn(MapTile tile, Player player) {
         resetUnitActionPoints(tile, player);
         continueActions(tile, player);
     }
 
     private void resetUnitActionPoints(MapTile mapTile, Player player) {
-        if(mapTile.unit != null && mapTile.unit.getOwner().equals(player)){
+        if (mapTile.unit != null && mapTile.unit.getOwner().equals(player)) {
             mapTile.unit.setActionPoints(mapTile.unit.getMaxActionPoints());
         }
     }
 
     private void continueActions(MapTile tile, Player player) {
-        if(tile.unit != null && tile.unit.getOwner().equals(player)){
+        if (tile.unit != null && tile.unit.getOwner().equals(player)) {
             tile.unit.onTurnStart();
         }
     }

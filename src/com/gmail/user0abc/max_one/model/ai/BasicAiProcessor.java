@@ -3,7 +3,6 @@ package com.gmail.user0abc.max_one.model.ai;
 
 import com.gmail.user0abc.max_one.model.AiProcessor;
 import com.gmail.user0abc.max_one.model.GameContainer;
-import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.util.GameUtils;
 
 public class BasicAiProcessor implements AiProcessor {

@@ -1,6 +1,8 @@
-package com.gmail.user0abc.max_one.model.buildings;
+package com.gmail.user0abc.max_one.model.entities.buildings;
 
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
+import com.gmail.user0abc.max_one.model.entities.Protection;
+import com.gmail.user0abc.max_one.model.entities.ProtectionFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +11,7 @@ import java.util.List;
 public class TradePost extends Building {
 
     public TradePost() {
-        super();
         buildingType = BuildingType.TRADE_POST;
-        defence = 10;
         health = 10;
     }
 
@@ -23,5 +23,9 @@ public class TradePost extends Building {
     @Override
     public int getGoldProduction() {
         return 1;
+    }
+
+    public static Protection defaultProtection() {
+        return ProtectionFactory.makeProtection(1.5, 1.5, 1.5);
     }
 }

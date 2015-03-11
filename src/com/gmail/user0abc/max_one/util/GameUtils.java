@@ -16,7 +16,7 @@ public class GameUtils {
         try {
             Thread.sleep(delayMs);
         } catch (InterruptedException e) {
-            Logger.log("Interrupted with "+e.getLocalizedMessage());
+            Logger.log("Interrupted with " + e.getLocalizedMessage());
         }
     }
 }

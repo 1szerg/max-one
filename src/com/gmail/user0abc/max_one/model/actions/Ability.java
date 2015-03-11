@@ -1,8 +1,8 @@
 package com.gmail.user0abc.max_one.model.actions;
 
 import com.gmail.user0abc.max_one.model.GameContainer;
+import com.gmail.user0abc.max_one.model.entities.units.Unit;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
-import com.gmail.user0abc.max_one.model.units.Unit;
 
 import java.io.Serializable;
 
@@ -12,10 +12,11 @@ import java.io.Serializable;
  */
 public abstract class Ability implements Serializable {
 
-    protected int actionAPCost = 1;
+    protected static int actionAPCost = 1;
 
     /**
      * Starts/continues action
+     *
      * @param game
      * @param selectedTile
      * @return true when action is finished and false when it is not
@@ -24,17 +25,19 @@ public abstract class Ability implements Serializable {
 
     /**
      * continues action
+     *
      * @return true when action is finished and false when it is not
      */
     public boolean execute() {
         return true;
     }
 
-    public void cancel(){}
+    public void cancel() {
+    }
 
     public abstract AbilityType getType();
 
-    public boolean isAvailable(MapTile currentTile, Unit unit) {
+    public static boolean isAvailable(MapTile currentTile, Unit unit) {
         return false;
     }
 }

@@ -1,6 +1,8 @@
-package com.gmail.user0abc.max_one.model.buildings;
+package com.gmail.user0abc.max_one.model.entities.buildings;
 
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
+import com.gmail.user0abc.max_one.model.entities.Protection;
+import com.gmail.user0abc.max_one.model.entities.ProtectionFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +16,6 @@ public class Town extends Building {
     public Town() {
         super();
         buildingType = BuildingType.TOWN;
-        defence = 10.0;
         health = 100;
     }
 
@@ -31,5 +32,9 @@ public class Town extends Building {
     @Override
     public int getGoldProduction() {
         return 1;
+    }
+
+    public static Protection defaultProtection() {
+        return ProtectionFactory.makeProtection(2.5, 2.5, 2.5);
     }
 }

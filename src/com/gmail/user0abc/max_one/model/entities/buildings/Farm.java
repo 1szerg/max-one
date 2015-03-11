@@ -1,6 +1,8 @@
-package com.gmail.user0abc.max_one.model.buildings;
+package com.gmail.user0abc.max_one.model.entities.buildings;
 
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
+import com.gmail.user0abc.max_one.model.entities.Protection;
+import com.gmail.user0abc.max_one.model.entities.ProtectionFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,6 @@ public class Farm extends Building {
     public Farm() {
         super();
         buildingType = BuildingType.FARM;
-        defence = 10;
         health = 10;
     }
 
@@ -27,4 +28,7 @@ public class Farm extends Building {
         return 1;
     }
 
+    public static Protection defaultProtection() {
+        return ProtectionFactory.makeProtection(1.5, 1.5, 1.5);
+    }
 }

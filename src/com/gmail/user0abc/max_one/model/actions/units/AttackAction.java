@@ -5,14 +5,14 @@ import com.gmail.user0abc.max_one.handlers.TileSelectReceiver;
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
+import com.gmail.user0abc.max_one.model.entities.units.Unit;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
-import com.gmail.user0abc.max_one.model.units.Unit;
 
 /**
  * Created by Sergey
  * at 11/12/14 10:16 PM
  */
-public class Attack extends Ability implements TileSelectReceiver {
+public class AttackAction extends Ability implements TileSelectReceiver {
 
     private Unit attacker;
 
@@ -41,7 +41,7 @@ public class Attack extends Ability implements TileSelectReceiver {
 
     private void attackBuilding(MapTile tile) {
         if (tile.building.getOwner().equals(attacker.getOwner())) return;
-        if (!tile.building.acceptAttack(attacker.getAttackStrength())) {
+        if (!tile.building.onIncomingAttack(attacker.getAttack())) {
             tile.building = null;
         }
     }
@@ -49,13 +49,8 @@ public class Attack extends Ability implements TileSelectReceiver {
     private void attackUnit(MapTile tile) {
         if (tile.unit.equals(attacker)) return;
         if (tile.unit.getOwner().equals(attacker.getOwner())) return;
-        if (!tile.unit.acceptAttack(attacker.getAttackStrength())) {
+        if (!tile.unit.onIncomingAttack(attacker.getAttack())) {
             tile.unit = null;
         }
-    }
-
-    @Override
-    public boolean isAvailable(MapTile currentTile, Unit unit) {
-        return unit != null && unit.getAttackStrength() > 0 && unit.getActionPoints() > actionAPCost;
     }
 }

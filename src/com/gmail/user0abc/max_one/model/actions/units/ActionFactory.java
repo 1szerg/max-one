@@ -4,6 +4,7 @@ import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.buildings.MakeWarrior;
 import com.gmail.user0abc.max_one.model.actions.buildings.MakeWorker;
+import com.gmail.user0abc.max_one.model.entities.Entity;
 import com.gmail.user0abc.max_one.util.Logger;
 
 /**
@@ -23,7 +24,7 @@ public class ActionFactory {
             case BUILD_TOWN:
                 return new BuildTown();
             case ATTACK_TILE:
-                return new Attack();
+                return new AttackAction();
             case BUILD_FARM:
                 return new BuildFarm();
             case BUILD_POST:
@@ -42,8 +43,32 @@ public class ActionFactory {
         }
     }
 
-    public static boolean isActionAvailable(AbilityType type){
-        return true;
+    public static boolean isActionAvailable(AbilityType abilityType, Entity entity) {
+        switch (abilityType) {
+            case REMOVE_BUILDING:
+                return false;
+            case DELETE_UNIT:
+                return false;
+            case CLEAN_TERRAIN:
+                return false;
+            case BUILD_TOWN:
+                return false;
+            case ATTACK_TILE:
+                return false;
+            case BUILD_FARM:
+                return false;
+            case BUILD_POST:
+                return false;
+            case MOVE_ACTION:
+                return false;
+            case WAIT_ACTION:
+                return false;
+            case MAKE_WARRIOR:
+                return false;
+            case MAKE_WORKER:
+                return false;
+        }
+        return false;
     }
 
 }

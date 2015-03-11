@@ -1,12 +1,14 @@
-package com.gmail.user0abc.max_one.model.units;
+package com.gmail.user0abc.max_one.model.entities.units;
 
 import com.gmail.user0abc.max_one.model.Player;
+import com.gmail.user0abc.max_one.model.actions.Attack;
+import com.gmail.user0abc.max_one.model.actions.AttackType;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.util.Logger;
 
-/**
- * Created by Sergey on 1/12/2015.
- */
+import java.util.Map;
+
+/*Created by Sergey on 1/12/2015.*/
 public class UnitsFactory {
 
     public static Unit createUnitAtLocation(MapTile tile, Player owner, UnitType type) {
@@ -20,12 +22,20 @@ public class UnitsFactory {
             case WORKER:
                 Worker worker = new Worker();
                 worker.setOwner(owner);
-                worker.setActionPoints(worker.getMaxActionPoints());
+                worker.setActionPoints(4);
+                worker.setMaxActionPoints(4);
+                worker.setGoldCost(0);
+                worker.setApplesCost(1);
+                worker.setAttack(null);
+                worker.setProtection(Worker.defaultProtection());
                 return worker;
             case WARRIOR:
                 Warrior warrior = new Warrior();
                 warrior.setOwner(owner);
-                warrior.setActionPoints(warrior.getMaxActionPoints());
+                warrior.setActionPoints(3);
+                warrior.setMaxActionPoints(3);
+                warrior.setAttack(new Attack(AttackType.SWORD, 5));
+                warrior.setProtection(Warrior.defaultProtection());
                 return warrior;
             case BARBARIAN:
                 break;

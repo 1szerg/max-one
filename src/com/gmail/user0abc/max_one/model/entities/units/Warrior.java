@@ -1,38 +1,21 @@
-package com.gmail.user0abc.max_one.model.units;
+package com.gmail.user0abc.max_one.model.entities.units;
 
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.Attack;
+import com.gmail.user0abc.max_one.model.actions.AttackType;
+import com.gmail.user0abc.max_one.model.entities.Protection;
+import com.gmail.user0abc.max_one.model.entities.ProtectionFactory;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
-/**
- * Created by Sergey on 1/19/2015.
- */
+/*Created by Sergey on 1/19/2015.*/
 public class Warrior extends Unit {
 
-    public Warrior() {
-        maxActionPoints = 4;
-        goldCost = 2;
-        applesCost = 2;
-        attackStrength = 2;
-        defence = 2;
-        health = 10;
-    }
-
-    @Override
-    public List<AbilityType> allActions() {
-        List<AbilityType> abilities = new ArrayList<>();
-        abilities.add(AbilityType.MOVE_ACTION);
-        abilities.add(AbilityType.WAIT_ACTION);
-        abilities.add(AbilityType.ATTACK_TILE);
-        abilities.add(AbilityType.DELETE_UNIT);
-        return abilities;
-    }
+    public Warrior() {}
 
     @Override
     public Ability getAction(AbilityType abilityType) {
@@ -48,11 +31,6 @@ public class Warrior extends Unit {
     }
 
     @Override
-    public boolean isActionAvailable(AbilityType abilityType, MapTile tile) {
-        return true;
-    }
-
-    @Override
     public List<TerrainType> getPassableTerrain() {
         return Arrays.asList(TerrainType.GRASS, TerrainType.TREE);
     }
@@ -60,5 +38,19 @@ public class Warrior extends Unit {
     @Override
     public void executeAction(AbilityType abilityType, GameContainer game, MapTile tile) {
 
+    }
+
+    @Override
+    public List<AbilityType> getAvailableActions() {
+        return Arrays.asList(
+                AbilityType.MOVE_ACTION,
+                AbilityType.ATTACK_TILE,
+                AbilityType.WAIT_ACTION,
+                AbilityType.DELETE_UNIT
+        );
+    }
+
+    public static Protection defaultProtection() {
+        return ProtectionFactory.makeProtection(1.0, 0.8, 1.2);
     }
 }

@@ -1,6 +1,7 @@
 package com.gmail.user0abc.max_one.model.actions;/*Created by Sergey on 2/4/2015.*/
 
 import com.gmail.user0abc.max_one.model.GameContainer;
+import com.gmail.user0abc.max_one.model.entities.Entity;
 import com.gmail.user0abc.max_one.model.entities.buildings.BuildingType;
 import com.gmail.user0abc.max_one.model.entities.buildings.BuildingsFactory;
 import com.gmail.user0abc.max_one.model.entities.units.Unit;
@@ -88,6 +89,11 @@ public abstract class MakeBuilding extends Ability {
         actionLocation = null;
         actionAuthor.setCurrentAction(null);
         actionAuthor = null;
+    }
+
+    public static boolean isAvailable(Entity entity) {
+        return isNoBuilding(entity)
+                && entity.getActionPoints() >= getAPCost();
     }
 
 

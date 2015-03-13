@@ -8,6 +8,7 @@ import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.TurnProcessor;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.ActionButton;
+import com.gmail.user0abc.max_one.model.entities.Entity;
 import com.gmail.user0abc.max_one.model.entities.buildings.Building;
 import com.gmail.user0abc.max_one.model.entities.units.Unit;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
@@ -63,16 +64,15 @@ public class GameController extends Activity {
         return game.currentPlayer.getGold();
     }
 
-
     private void onStartTurn() {
         gameField.clearCommands();
-        turnProcessor.onStart();
-        if (game.currentPlayer.ai) {
+        while (game.currentPlayer.isAi) {
+            turnProcessor.onStart();
             Logger.log("Ai move processing for player " + game.players.indexOf(game.currentPlayer));
             game.currentPlayer.aiProcessor.makeTurn(game);
             turnProcessor.onFinish();
-            onStartTurn();
         }
+        turnProcessor.onStart();
         isEndTurnEnabled = true;
     }
 
@@ -84,11 +84,11 @@ public class GameController extends Activity {
         selectedTile = tile;
         if (tile.unit != null && tile.unit.getOwner().equals(game.currentPlayer)) {
             selectedUnit = tile.unit;
-            currentActionButtons = getActionButtons(selectedUnit);
+            currentActionButtons = getButtons(selectedUnit);
             selectedBuilding = null;
         } else if (selectedTile.building != null && selectedTile.building.getOwner().equals(game.currentPlayer)) {
             selectedBuilding = tile.building;
-            currentActionButtons = getActionButtons(selectedBuilding);
+            currentActionButtons = getButtons(selectedBuilding);
             selectedUnit = null;
         } else {
             selectedUnit = null;
@@ -97,22 +97,10 @@ public class GameController extends Activity {
         }
     }
 
-    private List<ActionButton> getActionButtons(Building building) {
+    private List<ActionButton> getButtons(Entity entity){
         List<ActionButton> buttons = new ArrayList<>();
-        if (building != null) {
-            for (AbilityType abilityType : building.getAvailableActions()) {
-                buttons.add(new ActionButton(abilityType, building.isAbilityAvailable(abilityType), building.isActiveAction(abilityType)));
-            }
-        }
-        return buttons;
-    }
-
-    private List<ActionButton> getActionButtons(Unit unit) {
-        List<ActionButton> buttons = new ArrayList<>();
-        if (unit != null) {
-            for (AbilityType abilityType : unit.getAvailableActions()) {
-                buttons.add(new ActionButton(abilityType, unit.isAbilityAvailable(abilityType), unit.isActiveAction(abilityType)));
-            }
+        for(AbilityType ability : entity.getAvailableActions()){
+            buttons.add(new ActionButton(ability, entity.isAbilityAvailable(ability), entity.isActiveAction(ability)));
         }
         return buttons;
     }
@@ -128,12 +116,24 @@ public class GameController extends Activity {
                 onStartTurn();
             }
         } else if (selectedUnit != null) {
+            activateButton(abilityType);
             selectedUnit.executeAction(abilityType, game, selectedTile);
         } else if (selectedBuilding != null) {
+            activateButton(abilityType);
             selectedBuilding.executeAction(abilityType, game, selectedTile);
         }
         turnProcessor.calculatePlayerBalances();
         refreshMap();
+    }
+
+    private void activateButton(AbilityType abilityType) {
+        for(ActionButton button : currentActionButtons){
+            if(button.getAbilityType().equals(abilityType)){
+                button.setActiveAction(true);
+            }else{
+                button.setActiveAction(false);
+            }
+        }
     }
 
 

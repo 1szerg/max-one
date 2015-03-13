@@ -12,7 +12,6 @@ import java.io.Serializable;
 /*Created by sergii.ivanov on 10/24/2014.*/
 public abstract class Building extends Entity implements Serializable {
     protected BuildingType buildingType;
-    protected Player owner;
     protected MapTile currentTile;
 
     public Building() {
@@ -24,14 +23,6 @@ public abstract class Building extends Entity implements Serializable {
 
     public BuildingType getBuildingType() {
         return buildingType;
-    }
-
-    public Player getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Player owner) {
-        this.owner = owner;
     }
 
     public void setCurrentTile(MapTile mapTile) {
@@ -50,7 +41,7 @@ public abstract class Building extends Entity implements Serializable {
     public String toString() {
         final StringBuilder sb = new StringBuilder("Building{");
         sb.append("buildingType=").append(buildingType);
-        sb.append(", owner=").append(owner);
+        sb.append(", owner=").append(getOwner());
         sb.append(", health=").append(health);
         sb.append(", currentAction=").append(currentAction);
         sb.append(", protection=").append(protection);

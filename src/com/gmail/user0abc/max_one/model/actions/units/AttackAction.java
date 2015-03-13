@@ -5,6 +5,7 @@ import com.gmail.user0abc.max_one.handlers.TileSelectReceiver;
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
+import com.gmail.user0abc.max_one.model.entities.Entity;
 import com.gmail.user0abc.max_one.model.entities.units.Unit;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 
@@ -52,5 +53,15 @@ public class AttackAction extends Ability implements TileSelectReceiver {
         if (!tile.unit.onIncomingAttack(attacker.getAttack())) {
             tile.unit = null;
         }
+    }
+
+    public static int getAPCost(){
+        return 2;
+    };
+
+    public static boolean isAvailable(Entity entity) {
+        return entity != null
+                && entity.getAttack().getAttackStrength() > 0
+                && entity.getActionPoints() >= getAPCost();
     }
 }

@@ -16,18 +16,9 @@ import java.util.List;
 /*Created by sergii.ivanov on 10/24/2014.*/
 public abstract class Unit extends Entity implements Serializable {
     protected Player owner;
-    protected double actionPoints;
     protected int maxActionPoints;
 
     public abstract UnitType getUnitType();
-
-    public double getActionPoints() {
-        return actionPoints;
-    }
-
-    public void setActionPoints(double actionPoints) {
-        this.actionPoints = actionPoints;
-    }
 
     public Ability getAction(AbilityType abilityType) {
         if (super.isActiveAction(abilityType)) {
@@ -91,7 +82,7 @@ public abstract class Unit extends Entity implements Serializable {
         sb.append(", currentTile=").append(getCurrentTile().x).append(":").append(getCurrentTile().y);
         if (currentAction != null) sb.append(", currentAction=").append(currentAction.getType());
         else sb.append(", currentAction=null");
-        sb.append(", actionPoints=").append(actionPoints);
+        sb.append(", actionPoints=").append(getActionPoints());
         sb.append(", health=").append(health);
         sb.append('}');
         return sb.toString();

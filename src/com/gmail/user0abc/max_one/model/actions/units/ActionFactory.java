@@ -2,6 +2,7 @@ package com.gmail.user0abc.max_one.model.actions.units;
 
 import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.MakeBuilding;
 import com.gmail.user0abc.max_one.model.actions.buildings.MakeWarrior;
 import com.gmail.user0abc.max_one.model.actions.buildings.MakeWorker;
 import com.gmail.user0abc.max_one.model.entities.Entity;
@@ -46,27 +47,27 @@ public class ActionFactory {
     public static boolean isActionAvailable(AbilityType abilityType, Entity entity) {
         switch (abilityType) {
             case REMOVE_BUILDING:
-                return false;
+                return RemoveBuilding.isAvailable(entity);
             case DELETE_UNIT:
-                return false;
+                return DeleteUnit.isAvailable(entity);
             case CLEAN_TERRAIN:
-                return false;
+                return CleanTerrain.isAvailable(entity);
             case BUILD_TOWN:
-                return false;
+                return BuildTown.isAvailable(entity);
             case ATTACK_TILE:
-                return false;
+                return AttackAction.isAvailable(entity);
             case BUILD_FARM:
-                return false;
+                return BuildFarm.isAvailable(entity);
             case BUILD_POST:
-                return false;
+                return BuildPost.isAvailable(entity);
             case MOVE_ACTION:
-                return false;
+                return MoveAction.isAvailable(entity);
             case WAIT_ACTION:
-                return false;
+                return WaitAction.isAvailable(entity);
             case MAKE_WARRIOR:
-                return false;
+                return MakeWarrior.isAvailable(entity);
             case MAKE_WORKER:
-                return false;
+                return MakeWorker.isAvailable(entity);
         }
         return false;
     }

@@ -1,5 +1,6 @@
 package com.gmail.user0abc.max_one.model.entities;/*Created by Sergey on 3/7/2015.*/
 
+import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.Attack;
@@ -17,6 +18,8 @@ public abstract class Entity {
     protected Attack attack;
     protected int applesCost;
     protected int goldCost;
+    protected Player owner;
+    protected double actionPoints;
 
     public boolean isAbilityAvailable(AbilityType abilityType) {
         return ActionFactory.isActionAvailable(abilityType, this);
@@ -58,6 +61,22 @@ public abstract class Entity {
 
     public void setGoldCost(int goldCost) {
         this.goldCost = goldCost;
+    }
+
+    public Player getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Player owner) {
+        this.owner = owner;
+    }
+
+    public double getActionPoints() {
+        return actionPoints;
+    }
+
+    public void setActionPoints(double actionPoints) {
+        this.actionPoints = actionPoints;
     }
 
     public void setCurrentTile(MapTile currentTile) {

@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /*Created by Sergey on 10/24/2014.*/
 public class Player implements Serializable {
-    public boolean ai;
+    public boolean isAi;
     private int apples;
     private int gold;
     public int banner;
@@ -14,7 +14,7 @@ public class Player implements Serializable {
     }
 
     public Player(boolean isAiPlayer, int playersBanner) {
-        ai = isAiPlayer;
+        isAi = isAiPlayer;
         banner = playersBanner;
         setApples(0);
         setGold(0);

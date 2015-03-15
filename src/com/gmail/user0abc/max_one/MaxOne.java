@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import com.gmail.user0abc.max_one.model.GameContainer;
-import com.gmail.user0abc.max_one.util.GameStorage;
-import com.gmail.user0abc.max_one.util.Logger;
-import com.gmail.user0abc.max_one.util.MapGenerator;
+import com.gmail.user0abc.max_one.util.*;
 
 import java.util.Random;
 
@@ -26,10 +24,8 @@ public class MaxOne extends Activity {
         Logger.log("Creating game with seed " + seed);
         GameContainer game = new GameContainer();
         game.seed = seed;
-        MapGenerator.setSeed(seed);
-        game.map = MapGenerator.generateTerrain(10, 10);
-        game.players = MapGenerator.getSinglePlayer();
-        MapGenerator.placeStartPositions(game.players, game.seed, game.map);
+        game.players = GameUtils.getSinglePlayer();
+        game.map = MapGenerator.getGenerator(RandUtil.getRand(game.seed)).generateTerrain(25, 25, game.players);
         GameStorage.getStorage().setGameContainer(game);
         Intent intent = new Intent(this, GameController.class);
         startActivity(intent);

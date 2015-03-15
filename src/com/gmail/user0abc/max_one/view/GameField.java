@@ -129,6 +129,7 @@ public class GameField extends SurfaceView {
         if (recordedEvents.size() > 3) return;
         UiButton button = getPressedButton(event.getX(), event.getY());
         if (button != null) {
+            Logger.log("Button clicked " + button.toString());
             gameController.onActionButtonSelect(button.getAbilityType());
             clearCommands();
             redraw();
@@ -136,6 +137,7 @@ public class GameField extends SurfaceView {
             // then select the currentTile
             int newSelectedTileX = (int) ((event.getX() - mapOffsetX) / grass.getWidth());
             int newSelectedTileY = (int) ((event.getY() - mapOffsetY) / grass.getHeight());
+            Logger.log("Selecting tile at "+newSelectedTileX+", "+newSelectedTileY);
             if (newSelectedTileX > -1 && newSelectedTileX < gameController.getMap().length
                     && newSelectedTileY > -1 && newSelectedTileY < gameController.getMap()[0].length) {
                 selectedTileY = newSelectedTileY;
@@ -411,27 +413,6 @@ public class GameField extends SurfaceView {
                 return BitmapFactory.decodeResource(getResources(), R.drawable.trade);
             default:
                 return null;
-        }
-    }
-
-    private void drawBuildings(Canvas canvas, int posX, int posY, float x, float y) {
-        if (gameController.getMap()[posX][posY].building == null) return;
-        switch (gameController.getMap()[posX][posY].building.getBuildingType()) {
-            case TOWN:
-                canvas.drawBitmap(actionTown, x, y, null);
-                break;
-            case FARM:
-                canvas.drawBitmap(actionFarm, x, y, null);
-                break;
-            case CAMP:
-                canvas.drawBitmap(camp, x, y, null);
-                break;
-            case TRADE_POST:
-                canvas.drawBitmap(actionTrade, x, y, null);
-                break;
-        }
-        if (gameController.getMap()[posX][posY].building.getOwner() != null) {
-            canvas.drawBitmap(getPlayerFlag(gameController.getMap()[posX][posY].building.getOwner()), x, y, null);
         }
     }
 

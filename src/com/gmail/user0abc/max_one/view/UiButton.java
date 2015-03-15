@@ -53,4 +53,13 @@ public class UiButton {
         this.posY = posY;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("UiButton{");
+        sb.append("posX=").append(posX);
+        sb.append(", posY=").append(posY);
+        sb.append(", abilityType=").append(abilityType);
+        sb.append('}');
+        return sb.toString();
+    }
 }

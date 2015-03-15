@@ -14,6 +14,7 @@ public class MapTile implements Serializable {
     public Unit unit;
     public int x;
     public int y;
+    public double height, humidity;
 
     @Override
     public String toString() {

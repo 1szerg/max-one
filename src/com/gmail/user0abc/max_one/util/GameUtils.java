@@ -3,6 +3,7 @@ package com.gmail.user0abc.max_one.util;
 import android.graphics.Color;
 import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.ai.BasicAiProcessor;
+import com.gmail.user0abc.max_one.model.terrain.MapTile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,5 +45,19 @@ public class GameUtils {
 
     public static double distance(int x1, int y1, int x2, int y2){
         return (Math.sqrt( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) ));
+    }
+
+    public static List<MapTile> getTilesNear(MapTile[][] map, MapTile tile) {
+        List<MapTile> result = new ArrayList<>();
+        for(int dx = -1; dx < 2; dx++){
+            for(int dy = -1; dy < 2; dy++){
+                int x = tile.x + dx;
+                int y = tile.y + dy;
+                if(x > -1 && y > -1 && x < map.length && y < map[0].length){
+                    result.add(map[x][y]);
+                }
+            }
+        }
+        return result;
     }
 }

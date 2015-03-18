@@ -7,15 +7,19 @@ import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import static com.gmail.user0abc.max_one.util.GameUtils.distance;
+
 /*Created by sergii.ivanov on 10/24/2014.*/
 public class MapGenerator {
-    private static final int NODE_SIZE = 10;
+    private static final int NODE_SIZE = 30;
     private static final double MIN_NODE_DISTANCE = 3.0;
     private static final int MAX_HEIGHT = 100, SEA_LEVEL = 33, PLAIN_LEVEL = 66, HILL_LEVEL = 90;
     private static final double SPAWN_FREE_RADIUS = 0.33, MIN_START_DISTANCE = 5.0;
+    private static final double DESERT_HUMIDITY = 25.0;
     private Random rand;
 
     public MapGenerator(Random randGen) {
@@ -50,8 +54,41 @@ public class MapGenerator {
         List<StartPosition> starts = generateStarts(players, xSize, ySize);
         secureStartPositions(nodes, starts);
         MapTile[][] map = generateTiles(xSize, ySize, nodes, starts);
+        dropRivers((int) Math.ceil(xSize*ySize/50), map);
         placeStartPositions(map, starts);
         return map;
+    }
+
+    private void dropRivers(int ceil, MapTile[][] map) {
+        for(int i = 0; i < ceil; i++){
+            int x = rand.nextInt(map.length);
+            int y = rand.nextInt(map[0].length);
+            drawRiverFromPosition(map, map[x][y]);
+        }
+    }
+
+    private void drawRiverFromPosition(MapTile[][] map, MapTile tile) {
+        while(!tile.terrainType.equals(TerrainType.WATER)){
+            tile.terrainType = TerrainType.WATER;
+            tile.humidity = 100;
+            addRiverHumidity(map, tile);
+            tile = getLowestTileNearby(map, tile);
+        }
+    }
+
+    private MapTile getLowestTileNearby(MapTile[][] map, MapTile tile) {
+        List<MapTile> tilesNear = GameUtils.getTilesNear(map, tile);
+        MapTile lowestTile = tile;
+        for(MapTile mapTile : tilesNear){
+            if(lowestTile.height > mapTile.height){
+                lowestTile = mapTile;
+            }
+        }
+        return lowestTile;
+    }
+
+    private void addRiverHumidity(MapTile[][] map, MapTile tile) {
+        //TODO add humidity to tiles near river
     }
 
     private MapTile[][] generateTiles(int xSize, int ySize, Node[] nodes, List<StartPosition> starts) {
@@ -66,9 +103,10 @@ public class MapGenerator {
     }
 
     private void secureStartPositions(Node[] nodes, List<StartPosition> starts) {
+        Logger.log("Securing start positions");
         for(StartPosition s: starts){
             Node n = getClosestNode(nodes, s.x, s.y);
-            n.height = SEA_LEVEL + (SEA_LEVEL - PLAIN_LEVEL)/2;
+            n.height = SEA_LEVEL + (PLAIN_LEVEL - SEA_LEVEL)/2;
             n.humidity = 0;
         }
     }
@@ -81,6 +119,7 @@ public class MapGenerator {
         int centerY = (int) Math.floor(ySize/2);
         int maxIterations = players.size() * 10000;
         while (starts.size() < players.size()){
+            Logger.log("Generating start positions. Players left : " + players.size());
             maxIterations--;
             if(maxIterations < 1){
                 starts = new ArrayList<>(players.size());
@@ -88,11 +127,11 @@ public class MapGenerator {
                 Logger.log("Failed attempt to set places - restarting");
             }
             StartPosition newPos = new StartPosition(rand.nextInt(xSize), rand.nextInt(ySize), players.get(starts.size()));
-            boolean isValidPosition = GameUtils.distance(newPos.x, newPos.y, centerX, centerY) > safeCircle;
+            boolean isValidPosition = distance(newPos.x, newPos.y, centerX, centerY) > safeCircle;
             if(isValidPosition){
                 for(StartPosition position : starts){
                     if(position != null){
-                        if(GameUtils.distance(position.x, position.y, newPos.x, newPos.y) < MIN_START_DISTANCE){
+                        if(distance(position.x, position.y, newPos.x, newPos.y) < MIN_START_DISTANCE){
                             isValidPosition = false;
                             break;
                         }
@@ -107,8 +146,8 @@ public class MapGenerator {
     }
 
     private Node[] generateNodes(int xSize, int ySize) {
-        Logger.log("Generating terrain nodes");
         int nodeCount = (int)Math.ceil(xSize * ySize / NODE_SIZE);
+        Logger.log("Generating " + nodeCount + " terrain nodes");
         Node[] nodes = new Node[nodeCount];
         for(int i = 0; i < nodeCount; i++){
             while (true){
@@ -116,7 +155,7 @@ public class MapGenerator {
                 int y = rand.nextInt(ySize);
                 boolean validNode = true;
                 for (int j = 0; j < i; j++) {
-                    validNode = validNode && GameUtils.distance(x, y, nodes[j].x, nodes[j].y) >= MIN_NODE_DISTANCE;
+                    validNode = validNode && distance(x, y, nodes[j].x, nodes[j].y) >= MIN_NODE_DISTANCE;
                 }
                 if(validNode){
                     int height = rand.nextInt(MAX_HEIGHT);
@@ -125,10 +164,11 @@ public class MapGenerator {
                 }
             }
         }
-        return new Node[0];
+        return nodes;
     }
 
     private MapTile generateTile(int x, int y, Node[] nodes) {
+        Logger.log("Making tile at " + x + "," + y);
         MapTile tile = new MapTile();
         tile.explored = false;
         tile.building = null;
@@ -136,48 +176,60 @@ public class MapGenerator {
         tile.y = y;
         tile.height = calcTileHeight(tile, nodes);
         tile.humidity = calcTileHumidity(tile, nodes);
-        tile.terrainType = (x * y * rand.nextInt(100)) % 3 == 1 ? TerrainType.WATER : TerrainType.GRASS;
-        if (tile.terrainType.equals(TerrainType.GRASS)) {
-            if (rand.nextInt(100) < 10) {
-                tile.terrainType = TerrainType.TREE;
-            }
-        }
+        tile.terrainType = calcTerrainType(tile, nodes);
         return tile;
+    }
+
+    private TerrainType calcTerrainType(MapTile tile, Node[] nodes) {
+        Node node = getClosestNode(nodes, tile.x, tile.y);
+        if(node.height <= SEA_LEVEL) return TerrainType.WATER;
+        if(node.height <= PLAIN_LEVEL) return TerrainType.GRASS;
+        return TerrainType.TREE;
     }
 
     private double calcTileHumidity(MapTile tile, Node[] nodes) {
         double humidity = 0;
         for(Node n: nodes){
-            humidity += n.humidity / GameUtils.distance(tile.x, tile.y, n.x, n.y);
+            humidity += n.humidity / distance(tile.x, tile.y, n.x, n.y);
         }
         return humidity;
     }
 
     private double calcTileHeight(MapTile tile, Node[] nodes) {
-        if(nodes.length < 3){
+        if(nodes.length < 2){
             Node nearestNode = getClosestNode(nodes, tile.x, tile.y);
             return nearestNode.height + rand.nextDouble() * MAX_HEIGHT / 20 - MAX_HEIGHT / 40;
         }else{
-            List<Node> threeNodes = getThreeClosestNodes(nodes, tile);
-
-            //TODO get plane equation from 3 points
-            //TODO get tile height from plane equation
+            Node closest1 = nodes[0];
+            Node closest2 = nodes[1];
+            if(distance(closest1.x, closest1.y, tile.x, tile.y) > distance(closest2.x, closest2.y, tile.x, tile.y)){
+                closest1 = nodes[1];
+                closest2 = nodes[0];
+            }
+            for(int i = 2; i < nodes.length; i++){
+                if(distance(nodes[i].x, nodes[i].y, tile.x, tile.y) < distance(closest1.x, closest1.y, tile.x, tile.y)){
+                    closest2 = closest1;
+                    closest1 = nodes[i];
+                }else if(distance(nodes[i].x, nodes[i].y, tile.x, tile.y) < distance(closest2.x, closest2.y, tile.x, tile.y)){
+                    closest2 = nodes[i];
+                }
+            }
+            if(closest1.height > closest2.height){
+                return closest2.height + rand.nextDouble() * (closest2.height) / 20
+                        + distance(closest2.x, closest2.y, tile.x, tile.y) * (closest1.height - closest2.height)
+                        / distance(closest1.x, closest1.y, closest2.x, closest2.y);
+            }else{
+                return closest1.height + rand.nextDouble() * (closest1.height) / 20
+                        + distance(closest1.x, closest1.y, tile.x, tile.y) * (closest2.height - closest1.height)
+                        / distance(closest1.x, closest1.y, closest2.x, closest2.y);
+            }
         }
-        return 0;
-    }
-
-    private List<Node> getThreeClosestNodes(Node[] nodes, MapTile tile) {
-        List<Node> closestThree = new ArrayList<>(3);
-        for(Node node: nodes){
-
-        }
-        return null;
     }
 
     private Node getClosestNode(Node[] nodes, int x, int y) {
         Node closest = null;
         for(Node node:nodes){
-            if((closest == null) || (GameUtils.distance(closest.x, closest.y, x, y) > GameUtils.distance(node.x, node.y, x, y))){
+            if((closest == null) || (distance(closest.x, closest.y, x, y) > distance(node.x, node.y, x, y))){
                 closest = node;
             }
         }

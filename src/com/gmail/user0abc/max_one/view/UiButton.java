@@ -2,73 +2,39 @@ package com.gmail.user0abc.max_one.view;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import com.gmail.user0abc.max_one.model.actions.units.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.AbilityType;
 
 /**
  * Created by Sergey
  * at 11/12/14 8:59 PM
  */
 public class UiButton {
-    private Bitmap iconDisplay, iconPressed, iconDisabled, actionPlate;
-    private boolean enabled = true, pressed = false;
+    private Bitmap iconDisplay, actionPlate;
     private float posX, posY;
     private AbilityType abilityType;
 
 
-    public UiButton(Bitmap iconDisplay, Bitmap iconPressed, Bitmap iconDisabled, Bitmap actionPlate, float posX, float posY, AbilityType type) {
-        this.actionPlate = actionPlate;
+    public UiButton(Bitmap iconDisplay, Bitmap actionPlate, float posX, float posY, AbilityType type) {
         this.iconDisplay = iconDisplay;
-        this.iconPressed = iconPressed;
-        this.iconDisabled = iconDisabled;
+        this.actionPlate = actionPlate;
         this.posX = posX;
         this.posY = posY;
         abilityType = type;
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean newState) {
-        enabled = newState;
-    }
-
     public void display(Canvas c, float x, float y) {
         setPosX(x);
         setPosY(y);
-        c.drawBitmap(actionPlate, posX, posY, null);
-        c.drawBitmap(getBitmap(), posX, posY, null);
+        display(c);
     }
 
     public void display(Canvas c) {
         c.drawBitmap(actionPlate, posX, posY, null);
-        c.drawBitmap(getBitmap(), posX, posY, null);
+        c.drawBitmap(iconDisplay, posX, posY, null);
     }
 
     public AbilityType getAbilityType() {
         return abilityType;
-    }
-
-    public void setAbilityType(AbilityType abilityType) {
-        this.abilityType = abilityType;
-    }
-
-    public void setIcons(Bitmap display, Bitmap pressed, Bitmap disabled) {
-        iconDisplay = display;
-        iconPressed = pressed;
-        iconDisabled = disabled;
-    }
-
-    private Bitmap getBitmap() {
-        if (enabled) {
-            if (pressed) {
-                return iconPressed;
-            } else {
-                return iconDisplay;
-            }
-        } else {
-            return iconDisabled;
-        }
     }
 
     public boolean isHit(float x, float y) {
@@ -87,7 +53,13 @@ public class UiButton {
         this.posY = posY;
     }
 
-    public void setPressed(boolean pressed) {
-        this.pressed = pressed;
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("UiButton{");
+        sb.append("posX=").append(posX);
+        sb.append(", posY=").append(posY);
+        sb.append(", abilityType=").append(abilityType);
+        sb.append('}');
+        return sb.toString();
     }
 }

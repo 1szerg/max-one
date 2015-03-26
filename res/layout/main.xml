@@ -1,33 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+              android:orientation="horizontal"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
               android:weightSum="1">
-    <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/hello_string"
-            />
     <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dp" android:layout_weight="0.77">
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/map_gen_settings">
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/start_game_lbl"
+                    android:id="@+id/start_gen_btn" android:layout_gravity="top|left|center_vertical" android:enabled="true"
+                    android:onClick="newGame" android:clickable="true"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="15"
+                    android:id="@+id/field_size" android:autoText="false" android:textStyle="bold"/>
+            <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/map_size_seek_bar" android:clickable="true" android:max="@integer/max_map_size"
+                    android:progress="@integer/map_size_select_step" android:onClick="onMapSizeChange"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" android:id="@+id/gen_progress_display_frame">
+            <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/gen_progress_bar"/>
+        </LinearLayout>
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent" android:id="@+id/saves_panel">
-            <Button
-                    android:layout_width="240dp"
+                android:layout_height="fill_parent" android:id="@+id/saved_games_panel">
+            <ListView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/start_game_lbl"
-                    android:id="@+id/button" android:layout_gravity="left|center_vertical" android:enabled="true"
-                    android:onClick="newGame"/>
-            <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent" android:id="@+id/saves_list">
-            </LinearLayout>
+                    android:id="@+id/saved_games_list"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

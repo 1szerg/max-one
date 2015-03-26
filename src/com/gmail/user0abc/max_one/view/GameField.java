@@ -31,7 +31,7 @@ public class GameField extends SurfaceView {
     Integer selectedTileX, selectedTileY;
     private List<MotionEvent> recordedEvents = new ArrayList<>();
     private Bitmap grass, water, worker, selection, tree, coin, apple, tint, camp, warrior, barbarian, ship;
-    private Bitmap endTurn, actionPlate, actionMove, actionWait, actionRemove, actionClean, actionAttack,
+    private Bitmap endTurn, endTurnDisabled, actionPlate, actionMove, actionWait, actionRemove, actionClean, actionAttack,
             actionDelete, actionTown, actionFarm, actionTrade;
     private GameController gameController;
     private List<UiButton> uiButtons = new ArrayList<>();
@@ -77,6 +77,7 @@ public class GameField extends SurfaceView {
         camp = BitmapFactory.decodeResource(getResources(), R.drawable.camp);
         actionPlate = BitmapFactory.decodeResource(getResources(), R.drawable.action_plate);
         endTurn = BitmapFactory.decodeResource(getResources(), R.drawable.end_turn);
+        endTurnDisabled = BitmapFactory.decodeResource(getResources(), R.drawable.end_turn_d);
         actionMove = BitmapFactory.decodeResource(getResources(), R.drawable.walk);
         actionWait = BitmapFactory.decodeResource(getResources(), R.drawable.wait);
         actionRemove = BitmapFactory.decodeResource(getResources(), R.drawable.remove_building);
@@ -101,8 +102,6 @@ public class GameField extends SurfaceView {
             return false;
         }
         Logger.log("Event: " + event.toString());
-
-
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 recordedEvents = new ArrayList<>();
@@ -197,7 +196,7 @@ public class GameField extends SurfaceView {
         float y = canvas.getHeight() - 4 - endTurn.getHeight();
         UiButton endTurnButton = new UiButton(endTurn, endTurn, x, y, AbilityType.END_TURN);
         uiButtons.add(endTurnButton);
-        canvas.drawBitmap(endTurn, x, y, null);
+        canvas.drawBitmap(gameController.isEndTurnEnabled ? endTurn : endTurnDisabled, x, y, null);
     }
 
     private void drawUnitInfo(Canvas canvas) {

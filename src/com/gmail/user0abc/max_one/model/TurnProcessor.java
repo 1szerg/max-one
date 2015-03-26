@@ -34,8 +34,8 @@ public class TurnProcessor {
     }
 
     public void calculatePlayerBalances() {
-        int foodBalance = 1;
-        int goldBalance = 1;
+        int foodBalance = 0;
+        int goldBalance = 0;
         for (int x = 0; x < game.map.length; x++) {
             for (int y = 0; y < game.map[x].length; y++) {
                 foodBalance += getFoodCosts(game.map[x][y], game.currentPlayer);

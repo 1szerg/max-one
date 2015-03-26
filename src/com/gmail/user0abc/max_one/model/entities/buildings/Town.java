@@ -26,7 +26,7 @@ public class Town extends Building {
 
     @Override
     public int getApplesProduction() {
-        return 1;
+        return 0;
     }
 
     @Override

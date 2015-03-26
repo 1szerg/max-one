@@ -68,6 +68,9 @@ public class MoveAction extends Ability implements TileSelectReceiver {
             if (dist.compareTo(walkingUnit.getActionPoints()) <= 0) {
                 moveUnit(walkingUnit, location, nextTile);
                 walkingUnit.setActionPoints(walkingUnit.getActionPoints() - dist);
+                if(nextTile.equals(destination)){
+                    walkingUnit.setCurrentAction(null);
+                }
                 return !nextTile.equals(destination);
             }
         }
@@ -75,9 +78,7 @@ public class MoveAction extends Ability implements TileSelectReceiver {
     }
 
     private double dist(MapTile start, MapTile nextTile) {
-        double dX = nextTile.x - start.x;
-        double dY = nextTile.y - start.y;
-        return Math.sqrt(dX * dX + dY * dY);
+        return GameUtils.distance(start.x, start.y, nextTile.x, nextTile.y);
     }
 
     private MapTile getNextTileInPath(MapTile destination, MapTile location) {

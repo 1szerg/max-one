@@ -21,6 +21,7 @@ public class MapGenerator {
     private static final double SPAWN_FREE_RADIUS = 0.33, MIN_START_DISTANCE = 5.0;
     private static final double DESERT_HUMIDITY = 25.0;
     private Random rand;
+    private MapGeneratorProgressDisplay progressDisplay;
 
     public MapGenerator(Random randGen) {
         rand = randGen;
@@ -48,13 +49,17 @@ public class MapGenerator {
         }
     }
 
-    public MapTile[][] generateTerrain(int xSize, int ySize, List<Player> players) {
+    public MapTile[][] generateTerrain(int xSize, int ySize, List<Player> players, MapGeneratorProgressDisplay display) {
         Logger.log("Generating map");
+        progressDisplay = display;
         Node[] nodes = generateNodes(xSize, ySize);
+        progressDisplay.updateDisplay(1);
         List<StartPosition> starts = generateStarts(players, xSize, ySize);
         secureStartPositions(nodes, starts);
+        progressDisplay.updateDisplay(2);
         MapTile[][] map = generateTiles(xSize, ySize, nodes, starts);
         dropRivers((int) Math.ceil(xSize*ySize/50), map);
+        progressDisplay.updateDisplay(99);
         placeStartPositions(map, starts);
         return map;
     }
@@ -95,6 +100,7 @@ public class MapGenerator {
         Logger.log("Generating tiles");
         MapTile[][] map = new MapTile[xSize][ySize];
         for (int x = 0; x < xSize; x++) {
+            progressDisplay.updateDisplay( 10 + (int)(Math.floor(90 * x / xSize)) );
             for (int y = 0; y < ySize; y++) {
                 map[x][y] = generateTile(x, y, nodes);
             }

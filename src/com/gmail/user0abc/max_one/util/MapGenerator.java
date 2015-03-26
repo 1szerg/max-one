@@ -7,7 +7,6 @@ import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -17,9 +16,9 @@ import static com.gmail.user0abc.max_one.util.GameUtils.distance;
 public class MapGenerator {
     private static final int NODE_SIZE = 30;
     private static final double MIN_NODE_DISTANCE = 3.0;
-    private static final int MAX_HEIGHT = 100, SEA_LEVEL = 33, PLAIN_LEVEL = 66, HILL_LEVEL = 90;
+    private static final int MAX_HEIGHT = 100, SEA_LEVEL = 33, PLAIN_LEVEL = 66, HILL_LEVEL = 95;
     private static final double SPAWN_FREE_RADIUS = 0.33, MIN_START_DISTANCE = 5.0;
-    private static final double DESERT_HUMIDITY = 25.0;
+    private static final double DESERT_HUMIDITY = 33.0;
     private Random rand;
     private MapGeneratorProgressDisplay progressDisplay;
 
@@ -122,7 +121,7 @@ public class MapGenerator {
         List<StartPosition> starts = new ArrayList<>(players.size());
         double safeCircle = Math.min(SPAWN_FREE_RADIUS * xSize / 2, SPAWN_FREE_RADIUS * ySize / 2);
         int centerX = (int) Math.floor(xSize/2);
-        int centerY = (int) Math.floor(ySize/2);
+        int centerY = (int) Math.floor(ySize / 2);
         int maxIterations = players.size() * 10000;
         while (starts.size() < players.size()){
             Logger.log("Generating start positions. Players left : " + players.size());
@@ -189,14 +188,25 @@ public class MapGenerator {
     private TerrainType calcTerrainType(MapTile tile, Node[] nodes) {
         Node node = getClosestNode(nodes, tile.x, tile.y);
         if(node.height <= SEA_LEVEL) return TerrainType.WATER;
-        if(node.height <= PLAIN_LEVEL) return TerrainType.GRASS;
-        return TerrainType.TREE;
+        if(node.height <= SEA_LEVEL + 2) return TerrainType.SAND;
+        if (node.height <= PLAIN_LEVEL) {
+            if (tile.humidity > DESERT_HUMIDITY) return TerrainType.GRASS;
+            else return TerrainType.SAND;
+        }
+        if(tile.height > HILL_LEVEL)return TerrainType.PEAK;
+        if(tile.humidity > DESERT_HUMIDITY)return TerrainType.TREE;
+        return TerrainType.HILL;
     }
 
     private double calcTileHumidity(MapTile tile, Node[] nodes) {
         double humidity = 0;
         for(Node n: nodes){
-            humidity += n.humidity / distance(tile.x, tile.y, n.x, n.y);
+            double d = distance(tile.x, tile.y, n.x, n.y);
+            if(Double.compare(d, 0) == 0){
+                humidity += n.humidity;
+            }else if(Double.compare(d, 10) < 0){
+                humidity += n.humidity / d;
+            }
         }
         return humidity;
     }

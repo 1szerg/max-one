@@ -3,14 +3,14 @@ package com.gmail.user0abc.max_one.model.entities.units;
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.Attack;
-import com.gmail.user0abc.max_one.model.actions.AttackType;
 import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
 import com.gmail.user0abc.max_one.model.entities.Protection;
 import com.gmail.user0abc.max_one.model.entities.ProtectionFactory;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Sergey
@@ -27,7 +27,7 @@ public class Worker extends Unit {
 
     @Override
     public List<TerrainType> getPassableTerrain() {
-        return Arrays.asList(TerrainType.GRASS, TerrainType.TREE);
+        return Arrays.asList(TerrainType.GRASS, TerrainType.TREE, TerrainType.HILL, TerrainType.SAND);
     }
 
     @Override

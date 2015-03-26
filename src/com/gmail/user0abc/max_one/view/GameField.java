@@ -30,7 +30,7 @@ public class GameField extends SurfaceView {
     float mapOffsetX = 0, mapOffsetY = 0;
     Integer selectedTileX, selectedTileY;
     private List<MotionEvent> recordedEvents = new ArrayList<>();
-    private Bitmap grass, water, worker, selection, tree, coin, apple, tint, camp, warrior, barbarian, ship;
+    private Bitmap grass, water, worker, selection, tree, coin, apple, tint, camp, warrior, barbarian, ship, peak, hill, sand;
     private Bitmap endTurn, endTurnDisabled, actionPlate, actionMove, actionWait, actionRemove, actionClean, actionAttack,
             actionDelete, actionTown, actionFarm, actionTrade;
     private GameController gameController;
@@ -87,6 +87,9 @@ public class GameField extends SurfaceView {
         actionTown = BitmapFactory.decodeResource(getResources(), R.drawable.town);
         actionFarm = BitmapFactory.decodeResource(getResources(), R.drawable.farm);
         actionTrade = BitmapFactory.decodeResource(getResources(), R.drawable.trade);
+        peak  = BitmapFactory.decodeResource(getResources(), R.drawable.peak);
+        hill = BitmapFactory.decodeResource(getResources(), R.drawable.hill);
+        sand = BitmapFactory.decodeResource(getResources(), R.drawable.sand);
 
     }
 
@@ -297,6 +300,16 @@ public class GameField extends SurfaceView {
                             canvas.drawBitmap(grass, x, y, null);
                             canvas.drawBitmap(tree, x, y, null);
                             break;
+                        case HILL:
+                            canvas.drawBitmap(hill, x, y, null);
+                            break;
+                        case PEAK:
+                            canvas.drawBitmap(peak, x, y, null);
+                            break;
+                        case SAND:
+                            canvas.drawBitmap(sand, x, y, null);
+                            break;
+
                     }
                     // draw buildings
                     if (tile.building != null) {

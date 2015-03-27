@@ -7,6 +7,7 @@ import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -95,14 +96,30 @@ public class MapGenerator {
         //TODO add humidity to tiles near river
     }
 
-    private MapTile[][] generateTiles(int xSize, int ySize, Node[] nodes, List<StartPosition> starts) {
+    private MapTile[][] generateTiles(int xSize, final int ySize, final Node[] nodes, List<StartPosition> starts) {
         Logger.log("Generating tiles");
-        MapTile[][] map = new MapTile[xSize][ySize];
+        final MapTile[][] map = new MapTile[xSize][ySize];
+        final int[] progress = new int[xSize];
+        Arrays.fill(progress, 0);
         for (int x = 0; x < xSize; x++) {
+            final int cX = x;
+            ThreadManager.runThread(new ThreadPayload() {
+                @Override
+                public void work() {
+                    for (int y = 0; y < ySize; y++) {
+                        map[cX][y] = generateTile(cX, y, nodes);
+                        progress[cX] = y + 1;
+                    }
+                }
+            });
             progressDisplay.updateDisplay( 10 + (int)(Math.floor(90 * x / xSize)) );
-            for (int y = 0; y < ySize; y++) {
-                map[x][y] = generateTile(x, y, nodes);
-            }
+        }
+        int totalSize = xSize * ySize;
+        while (true){
+            int progr = 0;
+            for(int p : progress) progr += p;
+            progressDisplay.updateDisplay( 10 + (int)(Math.floor(90 * progr / totalSize)) );
+            if(progr == totalSize) break;
         }
         return map;
     }
@@ -173,7 +190,6 @@ public class MapGenerator {
     }
 
     private MapTile generateTile(int x, int y, Node[] nodes) {
-        Logger.log("Making tile at " + x + "," + y);
         MapTile tile = new MapTile();
         tile.explored = false;
         tile.building = null;

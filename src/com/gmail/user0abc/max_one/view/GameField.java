@@ -13,6 +13,7 @@ import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.ActionButton;
 import com.gmail.user0abc.max_one.model.entities.buildings.BuildingType;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
+import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 import com.gmail.user0abc.max_one.model.terrain.TileFeatureType;
 import com.gmail.user0abc.max_one.util.Logger;
 
@@ -33,6 +34,9 @@ public class GameField extends SurfaceView {
     private Bitmap grass, water, worker, selection, tree, coin, apple, tint, camp, warrior, barbarian, ship, peak, hill, sand;
     private Bitmap endTurn, endTurnDisabled, actionPlate, actionMove, actionWait, actionRemove, actionClean, actionAttack,
             actionDelete, actionTown, actionFarm, actionTrade;
+    private Bitmap water_corner_nw, water_corner_ne, water_corner_se, water_corner_sw;
+    private Bitmap grass_corner_nw, grass_corner_ne, grass_corner_se, grass_corner_sw;
+    private Bitmap sand_corner_nw, sand_corner_ne, sand_corner_se, sand_corner_sw;
     private GameController gameController;
     private List<UiButton> uiButtons = new ArrayList<>();
     private int screenX, screenY;
@@ -90,6 +94,18 @@ public class GameField extends SurfaceView {
         peak  = BitmapFactory.decodeResource(getResources(), R.drawable.peak);
         hill = BitmapFactory.decodeResource(getResources(), R.drawable.hill);
         sand = BitmapFactory.decodeResource(getResources(), R.drawable.sand);
+        water_corner_nw = BitmapFactory.decodeResource(getResources(), R.drawable.w_corn_nw);
+        water_corner_ne = BitmapFactory.decodeResource(getResources(), R.drawable.w_corn_ne);
+        water_corner_se = BitmapFactory.decodeResource(getResources(), R.drawable.w_corn_se);
+        water_corner_sw = BitmapFactory.decodeResource(getResources(), R.drawable.w_corn_sw);
+        grass_corner_nw = BitmapFactory.decodeResource(getResources(), R.drawable.g_corn_nw);
+        grass_corner_ne = BitmapFactory.decodeResource(getResources(), R.drawable.g_corn_ne);
+        grass_corner_se = BitmapFactory.decodeResource(getResources(), R.drawable.g_corn_se);
+        grass_corner_sw = BitmapFactory.decodeResource(getResources(), R.drawable.g_corn_sw);
+        sand_corner_nw = BitmapFactory.decodeResource(getResources(), R.drawable.s_corn_nw);
+        sand_corner_ne = BitmapFactory.decodeResource(getResources(), R.drawable.s_corn_ne);
+        sand_corner_se = BitmapFactory.decodeResource(getResources(), R.drawable.s_corn_se);
+        sand_corner_sw = BitmapFactory.decodeResource(getResources(), R.drawable.s_corn_sw);
 
     }
 
@@ -311,6 +327,8 @@ public class GameField extends SurfaceView {
                             break;
 
                     }
+                    //smooth edges
+                    smoothTileEdges(canvas, gameController.getMap(), posX, posY, x, y);
                     // draw buildings
                     if (tile.building != null) {
                         canvas.drawBitmap(getBuildingImage(tile.building.getBuildingType()), x, y, null);
@@ -334,6 +352,68 @@ public class GameField extends SurfaceView {
             float x = selectedTileX * grass.getWidth() + mapOffsetX;
             float y = selectedTileY * grass.getHeight() + mapOffsetY;
             canvas.drawBitmap(selection, x, y, null);
+        }
+    }
+
+    private void smoothTileEdges(Canvas canvas, MapTile[][] map, int posX, int posY, float x, float y) {
+        MapTile n = null, s = null, e = null, w = null;
+        if (posX > 0) w = map[posX - 1][posY];
+        if (posX < (map.length - 1)) e = map[posX + 1][posY];
+        if (posY > 0) n = map[posX][posY - 1];
+        if (posY < (map[posX].length - 1)) s = map[posX][posY + 1];
+        if (!map[posX][posY].terrainType.equals(TerrainType.WATER)) {
+            if (n != null && e != null && n.terrainType.equals(TerrainType.WATER) && e.terrainType.equals(TerrainType.WATER)) {
+                canvas.drawBitmap(water_corner_ne, x, y, null);
+            }
+            if (n != null && w != null && n.terrainType.equals(TerrainType.WATER) && w.terrainType.equals(TerrainType.WATER)) {
+                canvas.drawBitmap(water_corner_nw, x, y, null);
+            }
+            if (s != null && w != null && s.terrainType.equals(TerrainType.WATER) && w.terrainType.equals(TerrainType.WATER)) {
+                canvas.drawBitmap(water_corner_sw, x, y, null);
+            }
+            if (s != null && e != null && s.terrainType.equals(TerrainType.WATER) && e.terrainType.equals(TerrainType.WATER)) {
+                canvas.drawBitmap(water_corner_se, x, y, null);
+            }
+        }
+        if (!map[posX][posY].terrainType.equals(TerrainType.SAND)) {
+            if (n != null && e != null && n.terrainType.equals(TerrainType.SAND) && e.terrainType.equals(TerrainType.SAND)
+                    && !map[posX][posY].terrainType.equals(map[posX+1][posY-1].terrainType)) {
+                canvas.drawBitmap(sand_corner_ne, x, y, null);
+            }
+            if (n != null && w != null && n.terrainType.equals(TerrainType.SAND) && w.terrainType.equals(TerrainType.SAND)
+                    && !map[posX][posY].terrainType.equals(map[posX-1][posY-1].terrainType)) {
+                canvas.drawBitmap(sand_corner_nw, x, y, null);
+            }
+            if (s != null && w != null && s.terrainType.equals(TerrainType.SAND) && w.terrainType.equals(TerrainType.SAND)
+                    && !map[posX][posY].terrainType.equals(map[posX-1][posY+1].terrainType)) {
+                canvas.drawBitmap(sand_corner_sw, x, y, null);
+            }
+            if (s != null && e != null && s.terrainType.equals(TerrainType.SAND) && e.terrainType.equals(TerrainType.SAND)
+                    && !map[posX][posY].terrainType.equals(map[posX+1][posY+1].terrainType)) {
+                canvas.drawBitmap(sand_corner_se, x, y, null);
+            }
+        }
+        if (map[posX][posY].terrainType.equals(TerrainType.WATER) || map[posX][posY].terrainType.equals(TerrainType.SAND)) {
+            if (n != null && e != null && !n.terrainType.equals(TerrainType.WATER) && !n.terrainType.equals(TerrainType.SAND)
+                    && !e.terrainType.equals(TerrainType.WATER) && !e.terrainType.equals(TerrainType.SAND)
+                    && !map[posX][posY].terrainType.equals(map[posX+1][posY-1].terrainType)) {
+                canvas.drawBitmap(grass_corner_ne, x, y, null);
+            }
+            if (n != null && w != null && !n.terrainType.equals(TerrainType.WATER) && !n.terrainType.equals(TerrainType.SAND)
+                    && !w.terrainType.equals(TerrainType.WATER) && !w.terrainType.equals(TerrainType.SAND)
+                    && !map[posX][posY].terrainType.equals(map[posX-1][posY-1].terrainType)) {
+                canvas.drawBitmap(grass_corner_nw, x, y, null);
+            }
+            if (s != null && w != null && !s.terrainType.equals(TerrainType.WATER) && !s.terrainType.equals(TerrainType.SAND)
+                    && !w.terrainType.equals(TerrainType.WATER) && !w.terrainType.equals(TerrainType.SAND)
+                    && !map[posX][posY].terrainType.equals(map[posX-1][posY+1].terrainType)) {
+                canvas.drawBitmap(grass_corner_sw, x, y, null);
+            }
+            if (s != null && e != null && !s.terrainType.equals(TerrainType.WATER) && !s.terrainType.equals(TerrainType.SAND)
+                    && !e.terrainType.equals(TerrainType.WATER) && !e.terrainType.equals(TerrainType.SAND)
+                    && !map[posX][posY].terrainType.equals(map[posX+1][posY+1].terrainType)) {
+                canvas.drawBitmap(grass_corner_se, x, y, null);
+            }
         }
     }
 

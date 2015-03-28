@@ -98,6 +98,7 @@ public class GameController extends Activity {
     }
 
     public void onTileSelect(MapTile tile) {
+        Logger.log("Selected tile " + tile);
         if (tileSelectHandler != null) {
             tileSelectHandler.onTileSelect(tile);
             tileSelectHandler = null;

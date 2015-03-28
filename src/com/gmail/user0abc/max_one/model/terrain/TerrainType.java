@@ -6,5 +6,8 @@ package com.gmail.user0abc.max_one.model.terrain;
 public enum TerrainType {
     GRASS,
     WATER,
-    TREE
+    TREE,
+    SAND,
+    HILL,
+    PEAK
 }

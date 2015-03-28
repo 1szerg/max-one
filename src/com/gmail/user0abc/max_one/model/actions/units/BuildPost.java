@@ -16,7 +16,7 @@ public class BuildPost extends MakeBuilding {
 
     @Override
     protected List<TerrainType> getApplicableTerrains() {
-        return Arrays.asList(TerrainType.GRASS);
+        return Arrays.asList(TerrainType.GRASS, TerrainType.SAND, TerrainType.HILL);
     }
 
     @Override

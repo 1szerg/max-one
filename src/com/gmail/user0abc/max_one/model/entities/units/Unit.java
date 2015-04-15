@@ -1,6 +1,5 @@
 package com.gmail.user0abc.max_one.model.entities.units;
 
-import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
@@ -16,7 +15,6 @@ import java.util.List;
 /*Created by sergii.ivanov on 10/24/2014.*/
 public abstract class Unit extends Entity implements Serializable {
     protected Player owner;
-    protected int maxActionPoints;
 
     public abstract UnitType getUnitType();
 
@@ -55,8 +53,6 @@ public abstract class Unit extends Entity implements Serializable {
 
     ;
 
-    public abstract void executeAction(AbilityType abilityType, GameContainer game, MapTile tile);
-
     public ActionStatus getActionStatus(AbilityType abilityType) {
         if (currentAction == null && isAbilityAvailable(abilityType)) {
             return ActionStatus.AVAILABLE;
@@ -65,14 +61,6 @@ public abstract class Unit extends Entity implements Serializable {
             return ActionStatus.ACTIVE;
         }
         return ActionStatus.DISABLED;
-    }
-
-    public void setMaxActionPoints(int maxActionPoints) {
-        this.maxActionPoints = maxActionPoints;
-    }
-
-    public int getMaxActionPoints() {
-        return maxActionPoints;
     }
 
     @Override

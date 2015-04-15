@@ -43,6 +43,12 @@ public class MoveAction extends Ability implements TileSelectReceiver {
     }
 
     @Override
+    public boolean execute() {
+        walk();
+        return walkingUnit.getCurrentTile().equals(destination);
+    }
+
+    @Override
     public AbilityType getType() {
         return AbilityType.MOVE_ACTION;
     }
@@ -57,7 +63,7 @@ public class MoveAction extends Ability implements TileSelectReceiver {
     private void walk() {
         while (makeStep()) {
             Logger.log("Unit " + walkingUnit + " is walking ");
-            GameUtils.sleep(250);
+            GameUtils.sleep(50);
         }
     }
 

@@ -9,6 +9,7 @@ public class Player implements Serializable {
     private int gold;
     public int banner;
     public AiProcessor aiProcessor;
+    private boolean stillInGame = true;
 
     public Player() {
     }
@@ -41,5 +42,13 @@ public class Player implements Serializable {
         final StringBuilder sb = new StringBuilder("Player");
         sb.append(" ").append(banner);
         return sb.toString();
+    }
+
+    public void setDead() {
+        stillInGame = false;
+    }
+
+    public boolean isStillInGame() {
+        return stillInGame;
     }
 }

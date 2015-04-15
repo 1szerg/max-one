@@ -12,14 +12,13 @@ import com.gmail.user0abc.max_one.model.entities.Entity;
 import com.gmail.user0abc.max_one.model.entities.buildings.Building;
 import com.gmail.user0abc.max_one.model.entities.units.Unit;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
+import com.gmail.user0abc.max_one.util.GameStorage;
 import com.gmail.user0abc.max_one.util.Logger;
-import com.gmail.user0abc.max_one.util.ThreadEndListener;
-import com.gmail.user0abc.max_one.util.ThreadManager;
-import com.gmail.user0abc.max_one.util.ThreadPayload;
 import com.gmail.user0abc.max_one.view.GameField;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static com.gmail.user0abc.max_one.util.GameStorage.getStorage;
 
@@ -50,7 +49,6 @@ public class GameController extends Activity {
         gameField = new GameField(this);
         setContentView(gameField);
         getStorage().getGame().currentPlayer = getStorage().getGame().players.get(0);
-        turnProcessor = new TurnProcessor(getStorage().getGame());
         onStartTurn();
     }
 
@@ -68,33 +66,33 @@ public class GameController extends Activity {
 
     private void onStartTurn() {
         gameField.clearCommands();
-        if(getStorage().getGame().currentPlayer.isAi){
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    turnProcessor.onStart();
-                    Logger.log("Ai move processing for player "
-                            + getStorage().getGame().players.indexOf(getStorage().getGame().currentPlayer));
-                    getStorage().getGame().currentPlayer.aiProcessor.makeTurn(getStorage().getGame());
-                    turnProcessor.onFinish();
-                    refreshMap();
-
+        if(getStorage().getGame().currentPlayer.isStillInGame()){
+            TurnProcessor turn = new TurnProcessor();
+            turn.execute(GameStorage.getStorage().getGame().currentPlayer);
+            try {
+                if(turn.get()){
                     onStartTurn();
                 }
-            }).start();
+            } catch (InterruptedException e) {
+                Logger.log("ERROR: turn interrupted. Reason: "+e.getLocalizedMessage());
+            } catch (ExecutionException e) {
+                Logger.log("ERROR: turn execution failed. Reason: " + e.getLocalizedMessage());
+            }
         }else{
-            ThreadManager.runThread(new ThreadPayload() {
-                @Override
-                public void work() {
-                    turnProcessor.onStart();
-                }
-            }, new ThreadEndListener() {
-                @Override
-                public void onThreadFinished(ThreadPayload finishedWork) {
-                    isEndTurnEnabled = true;
-                }
-            });
+            if(GameStorage.getStorage().getGame().nonAiPlayersLeft() == 0) {
+                initiateGameLost();
+            } else if(GameStorage.getStorage().getGame().playersLeft() == 1){
+                initiateGameWon();
+            }
         }
+    }
+
+    private void initiateGameLost() {
+        //TODO - process game lost
+    }
+
+    private void initiateGameWon() {
+        //TODO - process game won
     }
 
     public void onTileSelect(MapTile tile) {
@@ -176,6 +174,11 @@ public class GameController extends Activity {
         });
     }
 
+    public void refreshTiles(MapTile... tiles) {
+        //TODO - implement refreshing of specific map tiles
+    }
+
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -186,5 +189,9 @@ public class GameController extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Logger.log("onActivityResult requestCode = "+requestCode);
         Logger.log("onActivityResult intent = "+data.toString());
+    }
+
+    private void onGameEnd(){
+
     }
 }

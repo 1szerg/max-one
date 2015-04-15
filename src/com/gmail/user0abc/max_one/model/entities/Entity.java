@@ -1,5 +1,6 @@
 package com.gmail.user0abc.max_one.model.entities;/*Created by Sergey on 3/7/2015.*/
 
+import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
@@ -20,6 +21,7 @@ public abstract class Entity {
     protected int goldCost;
     protected Player owner;
     protected double actionPoints;
+    protected int maxActionPoints;
 
     public boolean isAbilityAvailable(AbilityType abilityType) {
         return ActionFactory.isActionAvailable(abilityType, this);
@@ -45,6 +47,10 @@ public abstract class Entity {
 
     public void setCurrentAction(Ability currentAction) {
         this.currentAction = currentAction;
+    }
+
+    public Ability getCurrentAction() {
+        return currentAction;
     }
 
     public int getApplesCost() {
@@ -79,6 +85,8 @@ public abstract class Entity {
         this.actionPoints = actionPoints;
     }
 
+    public abstract void executeAction(AbilityType abilityType, GameContainer gameContainer, MapTile tile);
+
     public void setCurrentTile(MapTile currentTile) {
         this.currentTile = currentTile;
     }
@@ -109,4 +117,11 @@ public abstract class Entity {
         this.health = health;
     }
 
+    public void setMaxActionPoints(int maxActionPoints) {
+        this.maxActionPoints = maxActionPoints;
+    }
+
+    public int getMaxActionPoints() {
+        return maxActionPoints;
+    }
 }

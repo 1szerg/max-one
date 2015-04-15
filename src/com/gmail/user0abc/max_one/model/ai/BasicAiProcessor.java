@@ -8,7 +8,7 @@ import com.gmail.user0abc.max_one.util.GameUtils;
 public class BasicAiProcessor implements AiProcessor {
 
     @Override
-    public void makeTurn(GameContainer game) {
+    public void manageTasks(GameContainer game) {
         GameUtils.sleep(1000);
         // todo - implement turn logic
     }

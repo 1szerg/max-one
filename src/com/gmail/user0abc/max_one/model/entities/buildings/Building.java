@@ -1,7 +1,6 @@
 package com.gmail.user0abc.max_one.model.entities.buildings;
 
 import com.gmail.user0abc.max_one.model.GameContainer;
-import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
 import com.gmail.user0abc.max_one.model.entities.Entity;
@@ -15,10 +14,6 @@ public abstract class Building extends Entity implements Serializable {
     protected MapTile currentTile;
 
     public Building() {
-    }
-
-    public void executeAction(AbilityType abilityType, GameContainer gameContainer, MapTile tile) {
-        ActionFactory.createAction(abilityType).execute(gameContainer, tile);
     }
 
     public BuildingType getBuildingType() {
@@ -35,6 +30,12 @@ public abstract class Building extends Entity implements Serializable {
 
     public int getGoldProduction() {
         return 0;
+    }
+
+    @Override
+    public void executeAction(AbilityType abilityType, GameContainer gameContainer, MapTile tile) {
+        currentAction = ActionFactory.createAction(abilityType);
+        currentAction.execute(gameContainer, tile);
     }
 
     @Override

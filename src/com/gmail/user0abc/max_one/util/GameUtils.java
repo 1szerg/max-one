@@ -3,6 +3,7 @@ package com.gmail.user0abc.max_one.util;
 import android.graphics.Color;
 import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.ai.BasicAiProcessor;
+import com.gmail.user0abc.max_one.model.entities.Entity;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 
 import java.util.ArrayList;
@@ -59,5 +60,25 @@ public class GameUtils {
             }
         }
         return result;
+    }
+
+    public static Map<Player, List<Entity>> scanMap(MapTile[][] map) {
+        Map<Player, List<Entity>> entities = new HashMap<>();
+        for(int x = 0; x < map.length; x++){
+            for(int y = 0; y < map[0].length; y++){
+                if(map[x][y].building != null){
+                    addToScan(entities, map[x][y].building);
+                }
+                if(map[x][y].unit != null){
+                    addToScan(entities, map[x][y].unit);
+                }
+            }
+        }
+        return entities;
+    }
+
+    private static void addToScan(Map<Player, List<Entity>> mapScan, Entity entity) {
+        if(!mapScan.containsKey(entity.getOwner())) mapScan.put(entity.getOwner(),new ArrayList<Entity>());
+        mapScan.get(entity.getOwner()).add(entity);
     }
 }

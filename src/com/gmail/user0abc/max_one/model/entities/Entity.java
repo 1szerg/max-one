@@ -22,6 +22,8 @@ public abstract class Entity {
     protected Player owner;
     protected double actionPoints;
     protected int maxActionPoints;
+    protected double visionRadius;
+    protected boolean isAlive = true;
 
     public boolean isAbilityAvailable(AbilityType abilityType) {
         return ActionFactory.isActionAvailable(abilityType, this);
@@ -38,7 +40,8 @@ public abstract class Entity {
         }
         health -= attack.getAttackStrength() / protectionRate;
         Logger.log("ATTACK: " + this + " Health left " + Double.toString(health));
-        return health > 0;
+        isAlive = health > 0;
+        return isAlive;
     }
 
     public MapTile getCurrentTile() {
@@ -123,5 +126,17 @@ public abstract class Entity {
 
     public int getMaxActionPoints() {
         return maxActionPoints;
+    }
+
+    public double getVisionRadius() {
+        return visionRadius;
+    }
+
+    public void setVisionRadius(double visionRadius) {
+        this.visionRadius = visionRadius;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
     }
 }

@@ -12,6 +12,7 @@ import java.io.Serializable;
 public abstract class Building extends Entity implements Serializable {
     protected BuildingType buildingType;
     protected MapTile currentTile;
+    protected int goldProduction = 0, foodProduction = 0;
 
     public Building() {
     }
@@ -24,12 +25,12 @@ public abstract class Building extends Entity implements Serializable {
         currentTile = mapTile;
     }
 
-    public int getApplesProduction() {
-        return 0;
+    public int getFoodProduction() {
+        return foodProduction;
     }
 
     public int getGoldProduction() {
-        return 0;
+        return goldProduction;
     }
 
     @Override

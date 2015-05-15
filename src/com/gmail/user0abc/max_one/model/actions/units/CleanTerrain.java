@@ -7,7 +7,6 @@ import com.gmail.user0abc.max_one.model.entities.Entity;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,6 +31,11 @@ public class CleanTerrain extends Ability {
     @Override
     public AbilityType getType() {
         return AbilityType.CLEAN_TERRAIN;
+    }
+
+    @Override
+    public List<TerrainType> getApplicableTerrains() {
+        return Arrays.asList(TerrainType.TREE);
     }
 
     public static boolean isAvailable(Entity entity) {

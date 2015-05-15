@@ -2,7 +2,9 @@ package com.gmail.user0abc.max_one.util;
 
 import android.graphics.Color;
 import com.gmail.user0abc.max_one.model.Player;
-import com.gmail.user0abc.max_one.model.ai.BasicAiProcessor;
+import com.gmail.user0abc.max_one.model.ai.AiLevel;
+import com.gmail.user0abc.max_one.model.ai.AiPersonality;
+import com.gmail.user0abc.max_one.model.ai.AiPlayerFactory;
 import com.gmail.user0abc.max_one.model.entities.Entity;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 
@@ -32,8 +34,8 @@ public class GameUtils {
         List<Player> players = new ArrayList<>();
         Player player1 = new Player(false, 1);
         players.add(player1);
-        Player player2 = new Player(true, 2);
-        player2.aiProcessor = new BasicAiProcessor();
+        Player player2 = AiPlayerFactory.makeAiPlayer(AiLevel.EASY, AiPersonality.CHAOTIC);
+        player2.banner = 2;
         players.add(player2);
         return players;
     }
@@ -44,17 +46,17 @@ public class GameUtils {
         return colors[i];
     }
 
-    public static double distance(int x1, int y1, int x2, int y2){
-        return (Math.sqrt( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) ));
+    public static double distance(int x1, int y1, int x2, int y2) {
+        return (Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)));
     }
 
     public static List<MapTile> getTilesNear(MapTile[][] map, MapTile tile) {
         List<MapTile> result = new ArrayList<>();
-        for(int dx = -1; dx < 2; dx++){
-            for(int dy = -1; dy < 2; dy++){
+        for (int dx = -1; dx < 2; dx++) {
+            for (int dy = -1; dy < 2; dy++) {
                 int x = tile.x + dx;
                 int y = tile.y + dy;
-                if(x > -1 && y > -1 && x < map.length && y < map[0].length){
+                if (x > -1 && y > -1 && x < map.length && y < map[0].length) {
                     result.add(map[x][y]);
                 }
             }
@@ -64,12 +66,12 @@ public class GameUtils {
 
     public static Map<Player, List<Entity>> scanMap(MapTile[][] map) {
         Map<Player, List<Entity>> entities = new HashMap<>();
-        for(int x = 0; x < map.length; x++){
-            for(int y = 0; y < map[0].length; y++){
-                if(map[x][y].building != null){
+        for (int x = 0; x < map.length; x++) {
+            for (int y = 0; y < map[0].length; y++) {
+                if (map[x][y].building != null) {
                     addToScan(entities, map[x][y].building);
                 }
-                if(map[x][y].unit != null){
+                if (map[x][y].unit != null) {
                     addToScan(entities, map[x][y].unit);
                 }
             }
@@ -78,7 +80,22 @@ public class GameUtils {
     }
 
     private static void addToScan(Map<Player, List<Entity>> mapScan, Entity entity) {
-        if(!mapScan.containsKey(entity.getOwner())) mapScan.put(entity.getOwner(),new ArrayList<Entity>());
+        if (!mapScan.containsKey(entity.getOwner())) mapScan.put(entity.getOwner(), new ArrayList<Entity>());
         mapScan.get(entity.getOwner()).add(entity);
+    }
+
+    public static List<MapTile> getTilesRadius(MapTile[][] map, MapTile centerTile, double radius) {
+        List<MapTile> selectedTiles = new ArrayList<>();
+        int centerX = centerTile.x;
+        int centerY = centerTile.y;
+        int radiusInt = (int) Math.ceil(radius);
+        for (int x = (centerX - radiusInt); x <= (centerX + radiusInt); x++) {
+            for (int y = (centerY - radiusInt); y <= (centerY + radiusInt); y++) {
+                if ((x >= 0 && y >= 0 && x < map.length && y < map[0].length) && distance(x, y, centerX, centerY) <= radius) {
+                    selectedTiles.add(map[x][y]);
+                }
+            }
+        }
+        return selectedTiles;
     }
 }

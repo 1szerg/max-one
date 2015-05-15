@@ -19,10 +19,14 @@ public class TurnProcessor extends AsyncTask<Player, MapTile, Boolean> {
     private GameContainer game;
 
     @Override
-    protected Boolean doInBackground(Player... currentPlayer) {
-        turnStarted = new Date().getTime();
-        Logger.log("Starting turn for player " + game.players.indexOf(game.currentPlayer));
+    protected void onPreExecute() {
         game = GameStorage.getStorage().getGame();
+        turnStarted = new Date().getTime();
+    }
+
+    @Override
+    protected Boolean doInBackground(Player... currentPlayer) {
+        Logger.log("Starting turn for player " + game.players.indexOf(game.currentPlayer));
         GameStorage.getStorage().setEntitiesMap(GameUtils.scanMap(game.map));
         if(GameStorage.getStorage().getEntitiesMap().containsKey(game.currentPlayer)){
             calculatePlayerBalances();
@@ -30,9 +34,6 @@ public class TurnProcessor extends AsyncTask<Player, MapTile, Boolean> {
             continueEntitiesActivities();
             if(game.currentPlayer.isAi){
                 manageAi();
-                Logger.log("End turn #" + game.turnsCount + " for player " + game.players.indexOf(game.currentPlayer) +
-                        " duration " + (new Date().getTime() - turnStarted) / 1000 + " sec");
-                game.nextPlayer();
             }
         }else{
             game.currentPlayer.setDead();
@@ -49,6 +50,13 @@ public class TurnProcessor extends AsyncTask<Player, MapTile, Boolean> {
         GameController.getCurrentInstance().refreshTiles(tiles);
     }
 
+    @Override
+    protected void onPostExecute(Boolean isAi) {
+        Logger.log("TurnProcessor turn #" + game.turnsCount + " for player " + game.players.indexOf(game.currentPlayer) +
+                " duration " + (new Date().getTime() - turnStarted) / 1000 + " sec");
+        if(isAi) GameController.getCurrentInstance().onTurnEnd();
+    }
+
     private void continueEntitiesActivities() {
         for(Entity entity: GameStorage.getStorage().getEntitiesMap().get(game.currentPlayer)){
             entity.setActionPoints(entity.getMaxActionPoints());
@@ -56,10 +64,6 @@ public class TurnProcessor extends AsyncTask<Player, MapTile, Boolean> {
                 entity.getCurrentAction().execute();
             }
         }
-    }
-
-    public boolean onFinish() {
-        return true;
     }
 
     public void calculatePlayerBalances() {
@@ -75,7 +79,7 @@ public class TurnProcessor extends AsyncTask<Player, MapTile, Boolean> {
 
     private static int getFoodBalance(Entity entity) {
         if(entity instanceof Building){
-            return ((Building) entity).getApplesProduction();
+            return ((Building) entity).getFoodProduction();
         }
         if(entity instanceof Unit){
             return entity.getApplesCost();

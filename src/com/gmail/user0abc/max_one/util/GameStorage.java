@@ -22,7 +22,7 @@ public class GameStorage {
         entitiesMap = new HashMap<>();
     }
 
-    public static GameStorage getStorage() {
+    public static synchronized GameStorage getStorage() {
         if (storage == null) {
             storage = new GameStorage();
         }

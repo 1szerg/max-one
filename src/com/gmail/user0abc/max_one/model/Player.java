@@ -1,5 +1,7 @@
 package com.gmail.user0abc.max_one.model;
 
+import com.gmail.user0abc.max_one.model.ai.AiProcessor;
+
 import java.io.Serializable;
 
 /*Created by Sergey on 10/24/2014.*/
@@ -19,6 +21,10 @@ public class Player implements Serializable {
         banner = playersBanner;
         setApples(0);
         setGold(0);
+    }
+
+    public Player(boolean ai) {
+        isAi = ai;
     }
 
     public int getApples() {

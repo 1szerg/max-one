@@ -2,10 +2,11 @@ package com.gmail.user0abc.max_one.model.actions;
 
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.entities.Entity;
-import com.gmail.user0abc.max_one.model.entities.units.Unit;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
+import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Sergey
@@ -61,4 +62,7 @@ public abstract class Ability implements Serializable {
     }
 
 
+    public List<TerrainType> getApplicableTerrains(){
+        return null;
+    };
 }

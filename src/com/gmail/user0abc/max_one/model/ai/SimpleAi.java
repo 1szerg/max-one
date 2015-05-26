@@ -6,7 +6,11 @@ import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.entities.Entity;
 import com.gmail.user0abc.max_one.model.entities.buildings.BuildingType;
 import com.gmail.user0abc.max_one.model.entities.units.UnitType;
-import com.gmail.user0abc.max_one.model.mapUtils.*;
+import com.gmail.user0abc.max_one.model.mapUtils.SpiralTileSearcher;
+import com.gmail.user0abc.max_one.model.mapUtils.TileSearcher;
+import com.gmail.user0abc.max_one.model.mapUtils.filters.NoBuildingsFilter;
+import com.gmail.user0abc.max_one.model.mapUtils.filters.TerrainWhiteListFilter;
+import com.gmail.user0abc.max_one.model.mapUtils.filters.TileFilter;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 import com.gmail.user0abc.max_one.util.GameStorage;
@@ -77,7 +81,7 @@ public class SimpleAi implements AiProcessor {
     private MapTile findBuildingSite(AiTask task) {
         List<TileFilter> filters = new ArrayList<>();
         filters.add(new NoBuildingsFilter());
-        filters.add(new VisibleTilesFilter(GameStorage.getStorage().getGame().currentPlayer));
+        //filters.add(new VisibleTilesFilter(GameStorage.getStorage().getGame().currentPlayer));
         switch (task.getType()) {
             case BUILD_TOWN:
                 break;

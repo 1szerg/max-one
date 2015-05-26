@@ -13,7 +13,6 @@ import com.gmail.user0abc.max_one.model.entities.buildings.Building;
 import com.gmail.user0abc.max_one.model.entities.units.Unit;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.util.GameStorage;
-import com.gmail.user0abc.max_one.util.GameUtils;
 import com.gmail.user0abc.max_one.util.Logger;
 import com.gmail.user0abc.max_one.view.GameField;
 
@@ -125,7 +124,7 @@ public class GameController extends Activity {
         } else if (selectedUnit != null) {
             activateButton(abilityType);
             selectedUnit.executeAction(abilityType, getStorage().getGame(), selectedTile);
-            updateTilesVisibility(selectedUnit);
+//            updateTilesVisibility(selectedUnit);
         } else if (selectedBuilding != null) {
             activateButton(abilityType);
             selectedBuilding.executeAction(abilityType, getStorage().getGame(), selectedTile);
@@ -134,19 +133,19 @@ public class GameController extends Activity {
     }
 
     private void updateTilesVisibility(Unit selectedUnit) {
-        List<MapTile> tiles = new ArrayList<>();
-        if(selectedUnit.getCurrentTile().building != null
-                && selectedUnit.getCurrentTile().building.getOwner().equals(selectedUnit.getOwner())){
-            tiles.addAll(GameUtils.getTilesRadius(getMap(), selectedUnit.getCurrentTile(),
-                    Math.max(selectedUnit.getCurrentTile().building.getVisionRadius(),
-                            selectedUnit.getVisionRadius())));
-        }else{
-            tiles.addAll(GameUtils.getTilesRadius(getMap(), selectedUnit.getCurrentTile(), selectedUnit.getVisionRadius()));
-        }
-        for(MapTile tile: tiles){
-            tile.visibleBy.add(selectedUnit.getOwner());
-            tile.exploredBy.add(selectedUnit.getOwner());
-        }
+//        List<MapTile> tiles = new ArrayList<>();
+//        if(selectedUnit.getCurrentTile().building != null
+//                && selectedUnit.getCurrentTile().building.getOwner().equals(selectedUnit.getOwner())){
+//            tiles.addAll(GameUtils.getTilesRadius(getMap(), selectedUnit.getCurrentTile(),
+//                    Math.max(selectedUnit.getCurrentTile().building.getVisionRadius(),
+//                            selectedUnit.getVisionRadius())));
+//        }else{
+//            tiles.addAll(GameUtils.getTilesRadius(getMap(), selectedUnit.getCurrentTile(), selectedUnit.getVisionRadius()));
+//        }
+//        for(MapTile tile: tiles){
+//            tile.visibleBy.add(selectedUnit);
+//            tile.exploredBy.add(selectedUnit.getOwner());
+//        }
     }
 
     public void onTurnEnd() {

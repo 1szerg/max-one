@@ -1,6 +1,7 @@
-package com.gmail.user0abc.max_one.model.mapUtils;/* Created by iSzerg on 5/4/2015. */
+package com.gmail.user0abc.max_one.model.mapUtils.filters;/* Created by iSzerg on 5/4/2015. */
 
 import com.gmail.user0abc.max_one.model.Player;
+import com.gmail.user0abc.max_one.model.entities.Entity;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 
 public class VisibleTilesFilter implements TileFilter {
@@ -13,6 +14,9 @@ public class VisibleTilesFilter implements TileFilter {
 
     @Override
     public boolean matchTile(MapTile tile) {
-        return tile.visibleBy.contains(player);
+        for(Entity entity: tile.visibleBy){
+            if(entity.getOwner().equals(player)) return true;
+        }
+        return false;
     }
 }

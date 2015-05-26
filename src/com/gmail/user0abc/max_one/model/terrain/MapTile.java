@@ -1,6 +1,7 @@
 package com.gmail.user0abc.max_one.model.terrain;
 
 import com.gmail.user0abc.max_one.model.Player;
+import com.gmail.user0abc.max_one.model.entities.Entity;
 import com.gmail.user0abc.max_one.model.entities.buildings.Building;
 import com.gmail.user0abc.max_one.model.entities.units.Unit;
 
@@ -17,7 +18,7 @@ public class MapTile implements Serializable {
     public int x;
     public int y;
     public double height, humidity;
-    public Set<Player> visibleBy = new HashSet<>();
+    public Set<Entity> visibleBy = new HashSet<>();
     public Set<Player> exploredBy = new HashSet<>();
     @Override
     public String toString() {

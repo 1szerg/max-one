@@ -1,5 +1,7 @@
 package com.gmail.user0abc.max_one.model.mapUtils;/* Created by iSzerg on 5/14/2015. */
 
+import com.gmail.user0abc.max_one.model.mapUtils.filters.TileFilter;
+import com.gmail.user0abc.max_one.model.mapUtils.filters.TileFilterHelper;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 
 import java.util.LinkedList;

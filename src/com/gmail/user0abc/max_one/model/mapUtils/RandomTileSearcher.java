@@ -1,5 +1,6 @@
 package com.gmail.user0abc.max_one.model.mapUtils;/* Created by iSzerg on 4/23/2015. */
 
+import com.gmail.user0abc.max_one.model.mapUtils.filters.TileFilter;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.util.GameUtils;
 

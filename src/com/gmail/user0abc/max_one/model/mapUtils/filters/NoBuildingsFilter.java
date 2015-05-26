@@ -1,4 +1,4 @@
-package com.gmail.user0abc.max_one.model.mapUtils;/* Created by iSzerg on 4/24/2015. */
+package com.gmail.user0abc.max_one.model.mapUtils.filters;/* Created by iSzerg on 4/24/2015. */
 
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 

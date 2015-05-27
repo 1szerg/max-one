@@ -6,10 +6,7 @@ import com.gmail.user0abc.max_one.model.entities.buildings.BuildingType;
 import com.gmail.user0abc.max_one.model.entities.buildings.BuildingsFactory;
 import com.gmail.user0abc.max_one.model.entities.units.Unit;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
-import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 import com.gmail.user0abc.max_one.util.Logger;
-
-import java.util.List;
 
 public abstract class MakeBuilding extends Ability {
 
@@ -50,8 +47,6 @@ public abstract class MakeBuilding extends Ability {
         actionLocation.building = null;
         clear();
     }
-
-    protected abstract List<TerrainType> getApplicableTerrains();
 
     private boolean startAction() {
         actionInProgress = this;

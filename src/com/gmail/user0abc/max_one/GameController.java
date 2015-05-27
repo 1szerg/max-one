@@ -12,10 +12,8 @@ import com.gmail.user0abc.max_one.model.entities.Entity;
 import com.gmail.user0abc.max_one.model.entities.buildings.Building;
 import com.gmail.user0abc.max_one.model.entities.units.Unit;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
+import com.gmail.user0abc.max_one.util.GameStorage;
 import com.gmail.user0abc.max_one.util.Logger;
-import com.gmail.user0abc.max_one.util.ThreadEndListener;
-import com.gmail.user0abc.max_one.util.ThreadManager;
-import com.gmail.user0abc.max_one.util.ThreadPayload;
 import com.gmail.user0abc.max_one.view.GameField;
 
 import java.util.ArrayList;
@@ -37,7 +35,6 @@ public class GameController extends Activity {
     private MapTile selectedTile;
     private TurnProcessor turnProcessor;
     private List<ActionButton> currentActionButtons = new ArrayList<>();
-    public boolean isEndTurnEnabled = false;
 
     public static GameController getCurrentInstance() {
         return currentInstance;
@@ -50,7 +47,6 @@ public class GameController extends Activity {
         gameField = new GameField(this);
         setContentView(gameField);
         getStorage().getGame().currentPlayer = getStorage().getGame().players.get(0);
-        turnProcessor = new TurnProcessor(getStorage().getGame());
         onStartTurn();
     }
 
@@ -68,33 +64,24 @@ public class GameController extends Activity {
 
     private void onStartTurn() {
         gameField.clearCommands();
-        if(getStorage().getGame().currentPlayer.isAi){
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    turnProcessor.onStart();
-                    Logger.log("Ai move processing for player "
-                            + getStorage().getGame().players.indexOf(getStorage().getGame().currentPlayer));
-                    getStorage().getGame().currentPlayer.aiProcessor.makeTurn(getStorage().getGame());
-                    turnProcessor.onFinish();
-                    refreshMap();
-
-                    onStartTurn();
-                }
-            }).start();
+        if(getStorage().getGame().currentPlayer.isStillInGame()){
+            TurnProcessor turn = new TurnProcessor();
+            turn.execute(GameStorage.getStorage().getGame().currentPlayer);
         }else{
-            ThreadManager.runThread(new ThreadPayload() {
-                @Override
-                public void work() {
-                    turnProcessor.onStart();
-                }
-            }, new ThreadEndListener() {
-                @Override
-                public void onThreadFinished(ThreadPayload finishedWork) {
-                    isEndTurnEnabled = true;
-                }
-            });
+            if(GameStorage.getStorage().getGame().nonAiPlayersLeft() == 0) {
+                initiateGameLost();
+            } else if(GameStorage.getStorage().getGame().playersLeft() == 1){
+                initiateGameWon();
+            }
         }
+    }
+
+    private void initiateGameLost() {
+        //TODO - process game lost
+    }
+
+    private void initiateGameWon() {
+        //TODO - process game won
     }
 
     public void onTileSelect(MapTile tile) {
@@ -132,22 +119,39 @@ public class GameController extends Activity {
     }
 
     public void onActionButtonSelect(AbilityType abilityType) {
-        if(isEndTurnEnabled){
-            if (abilityType.equals(AbilityType.END_TURN) && isEndTurnEnabled) {
-                if (turnProcessor.onFinish()) {
-                    isEndTurnEnabled = false;
-                    refreshMap();
-                    onStartTurn();
-                }
-            } else if (selectedUnit != null) {
-                activateButton(abilityType);
-                selectedUnit.executeAction(abilityType, getStorage().getGame(), selectedTile);
-            } else if (selectedBuilding != null) {
-                activateButton(abilityType);
-                selectedBuilding.executeAction(abilityType, getStorage().getGame(), selectedTile);
-            }
-            refreshMap();
+        if (abilityType.equals(AbilityType.END_TURN)) {
+            onTurnEnd();
+        } else if (selectedUnit != null) {
+            activateButton(abilityType);
+            selectedUnit.executeAction(abilityType, getStorage().getGame(), selectedTile);
+//            updateTilesVisibility(selectedUnit);
+        } else if (selectedBuilding != null) {
+            activateButton(abilityType);
+            selectedBuilding.executeAction(abilityType, getStorage().getGame(), selectedTile);
         }
+        refreshMap();
+    }
+
+    private void updateTilesVisibility(Unit selectedUnit) {
+//        List<MapTile> tiles = new ArrayList<>();
+//        if(selectedUnit.getCurrentTile().building != null
+//                && selectedUnit.getCurrentTile().building.getOwner().equals(selectedUnit.getOwner())){
+//            tiles.addAll(GameUtils.getTilesRadius(getMap(), selectedUnit.getCurrentTile(),
+//                    Math.max(selectedUnit.getCurrentTile().building.getVisionRadius(),
+//                            selectedUnit.getVisionRadius())));
+//        }else{
+//            tiles.addAll(GameUtils.getTilesRadius(getMap(), selectedUnit.getCurrentTile(), selectedUnit.getVisionRadius()));
+//        }
+//        for(MapTile tile: tiles){
+//            tile.visibleBy.add(selectedUnit);
+//            tile.exploredBy.add(selectedUnit.getOwner());
+//        }
+    }
+
+    public void onTurnEnd() {
+        refreshMap();
+        GameStorage.getStorage().getGame().nextPlayer();
+        onStartTurn();
     }
 
     private void activateButton(AbilityType abilityType) {
@@ -176,6 +180,11 @@ public class GameController extends Activity {
         });
     }
 
+    public void refreshTiles(MapTile... tiles) {
+        gameField.redrawTiles(tiles);
+    }
+
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -186,5 +195,9 @@ public class GameController extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Logger.log("onActivityResult requestCode = "+requestCode);
         Logger.log("onActivityResult intent = "+data.toString());
+    }
+
+    private void onGameEnd(){
+
     }
 }

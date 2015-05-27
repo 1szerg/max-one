@@ -1,8 +1,13 @@
 package com.gmail.user0abc.max_one.util;
 
 import com.gmail.user0abc.max_one.model.GameContainer;
+import com.gmail.user0abc.max_one.model.Player;
+import com.gmail.user0abc.max_one.model.entities.Entity;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Sergey
@@ -11,11 +16,13 @@ import java.util.Arrays;
 public class GameStorage {
     private static GameStorage storage;
     private GameContainer gameContainer;
+    private Map<Player, List<Entity>> entitiesMap;
 
     private GameStorage() {
+        entitiesMap = new HashMap<>();
     }
 
-    public static GameStorage getStorage() {
+    public static synchronized GameStorage getStorage() {
         if (storage == null) {
             storage = new GameStorage();
         }
@@ -31,6 +38,14 @@ public class GameStorage {
             gameContainer = null;
         }
         gameContainer = newGameContainer;
+    }
+
+    public Map<Player, List<Entity>> getEntitiesMap() {
+        return entitiesMap;
+    }
+
+    public void setEntitiesMap(Map<Player, List<Entity>> entitiesMap) {
+        this.entitiesMap = entitiesMap;
     }
 
     private void clearContainer() {

@@ -6,10 +6,7 @@ import com.gmail.user0abc.max_one.model.entities.units.UnitsFactory;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static com.gmail.user0abc.max_one.util.GameUtils.distance;
 
@@ -191,7 +188,8 @@ public class MapGenerator {
 
     private MapTile generateTile(int x, int y, Node[] nodes) {
         MapTile tile = new MapTile();
-        tile.explored = false;
+        tile.exploredBy = new HashSet<>();
+        tile.visibleBy = new HashSet<>();
         tile.building = null;
         tile.x = x;
         tile.y = y;

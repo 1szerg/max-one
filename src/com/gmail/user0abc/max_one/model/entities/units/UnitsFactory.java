@@ -6,8 +6,6 @@ import com.gmail.user0abc.max_one.model.actions.AttackType;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.util.Logger;
 
-import java.util.Map;
-
 /*Created by Sergey on 1/12/2015.*/
 public class UnitsFactory {
 
@@ -28,6 +26,7 @@ public class UnitsFactory {
                 worker.setApplesCost(1);
                 worker.setAttack(null);
                 worker.setProtection(Worker.defaultProtection());
+                worker.setVisionRadius(2.0);
                 return worker;
             case WARRIOR:
                 Warrior warrior = new Warrior();
@@ -36,6 +35,7 @@ public class UnitsFactory {
                 warrior.setMaxActionPoints(3);
                 warrior.setAttack(new Attack(AttackType.SWORD, 5));
                 warrior.setProtection(Warrior.defaultProtection());
+                warrior.setVisionRadius(3.0);
                 return warrior;
             case BARBARIAN:
                 break;

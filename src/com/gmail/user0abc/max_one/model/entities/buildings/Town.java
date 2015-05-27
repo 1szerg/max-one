@@ -17,21 +17,12 @@ public class Town extends Building {
         super();
         buildingType = BuildingType.TOWN;
         health = 100;
+        goldProduction = 1;
     }
 
     @Override
     public List<AbilityType> getAvailableActions() {
         return Arrays.asList(AbilityType.MAKE_WORKER, AbilityType.MAKE_WARRIOR);
-    }
-
-    @Override
-    public int getApplesProduction() {
-        return 0;
-    }
-
-    @Override
-    public int getGoldProduction() {
-        return 1;
     }
 
     public static Protection defaultProtection() {

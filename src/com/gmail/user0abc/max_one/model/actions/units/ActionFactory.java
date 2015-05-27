@@ -2,11 +2,12 @@ package com.gmail.user0abc.max_one.model.actions.units;
 
 import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
-import com.gmail.user0abc.max_one.model.actions.MakeBuilding;
 import com.gmail.user0abc.max_one.model.actions.buildings.MakeWarrior;
 import com.gmail.user0abc.max_one.model.actions.buildings.MakeWorker;
 import com.gmail.user0abc.max_one.model.entities.Entity;
 import com.gmail.user0abc.max_one.util.Logger;
+
+import java.util.Arrays;
 
 /**
  * Created by Sergey
@@ -72,4 +73,13 @@ public class ActionFactory {
         return false;
     }
 
+    public static boolean ifBuilding(AbilityType type) {
+        return Arrays.asList(
+                AbilityType.BUILD_POST,
+                AbilityType.BUILD_TOWN,
+                AbilityType.BUILD_FARM,
+                AbilityType.CLEAN_TERRAIN,
+                AbilityType.REMOVE_BUILDING
+        ).contains(type);
+    }
 }

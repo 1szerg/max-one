@@ -13,16 +13,12 @@ public class TradePost extends Building {
     public TradePost() {
         buildingType = BuildingType.TRADE_POST;
         health = 10;
+        goldProduction = 1;
     }
 
     @Override
     public List<AbilityType> getAvailableActions() {
         return new ArrayList<>();
-    }
-
-    @Override
-    public int getGoldProduction() {
-        return 1;
     }
 
     public static Protection defaultProtection() {

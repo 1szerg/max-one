@@ -40,6 +40,8 @@ public class GameField extends SurfaceView {
     private GameController gameController;
     private List<UiButton> uiButtons = new ArrayList<>();
     private int screenX, screenY;
+    private int performanceCounter;
+    private Canvas savedCanvas;
 
     public GameField(Context context) {
         super(context);
@@ -141,9 +143,6 @@ public class GameField extends SurfaceView {
     }
 
     private void recognizeSelect(MotionEvent event) {
-        for (int i = 0; i < recordedEvents.size(); i++) {
-            Logger.log("recorded events[" + i + "]=" + recordedEvents.get(i).getAction() + " " + recordedEvents.get(i).getX() + ", " + recordedEvents.get(i).getY());
-        }
         if (recordedEvents.size() > 3) return;
         UiButton button = getPressedButton(event.getX(), event.getY());
         if (button != null) {
@@ -153,7 +152,7 @@ public class GameField extends SurfaceView {
             redraw();
         } else {
             // then select the currentTile
-            int newSelectedTileX = (int) ((event.getX() - mapOffsetX) / grass.getWidth());
+            int newSelectedTileX = (int) ((event.getX() - mapOffsetX) / getTileSize());
             int newSelectedTileY = (int) ((event.getY() - mapOffsetY) / grass.getHeight());
             Logger.log("Selecting tile at "+newSelectedTileX+", "+newSelectedTileY);
             if (newSelectedTileX > -1 && newSelectedTileX < gameController.getMap().length
@@ -198,6 +197,7 @@ public class GameField extends SurfaceView {
 
     @Override
     public void draw(Canvas canvas) {
+        savedCanvas = canvas;
         long pTimer = new Date().getTime();
         //canvas.translate(mapOffsetX, mapOffsetY);
         drawMap(canvas);
@@ -215,7 +215,7 @@ public class GameField extends SurfaceView {
         float y = canvas.getHeight() - 4 - endTurn.getHeight();
         UiButton endTurnButton = new UiButton(endTurn, endTurn, x, y, AbilityType.END_TURN);
         uiButtons.add(endTurnButton);
-        canvas.drawBitmap(gameController.isEndTurnEnabled ? endTurn : endTurnDisabled, x, y, null);
+        canvas.drawBitmap( endTurn , x, y, null);
     }
 
     private void drawUnitInfo(Canvas canvas) {
@@ -295,64 +295,77 @@ public class GameField extends SurfaceView {
     private void drawMap(Canvas canvas) {
         canvas.drawColor(Color.BLACK);
         readScreenSize();
-        int performanceCounter = 0;
-        int tileSize = grass.getWidth();
+        performanceCounter = 0;
+        int tileSize = getTileSize();
         for (int posX = 0; posX < gameController.getMap().length; posX++) {
             for (int posY = 0; posY < gameController.getMap()[posX].length; posY++) {
-                MapTile tile = gameController.getMap()[posX][posY];
-                float x = posX * grass.getWidth() + mapOffsetX;
-                float y = posY * grass.getHeight() + mapOffsetY;
-                if (x > -tileSize && x < screenX + tileSize && y > -tileSize && y < screenY + tileSize) {
-                    // draw tiles
-                    performanceCounter++;
-                    switch (gameController.getMap()[posX][posY].terrainType) {
-                        case GRASS:
-                            canvas.drawBitmap(grass, x, y, null);
-                            break;
-                        case WATER:
-                            canvas.drawBitmap(water, x, y, null);
-                            break;
-                        case TREE:
-                            canvas.drawBitmap(grass, x, y, null);
-                            canvas.drawBitmap(tree, x, y, null);
-                            break;
-                        case HILL:
-                            canvas.drawBitmap(hill, x, y, null);
-                            break;
-                        case PEAK:
-                            canvas.drawBitmap(peak, x, y, null);
-                            break;
-                        case SAND:
-                            canvas.drawBitmap(sand, x, y, null);
-                            break;
 
-                    }
-                    //smooth edges
-                    smoothTileEdges(canvas, gameController.getMap(), posX, posY, x, y);
-                    // draw buildings
-                    if (tile.building != null) {
-                        canvas.drawBitmap(getBuildingImage(tile.building.getBuildingType()), x, y, null);
-                        if (tile.building.getOwner() != null) {
-                            canvas.drawBitmap(getPlayerFlag(tile.building.getOwner()), x, y, null);
-                        }
-                    }
-                    // draw units
+                drawTile(canvas, gameController.getMap()[posX][posY]);
 
-                    drawUnits(canvas, posX, posY, x, y);
-
-                    // draw features
-                    if (gameController.getMap()[posX][posY].tileFeature != null) {
-                        canvas.drawBitmap(getFeatureImage(gameController.getMap()[posX][posY].tileFeature.featureType), x, y, null);
-                    }
-                }
             }
         }
         Logger.log("PERFORMANCE: redrawn " + performanceCounter + " tiles");
         if (selectedTileY != null && selectedTileX != null) {
-            float x = selectedTileX * grass.getWidth() + mapOffsetX;
-            float y = selectedTileY * grass.getHeight() + mapOffsetY;
+            float x = selectedTileX * getTileSize() + mapOffsetX;
+            float y = selectedTileY * getTileSize() + mapOffsetY;
             canvas.drawBitmap(selection, x, y, null);
         }
+    }
+
+    private int getTileSize() {
+        return grass.getWidth();
+    }
+
+    private int drawTile(Canvas canvas, MapTile tile) {
+        int posX = tile.x;
+        int posY = tile.y;
+        int tileSize = getTileSize();
+        float x = posX * getTileSize() + mapOffsetX;
+        float y = posY * getTileSize() + mapOffsetY;
+        if (x > -tileSize && x < screenX + tileSize && y > -tileSize && y < screenY + tileSize) {
+            // draw tiles
+            performanceCounter++;
+            switch (gameController.getMap()[posX][posY].terrainType) {
+                case GRASS:
+                    canvas.drawBitmap(grass, x, y, null);
+                    break;
+                case WATER:
+                    canvas.drawBitmap(water, x, y, null);
+                    break;
+                case TREE:
+                    canvas.drawBitmap(grass, x, y, null);
+                    canvas.drawBitmap(tree, x, y, null);
+                    break;
+                case HILL:
+                    canvas.drawBitmap(hill, x, y, null);
+                    break;
+                case PEAK:
+                    canvas.drawBitmap(peak, x, y, null);
+                    break;
+                case SAND:
+                    canvas.drawBitmap(sand, x, y, null);
+                    break;
+
+            }
+            //smooth edges
+            smoothTileEdges(canvas, gameController.getMap(), posX, posY, x, y);
+            // draw buildings
+            if (tile.building != null) {
+                canvas.drawBitmap(getBuildingImage(tile.building.getBuildingType()), x, y, null);
+                if (tile.building.getOwner() != null) {
+                    canvas.drawBitmap(getPlayerFlag(tile.building.getOwner()), x, y, null);
+                }
+            }
+            // draw units
+
+            drawUnits(canvas, posX, posY, x, y);
+
+            // draw features
+            if (gameController.getMap()[posX][posY].tileFeature != null) {
+                canvas.drawBitmap(getFeatureImage(gameController.getMap()[posX][posY].tileFeature.featureType), x, y, null);
+            }
+        }
+        return performanceCounter;
     }
 
     private void smoothTileEdges(Canvas canvas, MapTile[][] map, int posX, int posY, float x, float y) {
@@ -530,5 +543,11 @@ public class GameField extends SurfaceView {
     public void clearCommands() {
         recordedEvents.clear();
         Logger.log(recordedEvents.toString());
+    }
+
+    public void redrawTiles(MapTile... tiles) {
+        for(MapTile tile: tiles){
+            drawTile(savedCanvas, tile);
+        }
     }
 }

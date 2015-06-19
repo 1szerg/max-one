@@ -93,20 +93,23 @@ public class MoveAction extends Ability implements TileSelectReceiver {
         int sX = (int) Math.signum(dX);
         int sY = (int) Math.signum(dY);
         List<MapTile> stepCandidates = new ArrayList<>();
-        addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap()[location.x + sX][location.y + sY]);
-        if (Math.abs(dX) > Math.abs(dY)) {
-            addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap()[location.x + sX][location.y]);
-            addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap()[location.x][location.y + sY]);
-        } else {
-            addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap()[location.x][location.y + sY]);
-            addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap()[location.x + sX][location.y]);
+        addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap(), location.x + sX, location.y + sY);
+        if(sX == 0){
+            addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap(), location.x + 1, location.y + sY);
+            addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap(), location.x -1, location.y + sY);
+        }
+        if(sY == 0){
+            addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap(), location.x + sX, location.y + 1);
+            addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap(), location.x + sX, location.y - 1);
         }
         if (stepCandidates.size() > 0) return stepCandidates.get(0);
         return null;
     }
 
-    private void addTileIfPassable(List<MapTile> stepCandidates, MapTile tile) {
-        if (isTilePassable(tile)) stepCandidates.add(tile);
+    private void addTileIfPassable(List<MapTile> stepCandidates, MapTile[][] map, int x, int y) {
+        if(GameUtils.tileExists(map, x, y)){
+            if (isTilePassable(map[x][y])) stepCandidates.add(map[x][y]);
+        }
     }
 
     private boolean isTilePassable(MapTile tile) {

@@ -3,6 +3,7 @@ package com.gmail.user0abc.max_one.model.ai;/*Created by Sergey on 4/4/2015.*/
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.units.MoveAction;
 import com.gmail.user0abc.max_one.model.entities.Entity;
 import com.gmail.user0abc.max_one.model.entities.buildings.BuildingType;
 import com.gmail.user0abc.max_one.model.entities.units.UnitType;
@@ -64,11 +65,12 @@ public class SimpleAi implements AiProcessor {
         }
         if (task.getAssigned().getCurrentTile().equals(task.getLocation())) {
             Logger.log("[SimpleAi] executing task " + task + " feat "+task.getAssigned());
-            task.getAssigned().executeAction(task.getType(), GameStorage.getStorage().getGame(), task.getLocation());
+            task.getAssigned().executeAction(task.getType(), task.getLocation());
             return;
         }
         Logger.log("[SimpleAi] unit "+task.getAssigned()+" is heading to location "+task.getLocation());
-        task.getAssigned().executeAction(AbilityType.MOVE_ACTION, GameStorage.getStorage().getGame(), task.getLocation());
+        task.getAssigned().executeAction(AbilityType.MOVE_ACTION, task.getAssigned().getCurrentTile());
+        ((MoveAction)task.getAssigned().getCurrentAction()).onTileSelect(task.getLocation());
     }
 
     private MapTile findTaskLocation(AiTask task) {

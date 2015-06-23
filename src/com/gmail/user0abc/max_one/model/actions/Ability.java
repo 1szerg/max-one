@@ -1,6 +1,5 @@
 package com.gmail.user0abc.max_one.model.actions;
 
-import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.entities.Entity;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
@@ -21,11 +20,12 @@ public abstract class Ability implements Serializable {
     /**
      * Starts/continues action
      *
-     * @param game
+     *
+     * @param selectedEntity
      * @param selectedTile
      * @return true when action is finished and false when it is not
      */
-    public abstract boolean execute(GameContainer game, MapTile selectedTile);
+    public abstract boolean execute(Entity selectedEntity, MapTile selectedTile);
 
     /**
      * continues action

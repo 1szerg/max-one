@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import com.gmail.user0abc.max_one.handlers.TileSelectHandler;
-import com.gmail.user0abc.max_one.handlers.TileSelectReceiver;
 import com.gmail.user0abc.max_one.model.TurnProcessor;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.ActionButton;
@@ -13,6 +12,7 @@ import com.gmail.user0abc.max_one.model.entities.buildings.Building;
 import com.gmail.user0abc.max_one.model.entities.units.Unit;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.util.GameStorage;
+import com.gmail.user0abc.max_one.util.GameUtils;
 import com.gmail.user0abc.max_one.util.Logger;
 import com.gmail.user0abc.max_one.view.GameField;
 
@@ -28,10 +28,15 @@ import static com.gmail.user0abc.max_one.util.GameStorage.getStorage;
 public class GameController extends Activity {
 
     private static GameController currentInstance = null;
+    @Deprecated
     TileSelectHandler tileSelectHandler;
     private GameField gameField;
+    @Deprecated
     private Unit selectedUnit;
+    @Deprecated
     private Building selectedBuilding;
+    private Entity selectedEntity, tileSelectReceiver;
+    private AbilityType selectedActionType;
     private MapTile selectedTile;
     private TurnProcessor turnProcessor;
     private List<ActionButton> currentActionButtons = new ArrayList<>();
@@ -86,22 +91,39 @@ public class GameController extends Activity {
 
     public void onTileSelect(MapTile tile) {
         Logger.log("Selected tile " + tile);
-        if (tileSelectHandler != null) {
-            tileSelectHandler.onTileSelect(tile);
-            tileSelectHandler = null;
+        if(tileSelectReceiver != null){
+            tileSelectReceiver.executeAction(selectedActionType, tile);
+        }else{
+            selectedTile = tile;
+            if(selectedEntity == null){
+                if(tile.unit != null && GameUtils.entityBelongsCurrentPlayer(tile.unit)){
+                    selectEntity(tile.unit);
+                    selectedEntity = tile.unit;
+                }
+                if(tile.unit == null && tile.building != null && GameUtils.entityBelongsCurrentPlayer(tile.building)){
+                    selectedEntity = tile.building;
+                }
+            }else{
+                if(tile.building == null && tile.unit == null){
+                    selectEntity(null);
+                    return;
+                }
+                if(selectedEntity instanceof Unit && tile.building != null && GameUtils.entityBelongsCurrentPlayer(tile.building)){
+                    selectEntity(tile.building);
+                    return;
+                }
+                if(tile.unit != null && GameUtils.entityBelongsCurrentPlayer(tile.unit)){
+                    selectEntity(tile.unit);
+                }
+            }
         }
-        selectedTile = tile;
-        if (tile.unit != null && tile.unit.getOwner().equals(getStorage().getGame().currentPlayer)) {
-            selectedUnit = tile.unit;
-            currentActionButtons = getButtons(selectedUnit);
-            selectedBuilding = null;
-        } else if (selectedTile.building != null && selectedTile.building.getOwner().equals(getStorage().getGame().currentPlayer)) {
-            selectedBuilding = tile.building;
-            currentActionButtons = getButtons(selectedBuilding);
-            selectedUnit = null;
-        } else {
-            selectedUnit = null;
-            selectedBuilding = null;
+    }
+
+    private void selectEntity(Entity entity) {
+        selectedEntity = entity;
+        if(selectedEntity != null){
+            currentActionButtons = getButtons(selectedEntity);
+        }else{
             currentActionButtons.clear();
         }
     }
@@ -119,15 +141,18 @@ public class GameController extends Activity {
     }
 
     public void onActionButtonSelect(AbilityType abilityType) {
-        if (abilityType.equals(AbilityType.END_TURN)) {
-            onTurnEnd();
-        } else if (selectedUnit != null) {
-            activateButton(abilityType);
-            selectedUnit.executeAction(abilityType, getStorage().getGame(), selectedTile);
-//            updateTilesVisibility(selectedUnit);
-        } else if (selectedBuilding != null) {
-            activateButton(abilityType);
-            selectedBuilding.executeAction(abilityType, getStorage().getGame(), selectedTile);
+        tileSelectReceiver = null;
+        switch (abilityType){
+            case END_TURN:
+                onTurnEnd();
+                break;
+            case MOVE_ACTION:
+            case ATTACK_TILE:
+                tileSelectReceiver = selectedEntity;
+                selectedActionType = abilityType;
+                break;
+            default:
+                selectedEntity.executeAction(abilityType, selectedEntity.getCurrentTile());
         }
         refreshMap();
     }
@@ -164,10 +189,6 @@ public class GameController extends Activity {
         }
     }
 
-
-    public void selectAnotherTile(TileSelectReceiver receiver) {
-        tileSelectHandler = new TileSelectHandler(receiver);
-    }
 
     public void refreshMap() {
         runOnUiThread(new Runnable() {

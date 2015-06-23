@@ -2,11 +2,9 @@ package com.gmail.user0abc.max_one.model.actions.units;
 
 import com.gmail.user0abc.max_one.GameController;
 import com.gmail.user0abc.max_one.handlers.TileSelectReceiver;
-import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.entities.Entity;
-import com.gmail.user0abc.max_one.model.entities.units.Unit;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 
 /**
@@ -15,12 +13,15 @@ import com.gmail.user0abc.max_one.model.terrain.MapTile;
  */
 public class AttackAction extends Ability implements TileSelectReceiver {
 
-    private Unit attacker;
+    private Entity attacker;
 
     @Override
-    public boolean execute(GameContainer game, MapTile selectedTile) {
-        if (selectedTile != null && selectedTile.unit != null) {
-            attacker = selectedTile.unit;
+    public boolean execute(Entity attackingEntity, MapTile tileBeingAttacked) {
+        if(attackingEntity != null){
+            attacker = attackingEntity;
+        }
+        if (tileBeingAttacked != null && tileBeingAttacked.unit != null) {
+            attacker = tileBeingAttacked.unit;
             GameController.getCurrentInstance().selectAnotherTile(this);
         }
         return true;

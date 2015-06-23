@@ -1,8 +1,6 @@
 package com.gmail.user0abc.max_one.model.actions.units;
 
 import com.gmail.user0abc.max_one.GameController;
-import com.gmail.user0abc.max_one.handlers.TileSelectReceiver;
-import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.entities.Entity;
@@ -19,25 +17,22 @@ import java.util.List;
  * Created by Sergey
  * at 11/12/14 10:18 PM
  */
-public class MoveAction extends Ability implements TileSelectReceiver {
+public class MoveAction extends Ability {
 
     private Unit walkingUnit;
     private MapTile start, destination, location;
 
     @Override
-    public boolean execute(GameContainer game, MapTile selectedTile) {
-        if (destination == null) {
-            if (selectedTile != null && selectedTile.unit != null) {
-                start = selectedTile;
-                walkingUnit = selectedTile.unit;
-                GameController.getCurrentInstance().selectAnotherTile(this);
+    public boolean execute(Entity traveler, MapTile selectedDestination) {
+        if (selectedDestination != null && traveler != null) {
+            start = traveler.getCurrentTile();
+            walkingUnit = (Unit)traveler;
+            destination = selectedDestination;
+            walk();
+            if (location.equals(destination)) {
+                walkingUnit.setCurrentAction(null);
+                return true;
             }
-            return false;
-        }
-        walk();
-        if (location.equals(destination)) {
-            walkingUnit.setCurrentAction(null);
-            return true;
         }
         return false;
     }
@@ -51,13 +46,6 @@ public class MoveAction extends Ability implements TileSelectReceiver {
     @Override
     public AbilityType getType() {
         return AbilityType.MOVE_ACTION;
-    }
-
-    @Override
-    public void onTileSelect(MapTile tile) {
-        destination = tile;
-        location = start;
-        walk();
     }
 
     private void walk() {

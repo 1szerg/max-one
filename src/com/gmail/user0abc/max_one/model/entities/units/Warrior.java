@@ -1,6 +1,5 @@
 package com.gmail.user0abc.max_one.model.entities.units;
 
-import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
@@ -36,9 +35,9 @@ public class Warrior extends Unit {
     }
 
     @Override
-    public void executeAction(AbilityType abilityType, GameContainer game, MapTile tile) {
+    public void executeAction(AbilityType abilityType, MapTile tile) {
         currentAction = ActionFactory.createAction(abilityType);
-        currentAction.execute(game, tile);
+        currentAction.execute(null, tile);
     }
 
     @Override

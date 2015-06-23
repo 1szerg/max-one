@@ -1,6 +1,5 @@
 package com.gmail.user0abc.max_one.model.entities;/*Created by Sergey on 3/7/2015.*/
 
-import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
@@ -88,7 +87,7 @@ public abstract class Entity {
         this.actionPoints = actionPoints;
     }
 
-    public abstract void executeAction(AbilityType abilityType, GameContainer gameContainer, MapTile tile);
+    public abstract void executeAction(AbilityType abilityType, MapTile tile);
 
     public void setCurrentTile(MapTile currentTile) {
         this.currentTile = currentTile;

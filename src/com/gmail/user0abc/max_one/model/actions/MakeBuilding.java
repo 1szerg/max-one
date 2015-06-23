@@ -17,7 +17,7 @@ public abstract class MakeBuilding extends Ability {
     protected GameContainer game;
 
     @Override
-    public boolean execute(GameContainer game, MapTile selectedTile) {
+    public boolean execute(Entity selectedEntity, MapTile selectedTile) {
         if (actionInProgress == null) {
             if (selectedTile != null && selectedTile.unit != null && selectedTile.building == null) {
                 if (getApplicableTerrains().contains(selectedTile.terrainType)) {

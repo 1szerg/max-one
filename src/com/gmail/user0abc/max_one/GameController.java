@@ -3,12 +3,10 @@ package com.gmail.user0abc.max_one;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import com.gmail.user0abc.max_one.handlers.TileSelectHandler;
 import com.gmail.user0abc.max_one.model.TurnProcessor;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.ActionButton;
 import com.gmail.user0abc.max_one.model.entities.Entity;
-import com.gmail.user0abc.max_one.model.entities.buildings.Building;
 import com.gmail.user0abc.max_one.model.entities.units.Unit;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.util.GameStorage;
@@ -28,13 +26,7 @@ import static com.gmail.user0abc.max_one.util.GameStorage.getStorage;
 public class GameController extends Activity {
 
     private static GameController currentInstance = null;
-    @Deprecated
-    TileSelectHandler tileSelectHandler;
     private GameField gameField;
-    @Deprecated
-    private Unit selectedUnit;
-    @Deprecated
-    private Building selectedBuilding;
     private Entity selectedEntity, tileSelectReceiver;
     private AbilityType selectedActionType;
     private MapTile selectedTile;

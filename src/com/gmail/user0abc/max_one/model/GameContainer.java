@@ -14,6 +14,10 @@ public class GameContainer implements Serializable {
     public Player currentPlayer;
 
     public void nextPlayer() {
+        if(currentPlayer == null){
+            currentPlayer = players.get(0);
+            return;
+        }
         int nextPlayerIndex = players.indexOf(currentPlayer) + 1;
         if (nextPlayerIndex >= players.size()) {
             nextPlayerIndex = 0;

@@ -1,7 +1,5 @@
 package com.gmail.user0abc.max_one.model.actions.units;
 
-import com.gmail.user0abc.max_one.GameController;
-import com.gmail.user0abc.max_one.handlers.TileSelectReceiver;
 import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.entities.Entity;
@@ -11,7 +9,7 @@ import com.gmail.user0abc.max_one.model.terrain.MapTile;
  * Created by Sergey
  * at 11/12/14 10:16 PM
  */
-public class AttackAction extends Ability implements TileSelectReceiver {
+public class AttackAction extends Ability {
 
     private Entity attacker;
 
@@ -20,25 +18,13 @@ public class AttackAction extends Ability implements TileSelectReceiver {
         if(attackingEntity != null){
             attacker = attackingEntity;
         }
-        if (tileBeingAttacked != null && tileBeingAttacked.unit != null) {
-            attacker = tileBeingAttacked.unit;
-            GameController.getCurrentInstance().selectAnotherTile(this);
-        }
+        attackUnit(tileBeingAttacked);
         return true;
     }
 
     @Override
     public AbilityType getType() {
         return AbilityType.ATTACK_TILE;
-    }
-
-    @Override
-    public void onTileSelect(MapTile tile) {
-        if (tile.unit != null) {
-            attackUnit(tile);
-        } else if (tile.building != null) {
-            attackBuilding(tile);
-        }
     }
 
     private void attackBuilding(MapTile tile) {

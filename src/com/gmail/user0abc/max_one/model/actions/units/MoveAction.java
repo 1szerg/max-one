@@ -26,6 +26,7 @@ public class MoveAction extends Ability {
     public boolean execute(Entity traveler, MapTile selectedDestination) {
         if (selectedDestination != null && traveler != null) {
             start = traveler.getCurrentTile();
+            location = start;
             walkingUnit = (Unit)traveler;
             destination = selectedDestination;
             walk();

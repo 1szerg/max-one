@@ -30,7 +30,6 @@ public class GameController extends Activity {
     private Entity selectedEntity, tileSelectReceiver;
     private AbilityType selectedActionType;
     private MapTile selectedTile;
-    private TurnProcessor turnProcessor;
     private List<ActionButton> currentActionButtons = new ArrayList<>();
 
     public static GameController getCurrentInstance() {
@@ -109,6 +108,7 @@ public class GameController extends Activity {
                 }
             }
         }
+        tileSelectReceiver = null;
     }
 
     private void selectEntity(Entity entity) {
@@ -123,17 +123,25 @@ public class GameController extends Activity {
     private List<ActionButton> getButtons(Entity entity){
         List<ActionButton> buttons = new ArrayList<>();
         for(AbilityType ability : entity.getAvailableActions()){
-            buttons.add(new ActionButton(ability, entity.isAbilityAvailable(ability), entity.isActiveAction(ability)));
+            buttons.add(new ActionButton(ability,
+                    entity.isAbilityAvailable(ability),
+                    entity.isActiveAction(ability) || ability.equals(selectedActionType)
+                    )
+            );
         }
         return buttons;
     }
 
     public List<ActionButton> getCurrentActionButtons() {
+        for(ActionButton b : currentActionButtons){
+            b.setAbilityAvailable( selectedEntity.isAbilityAvailable(b.getAbilityType()) );
+            b.setActiveAction( selectedEntity.isActiveAction(b.getAbilityType()) || b.getAbilityType().equals(selectedActionType) );
+        }
         return currentActionButtons;
     }
 
     public void onActionButtonSelect(AbilityType abilityType) {
-        tileSelectReceiver = null;
+        selectedActionType = null;
         switch (abilityType){
             case END_TURN:
                 onTurnEnd();
@@ -170,17 +178,6 @@ public class GameController extends Activity {
         GameStorage.getStorage().getGame().nextPlayer();
         onStartTurn();
     }
-
-    private void activateButton(AbilityType abilityType) {
-        for(ActionButton button : currentActionButtons){
-            if(button.getAbilityType().equals(abilityType)){
-                button.setActiveAction(true);
-            }else{
-                button.setActiveAction(false);
-            }
-        }
-    }
-
 
     public void refreshMap() {
         runOnUiThread(new Runnable() {

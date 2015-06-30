@@ -37,7 +37,7 @@ public class Worker extends Unit {
             currentAction = ActionFactory.createAction(abilityType);
         }
         if (currentAction != null) {
-            currentAction.execute(null, tile);
+            currentAction.execute(this, tile);
         }
     }
 

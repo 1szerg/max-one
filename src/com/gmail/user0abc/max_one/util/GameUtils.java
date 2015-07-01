@@ -98,4 +98,12 @@ public class GameUtils {
         }
         return selectedTiles;
     }
+
+    public static boolean tileExists(MapTile[][] map, int x, int y) {
+        return (x >=0 && y >= 0 && x < map.length && y < map[x].length);
+    }
+
+    public static boolean entityBelongsCurrentPlayer(Entity entity){
+        return entity != null && entity.getOwner() != null && entity.getOwner().equals(GameStorage.getStorage().getGame().currentPlayer);
+    }
 }

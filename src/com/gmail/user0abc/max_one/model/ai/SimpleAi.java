@@ -64,11 +64,11 @@ public class SimpleAi implements AiProcessor {
         }
         if (task.getAssigned().getCurrentTile().equals(task.getLocation())) {
             Logger.log("[SimpleAi] executing task " + task + " feat "+task.getAssigned());
-            task.getAssigned().executeAction(task.getType(), GameStorage.getStorage().getGame(), task.getLocation());
+            task.getAssigned().executeAction(task.getType(), task.getLocation());
             return;
         }
         Logger.log("[SimpleAi] unit "+task.getAssigned()+" is heading to location "+task.getLocation());
-        task.getAssigned().executeAction(AbilityType.MOVE_ACTION, GameStorage.getStorage().getGame(), task.getLocation());
+        task.getAssigned().executeAction(AbilityType.MOVE_ACTION, task.getLocation());
     }
 
     private MapTile findTaskLocation(AiTask task) {

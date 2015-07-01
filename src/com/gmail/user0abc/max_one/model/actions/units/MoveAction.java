@@ -1,8 +1,6 @@
 package com.gmail.user0abc.max_one.model.actions.units;
 
 import com.gmail.user0abc.max_one.GameController;
-import com.gmail.user0abc.max_one.handlers.TileSelectReceiver;
-import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.actions.Ability;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.entities.Entity;
@@ -19,25 +17,23 @@ import java.util.List;
  * Created by Sergey
  * at 11/12/14 10:18 PM
  */
-public class MoveAction extends Ability implements TileSelectReceiver {
+public class MoveAction extends Ability {
 
     private Unit walkingUnit;
     private MapTile start, destination, location;
 
     @Override
-    public boolean execute(GameContainer game, MapTile selectedTile) {
-        if (destination == null) {
-            if (selectedTile != null && selectedTile.unit != null) {
-                start = selectedTile;
-                walkingUnit = selectedTile.unit;
-                GameController.getCurrentInstance().selectAnotherTile(this);
+    public boolean execute(Entity traveler, MapTile selectedDestination) {
+        if (selectedDestination != null && traveler != null) {
+            start = traveler.getCurrentTile();
+            location = start;
+            walkingUnit = (Unit)traveler;
+            destination = selectedDestination;
+            walk();
+            if (location.equals(destination)) {
+                walkingUnit.setCurrentAction(null);
+                return true;
             }
-            return false;
-        }
-        walk();
-        if (location.equals(destination)) {
-            walkingUnit.setCurrentAction(null);
-            return true;
         }
         return false;
     }
@@ -51,13 +47,6 @@ public class MoveAction extends Ability implements TileSelectReceiver {
     @Override
     public AbilityType getType() {
         return AbilityType.MOVE_ACTION;
-    }
-
-    @Override
-    public void onTileSelect(MapTile tile) {
-        destination = tile;
-        location = start;
-        walk();
     }
 
     private void walk() {
@@ -93,20 +82,23 @@ public class MoveAction extends Ability implements TileSelectReceiver {
         int sX = (int) Math.signum(dX);
         int sY = (int) Math.signum(dY);
         List<MapTile> stepCandidates = new ArrayList<>();
-        addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap()[location.x + sX][location.y + sY]);
-        if (Math.abs(dX) > Math.abs(dY)) {
-            addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap()[location.x + sX][location.y]);
-            addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap()[location.x][location.y + sY]);
-        } else {
-            addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap()[location.x][location.y + sY]);
-            addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap()[location.x + sX][location.y]);
+        addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap(), location.x + sX, location.y + sY);
+        if(sX == 0){
+            addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap(), location.x + 1, location.y + sY);
+            addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap(), location.x -1, location.y + sY);
+        }
+        if(sY == 0){
+            addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap(), location.x + sX, location.y + 1);
+            addTileIfPassable(stepCandidates, GameController.getCurrentInstance().getMap(), location.x + sX, location.y - 1);
         }
         if (stepCandidates.size() > 0) return stepCandidates.get(0);
         return null;
     }
 
-    private void addTileIfPassable(List<MapTile> stepCandidates, MapTile tile) {
-        if (isTilePassable(tile)) stepCandidates.add(tile);
+    private void addTileIfPassable(List<MapTile> stepCandidates, MapTile[][] map, int x, int y) {
+        if(GameUtils.tileExists(map, x, y)){
+            if (isTilePassable(map[x][y])) stepCandidates.add(map[x][y]);
+        }
     }
 
     private boolean isTilePassable(MapTile tile) {

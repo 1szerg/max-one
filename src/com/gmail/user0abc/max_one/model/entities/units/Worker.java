@@ -1,6 +1,5 @@
 package com.gmail.user0abc.max_one.model.entities.units;
 
-import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.Attack;
 import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
@@ -31,15 +30,14 @@ public class Worker extends Unit {
     }
 
     @Override
-    public void executeAction(AbilityType abilityType, GameContainer game, MapTile tile) {
+    public void executeAction(AbilityType abilityType, MapTile tile) {
         if (currentAction != null && !currentAction.getType().equals(abilityType)) {
             currentAction.cancel();
-            // todo avoid action cancel when same action selected
         } else {
             currentAction = ActionFactory.createAction(abilityType);
         }
         if (currentAction != null) {
-            currentAction.execute(game, tile);
+            currentAction.execute(this, tile);
         }
     }
 

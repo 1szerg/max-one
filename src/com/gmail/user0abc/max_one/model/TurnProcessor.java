@@ -22,6 +22,7 @@ public class TurnProcessor extends AsyncTask<Player, MapTile, Boolean> {
     protected void onPreExecute() {
         game = GameStorage.getStorage().getGame();
         turnStarted = new Date().getTime();
+        Logger.log("turn " + game.turnsCount + " started at " + turnStarted);
     }
 
     @Override

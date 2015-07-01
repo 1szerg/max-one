@@ -1,6 +1,5 @@
 package com.gmail.user0abc.max_one.model.entities.buildings;
 
-import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
 import com.gmail.user0abc.max_one.model.entities.Entity;
@@ -34,9 +33,9 @@ public abstract class Building extends Entity implements Serializable {
     }
 
     @Override
-    public void executeAction(AbilityType abilityType, GameContainer gameContainer, MapTile tile) {
+    public void executeAction(AbilityType abilityType, MapTile tile) {
         currentAction = ActionFactory.createAction(abilityType);
-        currentAction.execute(gameContainer, tile);
+        currentAction.execute(null, tile);
     }
 
     @Override

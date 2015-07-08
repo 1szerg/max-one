@@ -1,5 +1,6 @@
 package com.gmail.user0abc.max_one.util;
 
+
 import android.util.Log;
 
 /**
@@ -8,6 +9,6 @@ import android.util.Log;
  */
 public class Logger {
     public static void log(String message) {
-        Log.d("com.gmail.user0abc.max_one", message);
+        Log.d("max_one", message);
     }
 }

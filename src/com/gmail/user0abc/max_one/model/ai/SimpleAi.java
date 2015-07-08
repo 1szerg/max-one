@@ -35,9 +35,13 @@ public class SimpleAi implements AiProcessor {
         Collections.sort(tasksQueue, new AiTaskPriorityComparator());
         Logger.log("[SimpleAi] tasks in queue " + tasksQueue.size());
         for (AiTask t : tasksQueue) {
-            if (t.isAssigned() && !t.getAssigned().isAlive()) t.setAssigned(null);
-            if (!t.isAssigned()) assignTask(t);
-            if (t.isAssigned()) executeTask(t);
+            if (t.isAssigned() && !t.getAssigned().isAlive()) {
+                t.setAssigned(null);
+            } else if (!t.isAssigned()) {
+                assignTask(t);
+            } else {
+                executeTask(t);
+            }
         }
     }
 
@@ -63,12 +67,12 @@ public class SimpleAi implements AiProcessor {
             return;
         }
         if (task.getAssigned().getCurrentTile().equals(task.getLocation())) {
-            Logger.log("[SimpleAi] executing task " + task + " feat "+task.getAssigned());
+            Logger.log("[SimpleAi] executing task " + task + " feat " + task.getAssigned());
             task.getAssigned().executeAction(task.getType(), task.getLocation());
-            return;
+        } else {
+            Logger.log("[SimpleAi] unit " + task.getAssigned() + " is heading to location " + task.getLocation());
+            task.getAssigned().executeAction(AbilityType.MOVE_ACTION, task.getLocation());
         }
-        Logger.log("[SimpleAi] unit "+task.getAssigned()+" is heading to location "+task.getLocation());
-        task.getAssigned().executeAction(AbilityType.MOVE_ACTION, task.getLocation());
     }
 
     private MapTile findTaskLocation(AiTask task) {
@@ -79,6 +83,7 @@ public class SimpleAi implements AiProcessor {
     }
 
     private MapTile findBuildingSite(AiTask task) {
+        //todo Verify filtering mechanics
         List<TileFilter> filters = new ArrayList<>();
         filters.add(new NoBuildingsFilter());
         //filters.add(new VisibleTilesFilter(GameStorage.getStorage().getGame().currentPlayer));
@@ -105,13 +110,13 @@ public class SimpleAi implements AiProcessor {
         int postsCount = AiUtils.countBuildings(GameStorage.getStorage().getEntitiesMap().get(game.currentPlayer), BuildingType.TRADE_POST);
         int workersCount = AiUtils.countUnits(GameStorage.getStorage().getEntitiesMap().get(game.currentPlayer), UnitType.WORKER);
         int warriorsCount = AiUtils.countUnits(GameStorage.getStorage().getEntitiesMap().get(game.currentPlayer), UnitType.WARRIOR);
-        int townsNeeded = 1 - townsCount;
+        int townsNeeded = 1 - townsCount - ordered(AbilityType.BUILD_TOWN);
         int farmsNeeded = townsCount * FARMS_PER_TOWN - farmsCount - ordered(AbilityType.BUILD_FARM);
         int postsNeeded = townsCount * POSTS_PER_TOWN - postsCount - ordered(AbilityType.BUILD_POST);
         int workersNeeded = townsCount * WORKERS_PER_TOWN - workersCount - ordered(AbilityType.MAKE_WORKER);
         int warriorsNeeded = townsCount * WARRIORS_PER_TOWN - warriorsCount - ordered(AbilityType.MAKE_WARRIOR);
         if (farmsNeeded == 0 && postsNeeded == 0) {
-            townsNeeded = 1;
+            townsNeeded = 1 - ordered(AbilityType.BUILD_TOWN);
         }
         addTasks(farmsNeeded, AbilityType.BUILD_FARM, 0);
         addTasks(postsNeeded, AbilityType.BUILD_POST, 0);

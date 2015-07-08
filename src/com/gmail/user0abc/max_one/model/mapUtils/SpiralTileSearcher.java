@@ -26,6 +26,7 @@ public class SpiralTileSearcher implements TileSearcher {
         int r = 1;
         int offset = -r;
         List<MapTile> filteredTiles = new LinkedList<>();
+        addTiles(filteredTiles, map, center.x, center.y, filters);
         while (tilesCount > filteredTiles.size() && r < mapSize){
             addTiles(filteredTiles, map, center.x - r, center.y + offset, filters);
             addTiles(filteredTiles, map, center.x + r, center.y + offset, filters);

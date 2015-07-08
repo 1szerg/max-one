@@ -31,9 +31,14 @@ public class Worker extends Unit {
 
     @Override
     public void executeAction(AbilityType abilityType, MapTile tile) {
-        if (currentAction != null && !currentAction.getType().equals(abilityType)) {
-            currentAction.cancel();
-        } else {
+        if (currentAction != null){
+            if(currentAction.getType().equals(abilityType)){
+                currentAction.execute();
+            }else{
+                currentAction.cancel();
+                currentAction = ActionFactory.createAction(abilityType);
+            }
+        }else{
             currentAction = ActionFactory.createAction(abilityType);
         }
         if (currentAction != null) {

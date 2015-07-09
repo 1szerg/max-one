@@ -17,7 +17,11 @@ public class Farm extends Building {
         super();
         buildingType = BuildingType.FARM;
         health = 10;
-        foodProduction = currentTile.terrainType.equals(TerrainType.GRASS) ? 2 : 1;
+    }
+
+    @Override
+    public int getFoodProduction() {
+        return currentTile.terrainType.equals(TerrainType.GRASS) ? 2 : 1;
     }
 
     @Override

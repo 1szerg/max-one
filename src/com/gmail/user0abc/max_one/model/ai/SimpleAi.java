@@ -3,6 +3,7 @@ package com.gmail.user0abc.max_one.model.ai;/*Created by Sergey on 4/4/2015.*/
 import com.gmail.user0abc.max_one.model.GameContainer;
 import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
+import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
 import com.gmail.user0abc.max_one.model.entities.Entity;
 import com.gmail.user0abc.max_one.model.entities.buildings.BuildingType;
 import com.gmail.user0abc.max_one.model.entities.units.UnitType;
@@ -12,7 +13,6 @@ import com.gmail.user0abc.max_one.model.mapUtils.filters.NoBuildingsFilter;
 import com.gmail.user0abc.max_one.model.mapUtils.filters.TerrainWhiteListFilter;
 import com.gmail.user0abc.max_one.model.mapUtils.filters.TileFilter;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
-import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 import com.gmail.user0abc.max_one.util.GameStorage;
 import com.gmail.user0abc.max_one.util.Logger;
 
@@ -40,7 +40,7 @@ public class SimpleAi implements AiProcessor {
             } else if (!t.isAssigned()) {
                 assignTask(t);
             } else {
-                executeTask(t);
+                t.getAssigned().
             }
         }
     }
@@ -87,17 +87,7 @@ public class SimpleAi implements AiProcessor {
         List<TileFilter> filters = new ArrayList<>();
         filters.add(new NoBuildingsFilter());
         //filters.add(new VisibleTilesFilter(GameStorage.getStorage().getGame().currentPlayer));
-        switch (task.getType()) {
-            case BUILD_TOWN:
-                break;
-            case BUILD_FARM:
-                filters.add(new TerrainWhiteListFilter(Arrays.asList(TerrainType.GRASS, TerrainType.HILL)));
-                break;
-            case BUILD_POST:
-                filters.add(new TerrainWhiteListFilter(Arrays.asList(TerrainType.GRASS, TerrainType.HILL, TerrainType.SAND)));
-                break;
-            default:
-        }
+        filters.add(new TerrainWhiteListFilter(ActionFactory.createAction(task.getType()).getApplicableTerrains()));
         TileSearcher tileSearcher = new SpiralTileSearcher(task.getAssigned().getCurrentTile());
         List<MapTile> possibleLocations = tileSearcher.searchTiles(GameStorage.getStorage().getGame().map, filters);
         if (possibleLocations.size() < 1) return null;

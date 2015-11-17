@@ -29,8 +29,8 @@ public class GameController extends Activity {
     private GameField gameField;
     private Entity selectedEntity, tileSelectReceiver;
     private AbilityType selectedActionType;
-    private MapTile selectedTile;
     private List<ActionButton> currentActionButtons = new ArrayList<>();
+    private static boolean endTurnEnabled = false;
 
     public static GameController getCurrentInstance() {
         return currentInstance;
@@ -85,7 +85,6 @@ public class GameController extends Activity {
         if(tileSelectReceiver != null){
             tileSelectReceiver.executeAction(selectedActionType, tile);
         }else{
-            selectedTile = tile;
             if(selectedEntity == null){
                 if(tile.unit != null && GameUtils.entityBelongsCurrentPlayer(tile.unit)){
                     selectEntity(tile.unit);
@@ -142,8 +141,10 @@ public class GameController extends Activity {
 
     public void onActionButtonSelect(AbilityType abilityType) {
         selectedActionType = null;
+        if(abilityType == null) return;
         switch (abilityType){
             case END_TURN:
+                endTurnEnabled = false;
                 onTurnEnd();
                 break;
             case MOVE_ACTION:
@@ -207,7 +208,12 @@ public class GameController extends Activity {
         Logger.log("onActivityResult intent = "+data.toString());
     }
 
-    private void onGameEnd(){
 
+    public static void enableTurnEnd() {
+        endTurnEnabled = true;
+    }
+
+    public boolean isEndTurnEnabled() {
+        return endTurnEnabled;
     }
 }

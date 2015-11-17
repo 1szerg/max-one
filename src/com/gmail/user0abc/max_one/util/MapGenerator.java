@@ -3,7 +3,7 @@ package com.gmail.user0abc.max_one.util;
 import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.entities.units.UnitType;
 import com.gmail.user0abc.max_one.model.entities.units.UnitsFactory;
-import com.gmail.user0abc.max_one.model.mapUtils.SpiralTileSearcher;
+import com.gmail.user0abc.max_one.model.mapUtils.searchers.SpiralTileSearcher;
 import com.gmail.user0abc.max_one.model.mapUtils.filters.TileFilterFactory;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;

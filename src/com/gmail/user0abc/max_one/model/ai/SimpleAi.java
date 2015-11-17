@@ -6,12 +6,15 @@ import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
 import com.gmail.user0abc.max_one.model.entities.Entity;
 import com.gmail.user0abc.max_one.model.entities.buildings.BuildingType;
+import com.gmail.user0abc.max_one.model.entities.buildings.Town;
 import com.gmail.user0abc.max_one.model.entities.units.UnitType;
-import com.gmail.user0abc.max_one.model.mapUtils.SpiralTileSearcher;
+import com.gmail.user0abc.max_one.model.entities.units.Warrior;
+import com.gmail.user0abc.max_one.model.entities.units.Worker;
 import com.gmail.user0abc.max_one.model.mapUtils.TileSearcher;
 import com.gmail.user0abc.max_one.model.mapUtils.filters.NoBuildingsFilter;
 import com.gmail.user0abc.max_one.model.mapUtils.filters.TerrainWhiteListFilter;
 import com.gmail.user0abc.max_one.model.mapUtils.filters.TileFilter;
+import com.gmail.user0abc.max_one.model.mapUtils.searchers.SpiralTileSearcher;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.util.GameStorage;
 import com.gmail.user0abc.max_one.util.Logger;
@@ -34,14 +37,47 @@ public class SimpleAi implements AiProcessor {
         analyzeScan(game);
         Collections.sort(tasksQueue, new AiTaskPriorityComparator());
         Logger.log("[SimpleAi] tasks in queue " + tasksQueue.size());
-        for (AiTask t : tasksQueue) {
-            if (t.isAssigned() && !t.getAssigned().isAlive()) {
-                t.setAssigned(null);
-            } else if (!t.isAssigned()) {
-                assignTask(t);
-            } else {
-                t.getAssigned().
+        for(Entity entity : mapScan.get(GameStorage.getStorage().getGame().currentPlayer)){
+            if( entity.getCurrentAction() != null ){
+                entity.getCurrentAction().execute();
+            }else{
+                for(AiTask task : tasksQueue){
+                    if(task.isAssigned()){
+                        if(task.getAssigned().isAlive()){
+                            continue;
+                        }else{
+                            task.setAssigned(null);
+                        }
+                    }
+                    if( entity.getAvailableActions().contains(task.getType())){
+                        task.setAssigned(entity);
+                        executeTask(task);
+                    }
+                }
             }
+            if(entity.getCurrentAction() == null){
+                idleEntity(entity);
+            }
+        }
+        //todo remove
+//        for (AiTask t : tasksQueue) {
+//            if (t.isAssigned() && !t.getAssigned().isAlive()) {
+//                t.setAssigned(null);
+//            } else if (!t.isAssigned()) {
+//                assignTask(t);
+//            } else {
+//                executeTask(t);
+//            }
+//        }
+    }
+
+    private void idleEntity(Entity entity) {
+        if(entity instanceof Worker){
+            //explore
+        }else if(entity instanceof Warrior){
+            //search and destroy
+        }else if(entity instanceof Town){
+            // shoot invaders
         }
     }
 
@@ -88,10 +124,26 @@ public class SimpleAi implements AiProcessor {
         filters.add(new NoBuildingsFilter());
         //filters.add(new VisibleTilesFilter(GameStorage.getStorage().getGame().currentPlayer));
         filters.add(new TerrainWhiteListFilter(ActionFactory.createAction(task.getType()).getApplicableTerrains()));
-        TileSearcher tileSearcher = new SpiralTileSearcher(task.getAssigned().getCurrentTile());
+        TileSearcher tileSearcher = new SpiralTileSearcher(getEmpireCenter(GameStorage.getStorage().getGame().currentPlayer));
+        Logger.log("[SimpleAi] looking spot for building " + task.getType());
         List<MapTile> possibleLocations = tileSearcher.searchTiles(GameStorage.getStorage().getGame().map, filters);
+        Logger.log("[SimpleAi] found " + possibleLocations.size() + " spot(s) for building " + task.getType());
         if (possibleLocations.size() < 1) return null;
         return possibleLocations.get(0);
+    }
+
+    private MapTile getEmpireCenter(Player currentPlayer) {
+        if(GameStorage.getStorage().getEntitiesMap().get(currentPlayer) == null
+                || GameStorage.getStorage().getEntitiesMap().get(currentPlayer).isEmpty()) return null;
+        int x = 0;
+        int y = 0;
+        for(Entity entity : GameStorage.getStorage().getEntitiesMap().get(currentPlayer)){
+            x =+ entity.getCurrentTile().x;
+            y =+ entity.getCurrentTile().y;
+        }
+        return GameStorage.getStorage().getGame().map
+                [ (int)Math.round(x / GameStorage.getStorage().getEntitiesMap().get(currentPlayer).size()) ]
+                [ (int)Math.round(y / GameStorage.getStorage().getEntitiesMap().get(currentPlayer).size()) ];
     }
 
     private void analyzeScan(GameContainer game) {

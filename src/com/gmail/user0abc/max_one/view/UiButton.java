@@ -2,6 +2,7 @@ package com.gmail.user0abc.max_one.view;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.widget.Button;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 
 /**

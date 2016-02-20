@@ -34,7 +34,12 @@ public class TurnProcessor extends AsyncTask<Player, MapTile, Boolean> {
             Logger.log("INFO: Balance Apples " + game.currentPlayer.getApples() + " Gold " + game.currentPlayer.getGold());
             continueEntitiesActivities();
             if(game.currentPlayer.isAi){
+                Logger.log("turn["+game.turnsCount+"] AI processing start");
+                long aiTime = new Date().getTime();
                 manageAi();
+                Logger.log("turn["+game.turnsCount+"] AI processing end ("+(new Date().getTime()-aiTime)+" msec)");
+            }else{
+                GameController.enableTurnEnd();
             }
         }else{
             game.currentPlayer.setDead();

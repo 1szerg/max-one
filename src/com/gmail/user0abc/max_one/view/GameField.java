@@ -122,7 +122,7 @@ public class GameField extends SurfaceView {
         if (event == null) {
             return false;
         }
-        Logger.log("Event: " + event.toString());
+        Logger.log("Event("+recordedEvents.size()+"): " + event.toString());
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 recordedEvents = new ArrayList<>();
@@ -178,9 +178,9 @@ public class GameField extends SurfaceView {
             float endY = event.getY();
             float startX = event.getHistoricalX(0);
             float startY = event.getHistoricalY(0);
-            if ((Math.abs(endX - startX) + Math.abs(endY - startY)) < MINIMAL_MOVE_THRESHOLD) {
-                recognizeSelect(event);
-            }
+//            if ((Math.abs(endX - startX) + Math.abs(endY - startY)) < MINIMAL_MOVE_THRESHOLD) {
+//                recognizeSelect(event);
+//            }
             GameEventBus.getBus().fire(
                     new GameEvent(
                             GameEventBus.GameEventType.ScrollMap,
@@ -213,7 +213,12 @@ public class GameField extends SurfaceView {
     private void drawEndTurn(Canvas canvas) {
         float x = canvas.getWidth() - 4 - endTurn.getWidth();
         float y = canvas.getHeight() - 4 - endTurn.getHeight();
-        UiButton endTurnButton = new UiButton(endTurn, endTurn, x, y, AbilityType.END_TURN);
+        UiButton endTurnButton;
+        if(GameController.getCurrentInstance().isEndTurnEnabled()){
+            endTurnButton = new UiButton(endTurn, endTurn, x, y, AbilityType.END_TURN);
+        }else{
+            endTurnButton = new UiButton(endTurnDisabled, endTurn, x, y, null);
+        }
         uiButtons.add(endTurnButton);
         canvas.drawBitmap( endTurn , x, y, null);
     }

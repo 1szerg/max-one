@@ -24,9 +24,8 @@ public class MapTile implements Serializable {
     public String toString() {
         final StringBuilder sb = new StringBuilder("MapTile{");
         sb.append("terrainType=").append(terrainType);
-        if (building != null)
-            sb.append(", building=").append(building.getBuildingType()).append(" of ").append(building.getOwner());
-        sb.append(", tileFeature=").append(tileFeature);
+        if (building != null) sb.append(", building=").append(building.getBuildingType()).append(" of ").append(building.getOwner());
+        if (tileFeature != null) sb.append(", tileFeature=").append(tileFeature);
         if (unit != null) sb.append(", unit=").append(unit.getUnitType()).append(" of ").append(unit.getOwner());
         sb.append(", x=").append(x);
         sb.append(", y=").append(y);

@@ -21,7 +21,6 @@ public abstract class MakeBuilding extends Ability {
         if (actionInProgress == null) {
             if (selectedTile != null && selectedTile.unit != null && selectedTile.building == null) {
                 if (getApplicableTerrains().contains(selectedTile.terrainType)) {
-                    this.game = game;
                     actionLocation = selectedTile;
                     actionAuthor = selectedTile.unit;
                     actionAuthor.setCurrentAction(this);
@@ -36,7 +35,7 @@ public abstract class MakeBuilding extends Ability {
 
     @Override
     public boolean execute() {
-        if (game != null && actionLocation != null && actionAuthor != null) {
+        if (actionLocation != null && actionAuthor != null) {
             return continueAction();
         }
         return true;

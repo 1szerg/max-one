@@ -3,6 +3,8 @@ package com.gmail.user0abc.max_one.util;
 import com.gmail.user0abc.max_one.model.Player;
 import com.gmail.user0abc.max_one.model.entities.units.UnitType;
 import com.gmail.user0abc.max_one.model.entities.units.UnitsFactory;
+import com.gmail.user0abc.max_one.model.mapUtils.searchers.SpiralTileSearcher;
+import com.gmail.user0abc.max_one.model.mapUtils.filters.TileFilterFactory;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.model.terrain.TerrainType;
 
@@ -274,8 +276,17 @@ public class MapGenerator {
     public void placeStartPositions(MapTile[][] map, List<StartPosition> starts) {
         Logger.log("Placing start units");
         for (StartPosition startPosition : starts) {
+            List<MapTile> plausibleTiles = new SpiralTileSearcher(
+                    map[startPosition.x][startPosition.y],1)
+                    .searchTiles(map, TileFilterFactory.makePassableTerrainFilter()
+                    );
+            if(!plausibleTiles.isEmpty()){
+                startPosition.x = plausibleTiles.get(0).x;
+                startPosition.y = plausibleTiles.get(0).y;
+            }
             Logger.log("Player " + startPosition.player + " start location (" + startPosition.x + ", " + startPosition.y + ")");
             UnitsFactory.createUnitAtLocation(map[startPosition.x][startPosition.y], startPosition.player, UnitType.WORKER);
+
         }
     }
 

@@ -70,9 +70,11 @@ public class GameUtils {
             for (int y = 0; y < map[0].length; y++) {
                 if (map[x][y].building != null) {
                     addToScan(entities, map[x][y].building);
+                    map[x][y].building.updateHistory();
                 }
                 if (map[x][y].unit != null) {
                     addToScan(entities, map[x][y].unit);
+                    map[x][y].unit.updateHistory();
                 }
             }
         }

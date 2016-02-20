@@ -8,6 +8,7 @@ import com.gmail.user0abc.max_one.model.actions.units.ActionFactory;
 import com.gmail.user0abc.max_one.model.terrain.MapTile;
 import com.gmail.user0abc.max_one.util.Logger;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public abstract class Entity {
@@ -23,6 +24,7 @@ public abstract class Entity {
     protected int maxActionPoints;
     protected double visionRadius;
     protected boolean isAlive = true;
+    protected List<String> history = new LinkedList<>();
 
     public boolean isAbilityAvailable(AbilityType abilityType) {
         return ActionFactory.isActionAvailable(abilityType, this);
@@ -137,5 +139,9 @@ public abstract class Entity {
 
     public boolean isAlive() {
         return isAlive;
+    }
+
+    public void updateHistory(){
+        history.add(this.toString());
     }
 }

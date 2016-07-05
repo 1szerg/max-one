@@ -15,7 +15,7 @@ public class MakeWorker extends Ability {
     public boolean execute(Entity selectedEntity, MapTile selectedTile) {
         if (selectedTile != null && selectedTile.building != null && selectedTile.unit == null
                 && selectedTile.building.getBuildingType().equals(BuildingType.TOWN)
-                && selectedTile.building.getOwner().getApples() >= 1) {
+                && selectedTile.building.getOwner().getPlayerStatus().validate(1,0)) {
             selectedTile.unit = UnitsFactory.createUnitAtLocation(selectedTile, selectedTile.building.getOwner(), UnitType.WORKER);
         }
         return true;

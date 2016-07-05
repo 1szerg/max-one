@@ -3,6 +3,8 @@ package com.gmail.user0abc.max_one;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import com.gmail.user0abc.max_one.model.Player;
+import com.gmail.user0abc.max_one.model.PlayerStatus;
 import com.gmail.user0abc.max_one.model.TurnProcessor;
 import com.gmail.user0abc.max_one.model.actions.AbilityType;
 import com.gmail.user0abc.max_one.model.actions.ActionButton;
@@ -31,6 +33,7 @@ public class GameController extends Activity {
     private AbilityType selectedActionType;
     private List<ActionButton> currentActionButtons = new ArrayList<>();
     private static boolean endTurnEnabled = false;
+    private Player observingPlayer;
 
     public static GameController getCurrentInstance() {
         return currentInstance;
@@ -46,63 +49,39 @@ public class GameController extends Activity {
         onStartTurn();
     }
 
-    public MapTile[][] getMap() {
-        return getStorage().getGame().map;
-    }
-
-    public int getApples() {
-        return getStorage().getGame().currentPlayer.getApples();
-    }
-
-    public int getGold() {
-        return getStorage().getGame().currentPlayer.getGold();
-    }
-
     private void onStartTurn() {
         gameField.clearCommands();
-        if(getStorage().getGame().currentPlayer.isStillInGame()){
-            TurnProcessor turn = new TurnProcessor();
-            turn.execute(GameStorage.getStorage().getGame().currentPlayer);
-        }else{
-            if(GameStorage.getStorage().getGame().nonAiPlayersLeft() == 0) {
-                initiateGameLost();
-            } else if(GameStorage.getStorage().getGame().playersLeft() == 1){
-                initiateGameWon();
-            }
+        if (getStorage().getGame().currentPlayer.isStillInGame()) {
+            updateObservingPlayer(GameStorage.getStorage().getGame().currentPlayer);
+            new TurnProcessor().execute(GameStorage.getStorage().getGame().currentPlayer);
+        } else {
+            verifyGameEnded();
         }
-    }
-
-    private void initiateGameLost() {
-        //TODO - process game lost
-    }
-
-    private void initiateGameWon() {
-        //TODO - process game won
     }
 
     public void onTileSelect(MapTile tile) {
         Logger.log("Selected tile " + tile);
-        if(tileSelectReceiver != null){
+        if (tileSelectReceiver != null) {
             tileSelectReceiver.executeAction(selectedActionType, tile);
-        }else{
-            if(selectedEntity == null){
-                if(tile.unit != null && GameUtils.entityBelongsCurrentPlayer(tile.unit)){
+        } else {
+            if (selectedEntity == null) {
+                if (tile.unit != null && GameUtils.entityBelongsCurrentPlayer(tile.unit)) {
                     selectEntity(tile.unit);
                     selectedEntity = tile.unit;
                 }
-                if(tile.unit == null && tile.building != null && GameUtils.entityBelongsCurrentPlayer(tile.building)){
+                if (tile.unit == null && tile.building != null && GameUtils.entityBelongsCurrentPlayer(tile.building)) {
                     selectedEntity = tile.building;
                 }
-            }else{
-                if(tile.building == null && tile.unit == null){
+            } else {
+                if (tile.building == null && tile.unit == null) {
                     selectEntity(null);
                     return;
                 }
-                if(selectedEntity instanceof Unit && tile.building != null && GameUtils.entityBelongsCurrentPlayer(tile.building)){
+                if (selectedEntity instanceof Unit && tile.building != null && GameUtils.entityBelongsCurrentPlayer(tile.building)) {
                     selectEntity(tile.building);
                     return;
                 }
-                if(tile.unit != null && GameUtils.entityBelongsCurrentPlayer(tile.unit)){
+                if (tile.unit != null && GameUtils.entityBelongsCurrentPlayer(tile.unit)) {
                     selectEntity(tile.unit);
                 }
             }
@@ -112,19 +91,19 @@ public class GameController extends Activity {
 
     private void selectEntity(Entity entity) {
         selectedEntity = entity;
-        if(selectedEntity != null){
+        if (selectedEntity != null) {
             currentActionButtons = getButtons(selectedEntity);
-        }else{
+        } else {
             currentActionButtons.clear();
         }
     }
 
-    private List<ActionButton> getButtons(Entity entity){
+    private List<ActionButton> getButtons(Entity entity) {
         List<ActionButton> buttons = new ArrayList<>();
-        for(AbilityType ability : entity.getAvailableActions()){
+        for (AbilityType ability : entity.getAvailableActions()) {
             buttons.add(new ActionButton(ability,
-                    entity.isAbilityAvailable(ability),
-                    entity.isActiveAction(ability) || ability.equals(selectedActionType)
+                            entity.isAbilityAvailable(ability),
+                            entity.isActiveAction(ability) || ability.equals(selectedActionType)
                     )
             );
         }
@@ -132,19 +111,19 @@ public class GameController extends Activity {
     }
 
     public List<ActionButton> getCurrentActionButtons() {
-        for(ActionButton b : currentActionButtons){
-            b.setAbilityAvailable( selectedEntity.isAbilityAvailable(b.getAbilityType()) );
-            b.setActiveAction( selectedEntity.isActiveAction(b.getAbilityType()) || b.getAbilityType().equals(selectedActionType) );
+        for (ActionButton b : currentActionButtons) {
+            b.setAbilityAvailable(selectedEntity.isAbilityAvailable(b.getAbilityType()));
+            b.setActiveAction(selectedEntity.isActiveAction(b.getAbilityType()) || b.getAbilityType().equals(selectedActionType));
         }
         return currentActionButtons;
     }
 
     public void onActionButtonSelect(AbilityType abilityType) {
         selectedActionType = null;
-        if(abilityType == null) return;
-        switch (abilityType){
+        if (abilityType == null) return;
+        switch (abilityType) {
             case END_TURN:
-                endTurnEnabled = false;
+                disableEndTurn();
                 onTurnEnd();
                 break;
             case MOVE_ACTION:
@@ -204,8 +183,8 @@ public class GameController extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Logger.log("onActivityResult requestCode = "+requestCode);
-        Logger.log("onActivityResult intent = "+data.toString());
+        Logger.log("onActivityResult requestCode = " + requestCode);
+        Logger.log("onActivityResult intent = " + data.toString());
     }
 
 
@@ -216,4 +195,41 @@ public class GameController extends Activity {
     public boolean isEndTurnEnabled() {
         return endTurnEnabled;
     }
+
+    public static void disableEndTurn() {
+        endTurnEnabled = false;
+    }
+
+    private void verifyGameEnded() {
+        if (GameStorage.getStorage().getGame().nonAiPlayersLeft() == 0) {
+            initiateGameLost();
+        } else if (GameStorage.getStorage().getGame().playersLeft() == 1) {
+            initiateGameWon();
+        }
+    }
+
+    private void updateObservingPlayer(Player player) {
+        if (!player.isAi) observingPlayer = player;
+    }
+
+    private void initiateGameLost() {
+        //TODO - process game lost
+    }
+
+    private void initiateGameWon() {
+        //TODO - process game won
+    }
+
+    public MapTile[][] getMap() {
+        return getStorage().getGame().map;
+    }
+
+    public int getApples() {
+        return observingPlayer.getPlayerStatus().foodBalance;
+    }
+
+    public int getGold() {
+        return observingPlayer.getPlayerStatus().goldBalance;
+    }
+
 }

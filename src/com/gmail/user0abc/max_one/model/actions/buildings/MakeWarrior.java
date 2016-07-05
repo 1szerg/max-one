@@ -17,7 +17,7 @@ public class MakeWarrior extends Ability {
     public boolean execute(Entity selectedEntity, MapTile selectedTile) {
         if (selectedTile != null && selectedTile.building != null && selectedTile.unit == null
                 && selectedTile.building.getBuildingType().equals(BuildingType.TOWN)
-                && selectedTile.building.getOwner().getApples() >= 2 && selectedTile.building.getOwner().getGold() >= 2) {
+                && selectedTile.building.getOwner().getPlayerStatus().validate(2, 2)) {
             selectedTile.unit = UnitsFactory.createUnitAtLocation(selectedTile, selectedTile.building.getOwner(), UnitType.WARRIOR);
         }
         return true;

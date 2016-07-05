@@ -31,7 +31,8 @@ public class TurnProcessor extends AsyncTask<Player, MapTile, Boolean> {
         GameStorage.getStorage().setEntitiesMap(GameUtils.scanMap(game.map));
         if(GameStorage.getStorage().getEntitiesMap().containsKey(game.currentPlayer)){
             calculatePlayerBalances();
-            Logger.log("INFO: Balance Apples " + game.currentPlayer.getApples() + " Gold " + game.currentPlayer.getGold());
+            Logger.log("INFO: Balance Apples " + game.currentPlayer.getPlayerStatus().foodBalance +
+                    " Gold " + game.currentPlayer.getPlayerStatus().goldBalance);
             continueEntitiesActivities();
             if(game.currentPlayer.isAi){
                 Logger.log("turn["+game.turnsCount+"] AI processing start");
@@ -79,8 +80,8 @@ public class TurnProcessor extends AsyncTask<Player, MapTile, Boolean> {
             foodBalance += getFoodBalance(entity);
             goldBalance += getGoldBalance(entity);
         }
-        game.currentPlayer.setApples(foodBalance);
-        game.currentPlayer.setGold(goldBalance);
+        game.currentPlayer.getPlayerStatus().foodBalance = foodBalance;
+        game.currentPlayer.getPlayerStatus().goldBalance = goldBalance;
     }
 
     private static int getFoodBalance(Entity entity) {

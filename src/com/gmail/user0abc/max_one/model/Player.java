@@ -7,8 +7,7 @@ import java.io.Serializable;
 /*Created by Sergey on 10/24/2014.*/
 public class Player implements Serializable {
     public boolean isAi;
-    private int apples;
-    private int gold;
+    private PlayerStatus playerStatus;
     public int banner;
     public AiProcessor aiProcessor;
     private boolean stillInGame = true;
@@ -19,28 +18,19 @@ public class Player implements Serializable {
     public Player(boolean isAiPlayer, int playersBanner) {
         isAi = isAiPlayer;
         banner = playersBanner;
-        setApples(0);
-        setGold(0);
+        setPlayerStatus(new PlayerStatus());
     }
 
     public Player(boolean ai) {
         isAi = ai;
     }
 
-    public int getApples() {
-        return apples;
+    public PlayerStatus getPlayerStatus() {
+        return playerStatus;
     }
 
-    public void setApples(int apples) {
-        this.apples = Math.max(0, apples);
-    }
-
-    public int getGold() {
-        return gold;
-    }
-
-    public void setGold(int gold) {
-        this.gold = Math.max(0, gold);
+    public void setPlayerStatus(PlayerStatus playerStatus) {
+        this.playerStatus = playerStatus;
     }
 
     @Override
